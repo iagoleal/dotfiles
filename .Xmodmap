@@ -1,0 +1,20 @@
+! Swap Esc and Caps_Lock (Arrrroy vim!)
+remove Lock = Caps_Lock
+keysym Escape = Caps_Lock
+keysym Caps_Lock = Escape
+add Lock = Caps_Lock
+
+! Swap Control and Alt
+clear control
+clear mod1
+! Turn control into alt
+keycode 37  = Alt_L Meta_L
+! Turn alt into control
+keycode 64  = Control_L
+add control = Control_L Control_R
+add mod1    = Alt_L Meta_L 
+
+! Set Compose key to Menu
+! keysym Menu = Multi_key
+keycode 135 = Multi_key
+
