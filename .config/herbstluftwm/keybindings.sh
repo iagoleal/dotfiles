@@ -11,7 +11,7 @@ Alt=Mod1    # Use Alt key when necessary
 
 #System-wide important stuff
 herbstclient keybind $Mod-Shift-r reload
-herbstclient keybind $Mod-q close
+herbstclient keybind $Mod-Shift-q close
 
 # Main spawn shortcuts
 herbstclient keybind $Mod-Return       spawn termite # use your $TERMINAL with xterm as fallback
