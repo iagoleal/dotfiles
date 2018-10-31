@@ -2,7 +2,7 @@
 
 ## Operational System: **Arch Linux**
 
-> Everything's going to  be referenced by its _pacman_ package name
+Everything's going to  be referenced by its _pacman_ package name.
 
 #### Keyboard layout
 * `br-abnt2`
@@ -31,10 +31,10 @@ sda      8:0    0 465.8G  0 disk
     * `# pacman -S grml-zsh-config`
     > Turns zsh into the one from arch install disk
 
-* Syntax highlighting
-    * `community/zsh-syntax-highlighting`
-    	* Needs to add the line `source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh` to `~/.zshrc`  
-    	* Enables Fish-like syntax highlighting on the shell
+* Syntax highlighting  
+* `# pacman -S zsh-syntax-highlighting`
+	* Needs to add the line `source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh` to `~/.zshrc`
+	* Enables Fish-like syntax highlighting on the shell
 
 ### To run internet
 * Dialog, iw, WPA
@@ -66,7 +66,7 @@ sda      8:0    0 465.8G  0 disk
     > Linux kernel only comes with read-only support for ntfs drivers.
     > This allows `mount` to also have write capabilites.
 
-### For audio
+### Audio related
 * Alsa
 	* `# pacman -S alsa-utils`
 	> test with `alsamixer` and press `m` to unmute
@@ -92,22 +92,22 @@ sda      8:0    0 465.8G  0 disk
 
 * Hoogle
     * `# pacman -S hoogle`
-    > A search tool for haskell functions, types, etc.
-    > Should run `hoogle generate` after installation
+    	* A search tool for haskell functions, types, etc.
+    	* Should run `hoogle generate` after installation
 
 #### Python
 * The Scipy connundrum
-	* `# pacman -S python-numpy python-scipy python-matplotlib`
-	> At first, I only have these three
-	> _cvxpy_ is installed from pip, not *aur*. Maybe I should change that.
+    * `# pacman -S python-numpy python-scipy python-matplotlib`
+        * At first, I only have these three
+        * _cvxpy_ is installed from **pip**, not **aur**. Maybe I should change that.
 
-* Pip ( D: )
+* Pip
 	* `# pacman -S python-pip`
 	> yeah really
 
 * cvxpy
 	* `pip install cvxpy`
-	> maybe I should change to *aur*...
+	> maybe I should change to **aur**...
 
 
 #### LaTeX
