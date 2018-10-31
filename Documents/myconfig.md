@@ -1,7 +1,6 @@
 # My Linux packages and configurations
 
-## Operational System
-*Arch Linux*
+## Operational System: **Arch Linux**
 
 > Everything's going to  be referenced by its _pacman_ package name
 
@@ -10,14 +9,15 @@
 #### localtime
 
 
-### My filesystem (on a 500GB HDD), got from `lsblk`
+### My filesystem (on a 500GB HDD). Got from `lsblk`
+```
 NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
 sda      8:0    0 465.8G  0 disk
 ├─sda1   8:1    0   512M  0 part /boot
 ├─sda2   8:2    0  97.7G  0 part /
 ├─sda3   8:3    0 348.1G  0 part /home
 └─sda4   8:4    0  19.5G  0 part SWAP
-
+```
 
 * base and base-devel packages
     * `# pacman -S base base-devel`
@@ -33,8 +33,8 @@ sda      8:0    0 465.8G  0 disk
 
 * Syntax highlighting
     * `community/zsh-syntax-highlighting`
-    > Needs to add the line `source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh` to `~/.zshrc`
-    > Enables Fish-like syntax highlighting on the shel
+    	* Needs to add the line `source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh` to `~/.zshrc`  
+    	* Enables Fish-like syntax highlighting on the shell
 
 ### To run internet
 * Dialog, iw, WPA
@@ -343,17 +343,18 @@ For styles use: `fc-list | grep _title_`
 
 
 ## Overview
-| Window Manager    | herbstluftwm
-| Terminal Emulator | termite
-| App Launcher      | rofi
-| Text Editor       | nevim
-| Browser           | firefox
-| File Manager      | ranger
-| Music Player      | mpd + ncmpcpp
-| Video Player      | mpv
-| Image Viewer      | feh
-| Pdf Viwer         | zathura
-
+| Action            | Program       |
+|-------------------|---------------|
+| Window Manager    | herbstluftwm  |
+| Terminal Emulator | termite       |
+| App Launcher      | rofi          |
+| Text Editor       | nevim         |
+| Browser           | firefox       |
+| File Manager      | ranger        |
+| Music Player      | mpd + ncmpcpp |
+| Video Player      | mpv           |
+| Image Viewer      | feh           |
+| Pdf Viwer         | zathura       |
 
 
 
