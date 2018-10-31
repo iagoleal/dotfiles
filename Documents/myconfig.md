@@ -20,16 +20,16 @@ sda      8:0    0 465.8G  0 disk
 ```
 
 * base and base-devel packages
-    * `# pacman -S base base-devel`
-    > A system without _gcc_ is no system for me
+	* `# pacman -S base base-devel`
+	> A system without _gcc_ is no system for me
 
 ### Shell
 * zsh
-    * `# pacman -S zsh`
+	* `# pacman -S zsh`
 
 * grml's zsh setup
-    * `# pacman -S grml-zsh-config`
-    > Turns zsh into the one from arch install disk
+	* `# pacman -S grml-zsh-config`
+	> Turns zsh into the one from arch install disk
 
 * Syntax highlighting  
 * `# pacman -S zsh-syntax-highlighting`
@@ -53,18 +53,18 @@ sda      8:0    0 465.8G  0 disk
 
 #### Automount
 * Udisks
-    * `# pacman -S udisks2`
+	* `# pacman -S udisks2`
 
 * udiskie
-    * `# pacman -S udiskie`
-    > Daemon to control udisks
-    > Must be started
+	* `# pacman -S udiskie`
+	> Daemon to control udisks
+	> Must be started
 
 #### Read / write access to NTFS
 * ntfs-3g
-    * `# pacman -S ntfs-3g`
-    > Linux kernel only comes with read-only support for ntfs drivers.
-    > This allows `mount` to also have write capabilites.
+	* `# pacman -S ntfs-3g`
+	> Linux kernel only comes with read-only support for ntfs drivers.
+	> This allows `mount` to also have write capabilites.
 
 ### Audio related
 * Alsa
@@ -91,15 +91,15 @@ sda      8:0    0 465.8G  0 disk
 	> Well well well, so we've come to this ( :D )
 
 * Hoogle
-    * `# pacman -S hoogle`
-    	* A search tool for haskell functions, types, etc.
-    	* Should run `hoogle generate` after installation
+	* `# pacman -S hoogle`
+		* A search tool for haskell functions, types, etc.
+		* Should run `hoogle generate` after installation
 
 #### Python
 * The Scipy connundrum
-    * `# pacman -S python-numpy python-scipy python-matplotlib`
-        * At first, I only have these three
-        * _cvxpy_ is installed from **pip**, not **aur**. Maybe I should change that.
+	* `# pacman -S python-numpy python-scipy python-matplotlib`
+		* At first, I only have these three
+		* _cvxpy_ is installed from **pip**, not **aur**. Maybe I should change that.
 
 * Pip
 	* `# pacman -S python-pip`
@@ -112,13 +112,13 @@ sda      8:0    0 465.8G  0 disk
 
 #### LaTeX
 * Texlive
-    * `# pacman -S texlive-most texlive-lang`
+	* `# pacman -S texlive-most texlive-lang`
 	> Everything. When it comes to latex, it's better to have *everything* installed.
 
 #### MISC
 * LilyPond
-    * `community/lilypond`
-    > software for score writing
+	* `community/lilypond`
+	> software for score writing
 
 
 ## The CLI side
@@ -140,8 +140,8 @@ sda      8:0    0 465.8G  0 disk
 * Neovim
 	* `# pacman -S neovim`
 	> everyone must take a side someday
-    > Vim plugs are on .vimrc
-    > `alias vi=vim`
+	> Vim plugs are on .vimrc
+	> `alias vi=vim`
 
 * Nano
 	* already installed
@@ -169,8 +169,8 @@ sda      8:0    0 465.8G  0 disk
 * cava
 	* `yaourt -S cava`
 	> Audio visualizer. Really pretty
-    > specially alongside ncmppp
-    > (get its input directly from alsa, not mpd)
+	> specially alongside ncmppp
+	> (get its input directly from alsa, not mpd)
 
 * mpv
 	* `# pacman -S mpv`
@@ -206,21 +206,21 @@ sda      8:0    0 465.8G  0 disk
 * Xorg
 	* `# pacman -S xorg xorg-server xorg-xinit`
 	> All the dependencies for a running X server
-    > Edit config file at `/etc/X11/xorg.conf`
+	> Edit config file at `/etc/X11/xorg.conf`
 
 * Xdotool
-    * `# pacman -S xdotool`
-    > Command-line tool for X11 automation
+	* `# pacman -S xdotool`
+	> Command-line tool for X11 automation
 
 * Xclip
-    * `# pacman -S xclip`
-    > CLI tool to interact with the X Clipboard
+	* `# pacman -S xclip`
+	> CLI tool to interact with the X Clipboard
 
 * Redshift
-    * `# pacman -S redshift`
-    > Software to control screen temperature
-    > according to time of the day
-    > Autostart via `$ systemctl --user enable redshift.service`
+	* `# pacman -S redshift`
+	> Software to control screen temperature
+	> according to time of the day
+	> Autostart via `$ systemctl --user enable redshift.service`
 
 
 ### Window Manager
@@ -232,21 +232,21 @@ sda      8:0    0 465.8G  0 disk
 * Alternatives: bspwm, awesome, xmonad, herbstluftwm, spectrwm
 
  * sxhkd
-    * `# pacman -S sxhkd`
-    > Daemon to set and control custom keybindings
-    > Really useful with something like bspwm
+	* `# pacman -S sxhkd`
+	> Daemon to set and control custom keybindings
+	> Really useful with something like bspwm
 
 * Herbstluftwm
-    * `community/herbstluftwm`
-    > Manual tiling window manager. Oh god, it's amazing!
+	* `community/herbstluftwm`
+	> Manual tiling window manager. Oh god, it's amazing!
 
 * xautolock + i3lock
 	* `# pacman -S xautolock`
 	> Enable lock when screen is inactive
 
 * Compton
-    * `# pacman -S compton`
-    > X compositor, for that sexy looking effects
+	* `# pacman -S compton`
+	> X compositor, for that sexy looking effects
 
 * Rofi
 	* `# pacman -S rofi`
@@ -265,8 +265,8 @@ sda      8:0    0 465.8G  0 disk
 
 ### Notifications
 * Dunst
-    * `# pacman -S dunst`
-    > A notification daemon
+	* `# pacman -S dunst`
+	> A notification daemon
 
 ### Fonts
 For styles use: `fc-list | grep _title_`
@@ -288,10 +288,10 @@ For styles use: `fc-list | grep _title_`
 	> Pack with fonts for CJK languages
 
 * Material Design Icons
-    * `aur/ttf-material-design-icons-git`
-    > Icons font, really good
-    > Manual located at:
-    > https://cdn.materialdesignicons.com
+	* `aur/ttf-material-design-icons-git`
+	> Icons font, really good
+	> Manual located at:
+	> https://cdn.materialdesignicons.com
 
 ### Browsing the internet
 * w3m _(CLI)_
@@ -337,9 +337,9 @@ For styles use: `fc-list | grep _title_`
 
 ### Games
 * Nethack
-    * `# pacman -S nethack`
+	* `# pacman -S nethack`
 * Dwarf fortress
-    * `# pacman -S dwarffortress`
+	* `# pacman -S dwarffortress`
 
 
 ## Overview
