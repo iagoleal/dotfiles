@@ -1,0 +1,18 @@
+#Enable selection to clipboard
+set selection-clipboard clipboard
+
+# Only show file name on status bar
+set statusbar-basename true
+
+#Make default bg color white
+set default-bg "#ededed"
+
+#Rebind zoom keys
+map - zoom out
+unmap =
+map = zoom in
+
+# Enable synctex
+
+set synctex true
+set synctex-editor-command "nvr --remote-silent %f -c %l"
