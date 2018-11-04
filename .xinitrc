@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# Define folders and files to read
 userresources=$HOME/.Xresources
 userxkbdir=$HOME/.xkb
 usermodmap=$HOME/.Xmodmap
@@ -30,7 +31,8 @@ if [ -n $userxkbdir ]; then
     setxkbmap -I $userxkbdir -layout $userxkblayout \
         -option "caps:swapescape" \
         -option "ctrl:swap_lalt_lctl" \
-        -option "compose:menu"
+        -option "compose:menu" \
+        -option "shift:both_capslock"
 else
     # Set keyboard layout to br-abnt2
     setxkbmap -layout br
@@ -51,7 +53,6 @@ fi
 
 # Turn the damm bell sound off
 xset b off
-
 # Change the cursor default icon
 xsetroot -cursor_name left_ptr
 
