@@ -60,8 +60,10 @@ xsetroot -cursor_name left_ptr
 udiskie &
 # Redshift uses location / time info to control screen temperature and brightness
 redshift &
-#Set Wallpaper to my beloved duck image
-feh --bg-scale ~/Pictures/Wallpapers/duck.jpg &
+# Set Wallpaper to my beloved duck image
+# feh --bg-scale ~/Pictures/Wallpapers/duck.jpg &
+# Christmas version of my beloved duck image
+feh --bg-scale ~/Pictures/Wallpapers/xmas/duck_xmas.png &
 #Enable screen lock
 xautolock -time 10 -corners ----  -locker "i3lock -c '#000000'" &
 
