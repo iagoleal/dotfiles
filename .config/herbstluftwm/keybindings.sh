@@ -73,7 +73,7 @@ herbstclient keybind $Mod-Control-j       split   bottom  0.5
 herbstclient keybind $Mod-Control-k       split   top     0.5
 herbstclient keybind $Mod-Control-l       split   right   0.5
 # let the current frame explode into subframes
-herbstclient keybind $Mod-Control-space split explode
+herbstclient keybind $Mod-e split explode
 
 # resizing frames
 resizestep=0.05
