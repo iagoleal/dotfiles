@@ -22,21 +22,27 @@ if [ -f $userresources ]; then
     xrdb -merge "$userresources"
 fi
 
-if [ -n $userxkbdir ]; then
+# if [ -n $userxkbdir ]; then
     # Set keyboard layout to my custom one
     # Options are:
-    # Swap Capslock and Esc keys
+    # Capslock key function as Esc
     # Swap Left Control and Left Alt keys
-    # Use Menu key as Compose
+    # Classic Control-Alt-Backspace command to kill X
     setxkbmap -I $userxkbdir -layout $userxkblayout \
-        -option "caps:swapescape" \
+        -option "caps:escape" \
         -option "ctrl:swap_lalt_lctl" \
-        -option "compose:menu" \
-        -option "shift:both_capslock"
-else
-    # Set keyboard layout to br-abnt2
-    setxkbmap -layout br
-fi
+        # -option "compose:menu" \
+        -option "terminate:ctrl_alt_bksp"
+
+    # Enable sticky keys
+    xkbset sticky -twokey -latchlock
+    # Disable expiration time for sticky keys and options
+    xkbset exp "=sticky" '=twokey' '=latchlock' 
+
+# else
+#     # Set keyboard layout to br-abnt2
+#     setxkbmap -layout br
+# fi
 
 # Run the custom changes AFTER selecting the keyboard
 if [ -f $usermodmap ]; then
@@ -63,7 +69,7 @@ redshift &
 # Set Wallpaper to my beloved duck image
 # feh --bg-scale ~/Pictures/Wallpapers/duck.jpg &
 # Christmas version of my beloved duck image
-feh --bg-scale ~/Pictures/Wallpapers/xmas/duck_xmas.png &
+feh --bg-scale ~/Pictures/Wallpapers/xmas/duck_xmas.png
 #Enable screen lock
 xautolock -time 10 -corners ----  -locker "i3lock -c '#000000'" &
 
