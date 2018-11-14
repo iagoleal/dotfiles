@@ -140,7 +140,7 @@ sda      8:0    0 465.8G  0 disk
 * Neovim
 	* `# pacman -S neovim`
 	> everyone must take a side someday
-	> Vim plugs are on .vimrc
+	> Vim plugs are on `.vimrc`
 	> `alias vi=vim`
 
 * Nano
@@ -211,6 +211,11 @@ sda      8:0    0 465.8G  0 disk
 * Xdotool
 	* `# pacman -S xdotool`
 	> Command-line tool for X11 automation
+
+* xkbset
+	* `aur/xkbset`
+	> Enables accessiblity tools for xkb
+	> Really good for sticky keys
 
 * Xclip
 	* `# pacman -S xclip`
