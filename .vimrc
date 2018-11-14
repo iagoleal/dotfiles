@@ -94,7 +94,7 @@ Plug 'bluz71/vim-moonfly-colors'
 " Plug 'dracula/vim', {'as': 'dracula'}
 
 " Julia Support
-" Plug 'JuliaEditorSupport/julia-vim', {'for': 'julia'}
+Plug 'JuliaEditorSupport/julia-vim', {'for': 'julia'}
 
 " Stop plugin system
 call plug#end()
