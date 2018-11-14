@@ -60,6 +60,8 @@ nnoremap <leader><ESC> :nohlsearch<CR>
 nnoremap <leader>V '[v']
 " Select all text on file
 nnoremap <leader>a ggVG
+"Convert line to Title Case
+nnoremap <leader>~ :s/\v\C<([A-ZÀ-Ý])([A-ZÀ-Ý]+)>/\u\1\L\2/g
 
 "" Filetype-specific keymaps
 " Saves file and run haskell interpreter
