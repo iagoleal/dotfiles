@@ -14,6 +14,17 @@
 ! add control = Control_L Control_R
 ! add mod1    = Alt_L Meta_L
 
-! ! Set Compose key to Menu
+! ! Use Menu as Compose key
 ! ! keysym Menu = Multi_key
 ! keycode 135 = Multi_key
+
+! Use Esc as Compose key
+keycode 9 = Multi_key
+! Use Menu as dead key for greek characters
+keycode 135 = dead_greek
+
+keycode 135 = Multi_key
+keycode 9 = dead_greek
+
+
+keycode 42 = g G g G dead_greek dead_greek eng

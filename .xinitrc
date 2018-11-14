@@ -37,7 +37,7 @@ fi
     # Enable sticky keys
     xkbset sticky -twokey -latchlock
     # Disable expiration time for sticky keys and options
-    xkbset exp "=sticky" '=twokey' '=latchlock' 
+    xkbset exp "=sticky" '=twokey' '=latchlock'
 
 # else
 #     # Set keyboard layout to br-abnt2
