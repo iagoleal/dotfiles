@@ -63,7 +63,7 @@ nnoremap <leader>a ggVG
 
 "" Filetype-specific keymaps
 " Saves file and run haskell interpreter
-autocmd FileType haskell nnoremap <buffer> <leader>m :w<CR> \| :! runhaskell %<CR>
+autocmd FileType haskell nnoremap <buffer> <leader>m :w<CR> :!runhaskell %<CR>
 
 " Toggle Color Highlight
 map <leader>cC :ColorToggle<CR>
