@@ -9,3 +9,6 @@ alias hc=herbstclient
 
 # Git command to manage dotfiles
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles-gitdir/ --work-tree=$HOME'
+
+# Get wheater information
+weather() { curl wttr.in/"$*"; }
