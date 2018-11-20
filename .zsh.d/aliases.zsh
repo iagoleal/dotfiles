@@ -2,7 +2,7 @@
 # It's only two characters long, after all...
 # vi can still be used via `/bin/vi` or `\vi`
 alias vi=nvim
-alias view=nvim -R
+alias view="nvim -R"
 
 # herbstclient is too big to keep writing...
 alias hc=herbstclient
