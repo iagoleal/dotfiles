@@ -79,75 +79,35 @@ XTerm*metaSendsEscape:  true
 /* *.color7:       #a89984 */
 /* *.color15:      #ebdbb2 */
 
-*.foreground:  #e5c7a9
-*.background:  #000000
-*.cursorColor: #f6f7ec
-!
-! Black
-*.color0:      #121418
-*.color8:      #675f54
-!
-! Red
-*.color1:      #c94234
-*.color9:      #ff645a
-!
-! Green
-*.color2:      #85c54c
-*.color10:     #98e036
-!
-! Yellow
-*.color3:      #f5ae2e
-*.color11:     #e0d561
-!
-! Blue
-*.color4:      #1398b9
-*.color12:     #5fdaff
-!
-! Magenta
-*.color5:      #d0633d
-*.color13:     #ff9269
-!
-! Cyan
-*.color6:      #509552
-*.color14:     #84f088
-!
-! White
-*.color7:      #e5c6aa
-*.color15:     #f6f7ec
-!
-! Bold, Italic, Underline
-*.colorBD:     #f6f7ec
-!*.colorIT:
-!*.colorUL:
+! ----------------------------
+! Contrasty Darkness
+! Version: 2018-01-04
+! https://www.markusweimar.de/
+! ----------------------------
 
-/* ! 256 color resources */
-/* *.color24:  #076678 */
-/* *.color66:  #427b58 */
-/* *.color88:  #9d0006 */
-/* *.color96:  #8f3f71 */
-/* *.color100: #79740e */
-/* *.color108: #8ec07c */
-/* *.color109: #83a598 */
-/* *.color130: #af3a03 */
-/* *.color136: #b57614 */
-/* *.color142: #b8bb26 */
-/* *.color167: #fb4934 */
-/* *.color175: #d3869b */
-/* *.color208: #fe8019 */
-/* *.color214: #fabd2f */
-/* *.color223: #ebdbb2 */
-/* *.color228: #f4e8ba */
-/* *.color229: #fdf4c1 */
-/* *.color230: #ffffc8 */
-/* *.color234: #1d2021 */
-/* *.color235: #282828 */
-/* *.color236: #32302f */
-/* *.color237: #3c3836 */
-/* *.color239: #504945 */
-/* *.color241: #665c54 */
-/* *.color243: #7c6f64 */
-/* *.color244: #928374 */
-/* *.color245: #928374 */
-/* *.color246: #a89984 */
-/* *.color248: #bdae93 */
-/* *.color250: #d5c4a1 */
+*background: black
+*foreground: white
+! black
+*color0:  #000000
+*color8:  #000000
+! red
+*color1:  #ff7c4d
+*color9:  #ff7c4d
+! green
+*color2:  #22ff00
+*color10: #22ff00
+! yellow
+*color3:  #ffcc00
+*color11: #ffcc00
+! blue
+*color4:  #1a66ff
+*color12: #1a66ff
+! magenta
+*color5:  #ff61df
+*color13: #ff61df
+! cyan
+*color6:  #00ffff
+*color14: #00ffff
+! white
+*color7:  #888888
+*color15: #ffffff

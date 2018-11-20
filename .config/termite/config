@@ -1,7 +1,7 @@
 [options]
 allow_bold = true
 #audible_bell = false
-#clickable_url = true
+clickable_url = true
 #dynamic_title = true
 # Fonts are read from bottom up
 font = Material Design Icons 10
@@ -21,10 +21,10 @@ scrollback_lines = 10000
 #hyperlinks = false
 
 # $BROWSER is used by default if set, with xdg-open as a fallback
-#browser = xdg-open
+browser = firefox
 
 # "system", "on" or "off"
-#cursor_blink = system
+cursor_blink = on
 
 # "block", "underline" or "ibeam"
 cursor_shape = underline
@@ -47,40 +47,75 @@ scrollbar = off
 #cursor = #dcdccc
 #cursor_foreground = #dcdccc
 
-foreground = #c5c8c6
-#foreground_bold = #ffffff
-background = #111111
+#foreground = #c5c8c6
+##foreground_bold = #ffffff
+#background = #111111
 
-# 20% background transparency (requires a compositor)
-#background = rgba(63, 63, 63, 0.8)
+## 20% background transparency (requires a compositor)
+##background = rgba(63, 63, 63, 0.8)
 
-# If unset, will reverse foreground and background
-highlight = #2f2f2f
+## If unset, will reverse foreground and background
+#highlight = #2f2f2f
 
 
-color0 =        #212121
-color8 =        #373b41
+#color0 =        #212121
+#color8 =        #373b41
+## red
+#color1 =        #cc6666
+#color9 =        #de935f
+## green
+#color2  =       #638f63
+#color10 =       #8fcc85
+## yellow
+#color3  =       #8f7942
+#color11 =       #f0c674
+## blue
+#color4  =       #59798f
+#color12 =       #8fadcc
+## magenta
+#color5  =       #85678f
+#color13 =       #b294bb
+## cyan
+#color6  =       #5e8d87
+#color14 =       #8abeb7
+## white
+#color7  =       #707880
+#color15 =       #c5c8c6
+
+# ----------------------------
+# Contrasty Darkness
+# Version: 2018-01-04
+# https://www.markusweimar.de/
+# ----------------------------
+
+foreground = #ffffff
+foreground_bold = #ffffff
+foreground_dim = #aaaaaa
+background = #000000
+# black
+color0  = #000000
+color8  = #000000
 # red
-color1 =        #cc6666
-color9 =        #de935f
+color1  = #ff7c4d
+color9  = #ff2c1d
 # green
-color2  =       #638f63
-color10 =       #8fcc85
+color2  = #20dd00
+color10 = #22ff00
 # yellow
-color3  =       #8f7942
-color11 =       #f0c674
+color3  = #ffac00
+color11 = #ffdc00
 # blue
-color4  =       #59798f
-color12 =       #8fadcc
+color4  = #1a66ff
+color12 = #3a96ff
 # magenta
-color5  =       #85678f
-color13 =       #b294bb
+color5  = #ffa1ef
+color13 = #ff61df
 # cyan
-color6  =       #5e8d87
-color14 =       #8abeb7
+color6  = #43f0f3
+color14 = #00ffff
 # white
-color7  =       #707880
-color15 =       #c5c8c6
+color7  = #888888
+color15 = #ffffff
 
 # # Colors from color0 to color254 can be set
 # # Another version for colors
