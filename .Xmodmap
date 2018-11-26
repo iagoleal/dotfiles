@@ -19,12 +19,16 @@
 ! keycode 135 = Multi_key
 
 ! Use Esc as Compose key
-keycode 9 = Multi_key
+! keycode 9 = Multi_key
 ! Use Menu as dead key for greek characters
-keycode 135 = dead_greek
+! keycode 135 = dead_greek
 
+! Use Menu as Compose Kry
 keycode 135 = Multi_key
+! Use Escape as dead key for greek characters
 keycode 9 = dead_greek
 
-
+! Greek key on g
 keycode 42 = g G g G dead_greek dead_greek eng
+! Ccedilha on c
+keycode 54 = c C c C ccedilla Ccedilla copyright copyright c C copyright copyright
