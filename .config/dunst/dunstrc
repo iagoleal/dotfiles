@@ -29,7 +29,7 @@
     # the top and down respectively.
     # The width can be negative.  In this case the actual width is the
     # screen width minus the width defined in within the geometry option.
-    geometry = "540x5-10+22"
+    geometry = "540x12-12+22"
 
     # Show how many messages are currently hidden (because of geometry).
     indicate_hidden = yes
@@ -54,10 +54,10 @@
     separator_height = 2
 
     # Padding between text and separator.
-    padding = 12
+    padding = 8
 
     # Horizontal padding.
-    horizontal_padding = 12
+    horizontal_padding = 8
 
     # Defines width in pixels of frame around the notification window.
     # Set to 0 to disable.
@@ -87,7 +87,7 @@
 
     #font = DejaVu Sans 12
     #font = Iosevka Term Medium 13
-    font = Source Han Sans 11
+    font = Source Code Pro 11
 
     # The spacing between lines.  If the height is smaller than the
     # font height, it will get raised to the font height.
@@ -140,7 +140,7 @@
 
     # Split notifications into multiple lines if they don't fit into
     # geometry.
-    word_wrap = yes
+    word_wrap = no
 
     # When word_wrap is set to no, specify where to ellipsize long lines.
     # Possible values are "start", "middle" and "end".
@@ -153,7 +153,7 @@
     stack_duplicates = true
 
     # Hide the count of merged notifications with the same content
-    hide_duplicate_count = false
+    hide_duplicate_count = true
 
     # Display indicators for URLs (U) and actions (A).
     show_indicators = yes
@@ -161,7 +161,7 @@
     ### Icons ###
 
     # Align icons left/right/off
-    icon_position = left
+    icon_position = right
 
     # Scale larger icons down to this size, set to 0 to disable
     max_icon_size = 64
@@ -198,7 +198,7 @@
     # Print a notification on startup.
     # This is mainly for error detection, since dbus (re-)starts dunst
     # automatically after a crash.
-    startup_notification = true
+    startup_notification = false
 
     ### Legacy
 
@@ -233,16 +233,15 @@
     # close = ctrl+space
     close = mod1+apostrophe
 
-
     # Close all notifications.
     # close_all = ctrl+shift+space
-    close_all = mod1+mod4+apostrophe
+    close_all = mod1+shift+apostrophe
 
     # Redisplay last message(s).
     # On the US keyboard layout "grave" is normally above TAB and left
     # of "1". Make sure this key actually exists on your keyboard layout,
     # e.g. check output of 'xmodmap -pke'
-    history = mod1+shift+apostrophe
+    history = mod1+shift+h
 
     # Context menu.
     context = ctrl+shift+period
@@ -250,9 +249,9 @@
 [urgency_low]
     # IMPORTANT: colors have to be defined in quotation marks.
     # Otherwise the "#" and following would be interpreted as a comment.
-    background = "#1c1c1c"
-    foreground = "#bfbfbf"
-    timeout = 10
+    background = "#0c0c0c"
+    foreground = "#cfcfff"
+    timeout = 7
     # Icon for notifications with low urgency, uncomment to enable
     #icon = /path/to/icon
 
