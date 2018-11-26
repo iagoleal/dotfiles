@@ -82,12 +82,6 @@ scrollbar = off
 #color7  =       #707880
 #color15 =       #c5c8c6
 
-# ----------------------------
-# Contrasty Darkness
-# Version: 2018-01-04
-# https://www.markusweimar.de/
-# ----------------------------
-
 foreground = #ffffff
 foreground_bold = #ffffff
 foreground_dim = #aaaaaa
@@ -96,8 +90,9 @@ background = #000000
 color0  = #000000
 color8  = #000000
 # red
-color1  = #ff7c4d
-color9  = #ff2c1d
+# color1  = #ff7c4d
+color1  = #de2c1d
+color9  = #ff1300
 # green
 color2  = #20dd00
 color10 = #22ff00
@@ -105,8 +100,8 @@ color10 = #22ff00
 color3  = #ffac00
 color11 = #ffdc00
 # blue
-color4  = #1a66ff
-color12 = #3a96ff
+color4  = #3a96ff
+color12 = #1a66ff
 # magenta
 color5  = #ffa1ef
 color13 = #ff61df
