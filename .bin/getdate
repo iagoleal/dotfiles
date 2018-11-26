@@ -1,2 +1,2 @@
 #!/bin/sh
-date +'%H hours and %M minutes%n%A,%t%d of %B%t%Y'
+date +'%A,%t%d of %B%t%Y%n%H hours and %M minutes'
