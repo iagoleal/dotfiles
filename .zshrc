@@ -1,32 +1,60 @@
-# Lines configured by zsh-newuser-install
+#----------------------------
+# Keybindings
+#----------------------------
+bindkey -v # Vim mode for keybinds
+# bindkey -e # Emacs mode for keybinds
+
+#----------------------------
+# Beep
+#----------------------------
+#turn this damn thing off
+unsetopt beep
+
+#----------------------------
+# History related
+#----------------------------
 HISTFILE=~/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
 setopt appendhistory
-unsetopt beep
-bindkey -v # Vim mode for keybinds
-# bindkey -e # Emacs mode for keybinds
-# End of lines configured by zsh-newuser-install
 
-# The following lines were added by compinstall
-zstyle :compinstall filename '/home/iagoleal/.zshrc' 
+# When going over history,
+# only consider commands which match the written characters until now
+autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+[[ -n "$key[Up]"   ]] && bindkey -- "$key[Up]"   up-line-or-beginning-search
+[[ -n "$key[Down]" ]] && bindkey -- "$key[Down]" down-line-or-beginning-search
+
+
+
+#----------------------------
+# Autocompletion
+#----------------------------
+# zstyle :compinstall filename '/home/iagoleal/.zshrc'
 autoload -Uz compinit
 compinit
-# End of lines added by compinstall
 
-#For themes
+
+#----------------------------
+# Enable prompt theme system
+#----------------------------
 autoload -Uz promptinit
 promptinit
 
-
+#----------------------------
 # Environment variables
+#----------------------------
 export EDITOR="vi -e"
 export VISUAL="nvim"
 export TERMINAL="termite"
 
+#----------------------------
+# Source additional configs
+#----------------------------
+# Custom aliases and functions
 source $HOME/.zsh.d/aliases.zsh
-
-source $HOME/.zsh.d/syntax-highlighting.zsh
-
+# Prompt customization
 source $HOME/.zsh.d/prompt.zsh
-
+# Enable syntax highlighting
+source $HOME/.zsh.d/syntax-highlighting.zsh

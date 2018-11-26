@@ -22,8 +22,9 @@ function +vi-vcs_prompt() {
 }
 
 function _prompt {
-    # Show error msg only if return != 0 
-    local error_code='%(?..%B%F{red}%?%f%b )'
+    # Show error msg only if return != 0
+    local error_code='%(?..Exit Code: %B%F{red}%?%f%b
+)'
     # Show different symbols for normal user or root
     local user_symbol='>'
     local prompt_symbol="%(!.%F{red}#%f.$user_symbol) "

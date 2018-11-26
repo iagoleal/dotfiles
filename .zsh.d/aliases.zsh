@@ -14,6 +14,6 @@ alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles-gitdir/ --work-tree=$HOME
 # Currently only runs Spotify
 alias spotify="ncmpcpp -p 6601"
 
-# Get wheater information
+# Get weather information
 weather() { curl wttr.in/"$*"; }
 
