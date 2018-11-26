@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/bin/zsh
 
 modes_folder="${HOME}/.config/herbstluftwm/modes"
 
 # At start unbinding all keys
 herbstclient keyunbind --all
 
-# keybindings
+# Keybindings
 Mod=Mod4    # Use the super key as the main modifier
 Alt=Mod1    # Use Alt key when necessary
 
@@ -16,7 +16,10 @@ herbstclient keybind $Mod-Shift-q close
 # Main spawn shortcuts
 herbstclient keybind $Mod-Return       spawn termite # use your $TERMINAL with xterm as fallback
 herbstclient keybind $Mod-Shift-d      spawn rofi -show drun
-herbstclient keybind $Mod-Shift-Escape spawn termite -e htop
+herbstclient keybind $Mod-Shift-dead_greek spawn termite -e htop
+
+# Notifications
+herbstclient keybind $Mod-t       spawn notify-send "$($HOME/.bin/getdate)"
 
 # Change mode
 herbstclient keybind $Mod-Shift-e spawn sh "${modes_folder}/System.sh"
@@ -28,7 +31,7 @@ herbstclient keybind $Mod-n       spawn sh "${modes_folder}/Notify.sh"
 
 # Bind Media Keys
 
-#increase/decrease/mute sound volume
+# increase/decrease/mute sound volume
 herbstclient keybind XF86AudioRaiseVolume spawn pactl set-sink-volume 0 +5%
 herbstclient keybind XF86AudioLowerVolume spawn pactl set-sink-volume 0 -5%
 herbstclient keybind XF86AudioMute        spawn pactl set-sink-mute 0 toggle
@@ -42,12 +45,8 @@ herbstclient keybind XF86AudioNext spawn mpc -q next
 # Toggle touchpad
 herbstclient keybind $Mod-F6 spawn $HOME/.bin/toggle-touchpad.sh
 
-# basic movement
+# Basic movement
 # focusing clients
-herbstclient keybind $Mod-Left  focus left
-herbstclient keybind $Mod-Down  focus down
-herbstclient keybind $Mod-Up    focus up
-herbstclient keybind $Mod-Right focus right
 herbstclient keybind $Mod-h     focus left
 herbstclient keybind $Mod-j     focus down
 herbstclient keybind $Mod-k     focus up
@@ -63,17 +62,10 @@ herbstclient keybind $Mod-Shift-j     shift down
 herbstclient keybind $Mod-Shift-k     shift up
 herbstclient keybind $Mod-Shift-l     shift right
 
-# splitting frames
-# create an empty frame at the specified direction
-herbstclient keybind $Mod-u       split   bottom  0.5
-herbstclient keybind $Mod-o       split   right   0.5
-
 herbstclient keybind $Mod-Control-h       split   left    0.5
 herbstclient keybind $Mod-Control-j       split   bottom  0.5
 herbstclient keybind $Mod-Control-k       split   top     0.5
 herbstclient keybind $Mod-Control-l       split   right   0.5
-# let the current frame explode into subframes
-herbstclient keybind $Mod-e split explode
 
 # resizing frames
 resizestep=0.05
@@ -104,15 +96,30 @@ for i in ${!tag_names[@]} ; do
     fi
 done
 
-# cycle through tags
-herbstclient keybind $Mod-period use_index +1 --skip-visible
-herbstclient keybind $Mod-comma  use_index -1 --skip-visible
+# Cycle through tags
+herbstclient keybind $Mod-period  use_index +1 --skip-visible
+herbstclient keybind $Mod-comma   use_index -1 --skip-visible
+
+# splitting frames
+# create an empty frame at the specified direction
+herbstclient keybind $Mod-u         split   bottom  0.5
+herbstclient keybind $Mod-o         split   right   0.5
+herbstclient keybind $Mod-e         split   explode
+
+herbstclient keybind $Mod-Left      split   left    0.5
+herbstclient keybind $Mod-Down      split   bottom  0.5
+herbstclient keybind $Mod-Up        split   top     0.5
+herbstclient keybind $Mod-Right     split   right   0.5
+# let the current frame explode in  to subframes
+herbstclient keybind $Mod-Multi_key split   explode
+herbstclient keybind $Mod-End       remove
+# Remove frame
+herbstclient keybind $Mod-r       remove
 
 # layouting
-herbstclient keybind $Mod-r remove
-herbstclient keybind $Mod-s floating toggle
-herbstclient keybind $Mod-f fullscreen toggle
-herbstclient keybind $Mod-p pseudotile toggle
+herbstclient keybind $Mod-Shift-s floating toggle
+herbstclient keybind $Mod-f       fullscreen toggle
+herbstclient keybind $Mod-p       pseudotile toggle
 # The following cycles through the available layouts within a frame, but skips
 # layouts, if the layout change wouldn't affect the actual window positions.
 # I.e. if there are two windows within a frame, the grid layout is skipped.
@@ -121,12 +128,12 @@ herbstclient keybind $Mod-space                                                 
                      . cycle_layout +1 vertical horizontal max vertical grid    \
                , cycle_layout +1
 
-# focus
-herbstclient keybind $Mod-BackSpace   cycle_monitor
-herbstclient keybind $Mod-Tab         cycle_all +1
-herbstclient keybind $Mod-Shift-Tab   cycle_all -1
-herbstclient keybind $Mod-apostrophe  cycle +1
+# Focus
+herbstclient keybind $Mod-BackSpace         cycle_monitor
+herbstclient keybind $Mod-Tab               cycle_all +1
+herbstclient keybind $Mod-Shift-Tab         cycle_all -1
+herbstclient keybind $Mod-apostrophe        cycle +1
 herbstclient keybind $Mod-Shift-apostrophe  cycle -1
-herbstclient keybind $Mod-c cycle
-herbstclient keybind $Mod-Shift-c  cycle -1
-herbstclient keybind $Mod-i jumpto urgent
+herbstclient keybind $Mod-c                 cycle
+herbstclient keybind $Mod-Shift-c           cycle -1
+herbstclient keybind $Mod-i                 jumpto urgent
