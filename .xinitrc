@@ -62,14 +62,17 @@ xset b off
 # Change the cursor default icon
 xsetroot -cursor_name left_ptr
 
-# udiskie is a automount daemon
-udiskie &
-# Redshift uses location / time info to control screen temperature and brightness
-redshift &
 # Set Wallpaper to my beloved duck image
 # feh --bg-scale ~/Pictures/Wallpapers/duck.jpg &
 # Christmas version of my beloved duck image
 feh --bg-scale ~/Pictures/Wallpapers/xmas/duck_xmas.png
+
+# Start Compositor
+compton &
+# udiskie is a automount daemon
+udiskie &
+# Redshift uses location / time info to control screen temperature and brightness
+redshift &
 #Enable screen lock
 xautolock -time 10 -corners ----  -locker "i3lock -c '#000000'" &
 
