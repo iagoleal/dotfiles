@@ -66,6 +66,11 @@ sda      8:0    0 465.8G  0 disk
 	> Linux kernel only comes with read-only support for ntfs drivers.
 	> This allows `mount` to also have write capabilites.
 
+#### MTP file transfer
+* Android File Transfer
+    * `# pacman -S android-file-transfer`
+    * Mount MTP devices (with focus on android)
+
 ### Audio related
 * Alsa
 	* `# pacman -S alsa-utils`
