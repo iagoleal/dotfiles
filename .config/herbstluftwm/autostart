@@ -60,3 +60,7 @@ done
 # Features
 # Focus follow mouse
 hc set focus_follows_mouse 1
+
+# Little hack from the FAQ
+# Necessary to make vertical splitting the default on tag 1
+hc split vertical 0.5 ; hc remove

@@ -86,7 +86,7 @@ herbstclient keybind $Mod-$Alt-Down    resize down +$resizestep
 herbstclient keybind $Mod-$Alt-Up      resize up +$resizestep
 herbstclient keybind $Mod-$Alt-Right   resize right +$resizestep
 
-# tags
+# Tags
 tag_names=( {1..10} )
 tag_keys=( {1..9} 0 )
 
