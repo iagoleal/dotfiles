@@ -52,10 +52,10 @@ set writebackup
 """ Key bindings
 
 " <leader> key is comma
-let mapleader=','
+let mapleader="\<Space>"
 
 " Disable search highlighting (until next search)
-nnoremap <leader><ESC> :nohlsearch<CR>
+nnoremap <leader><Space> :nohlsearch<CR>
 " Highlight last inserted text
 nnoremap <leader>V '[v']
 " Select all text on file
@@ -68,8 +68,8 @@ nnoremap <leader>~ :s/\v\C<([A-ZÀ-Ý])([A-ZÀ-Ý]+)>/\u\1\L\2/g
 autocmd FileType haskell nnoremap <buffer> <leader>m :w<CR> :!runhaskell %<CR>
 
 " Toggle Color Highlight
-map <leader>cC :ColorToggle<CR>
-map <leader>cF :ColorSwapFgBg<CR>
+map <leader>cc :ColorToggle<CR>
+map <leader>cf :ColorSwapFgBg<CR>
 
 " Initialize vim-plug
 call plug#begin('~/.vim/bundle')
