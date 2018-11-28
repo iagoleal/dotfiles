@@ -1,0 +1,15 @@
+#!/bin/sh
+
+info=$(xrandr -q | grep '\bconnected\b')
+num_active=$( echo "$info" | wc -l)
+
+if [ $num_active -eq 1 ]; then
+    xrandr --auto
+    herbstclient detect_monitors
+else
+    xrandr --auto
+    primary=$(echo "$info" | grep '\bprimary\b' | awk '{ print $1 }')
+    other=$(echo "$info" | grep -v '\bprimary\b' | awk '{ print $1 }')
+    xrandr --output "$other" --left-of "$primary"
+    herbstclient detect_monitors
+fi
