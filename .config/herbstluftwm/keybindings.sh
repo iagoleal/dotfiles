@@ -19,7 +19,9 @@ herbstclient keybind $Mod-Shift-d      spawn rofi -show drun
 herbstclient keybind $Mod-Shift-dead_greek spawn termite -e htop
 
 # Notifications
+herbstclient keybind $Mod-q       spawn notify-send "$($HOME/.bin/getinfo)"
 herbstclient keybind $Mod-t       spawn notify-send "$($HOME/.bin/getdate)"
+
 
 # Change mode
 herbstclient keybind $Mod-Shift-e spawn sh "${modes_folder}/System.sh"
