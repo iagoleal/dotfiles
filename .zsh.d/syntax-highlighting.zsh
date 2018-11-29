@@ -1,9 +1,9 @@
 #---------------------------
 # Syntax highlighting
 #---------------------------
-if [[ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+if [[ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
     # Source the plugin file
-    source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+    source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
     # Use given highlighters
     ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern)
