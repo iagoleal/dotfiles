@@ -2,39 +2,90 @@
 
 ## Operational System: **Arch Linux**
 
-Everything is going to  be referenced by its _pacman_ package name.
+## Filesystem (on a 500GB HDD)
 
-#### Keyboard layout
-* `br-abnt2`
-* with some modifications, of course
-#### localtime
-
-
-### My filesystem (on a 500GB HDD). Got from `lsblk`
 ```
+> lsblk
 NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
 sda      8:0    0 465.8G  0 disk
 ├─sda1   8:1    0   512M  0 part /boot
 ├─sda2   8:2    0  97.7G  0 part /
 ├─sda3   8:3    0 348.1G  0 part /home
-└─sda4   8:4    0  19.5G  0 part SWAP
+└─sda4   8:4    0  19.5G  0 part [SWAP]
 ```
 
 ## Applications Overview
+
 | Action            | Program       |
 |-------------------|---------------|
+| Shell             | zsh           |
 | Window Manager    | herbstluftwm  |
 | Terminal Emulator | termite       |
 | App Launcher      | rofi          |
-| Text Editor       | nevim         |
+| Text Editor       | nvim          |
 | Browser           | firefox       |
-| File Manager      | ranger        |
+| File Manager      | pcmanfm       |
 | Music Player      | mpd + ncmpcpp |
 | Video Player      | mpv           |
 | Image Viewer      | feh           |
-| Pdf Viwer         | zathura       |
+| PDF   Viewer      | zathura       |
+
+
+## Keyboard layout
+
+* `br-abnt2`
+
+Over this layout, I am also using some custom modifications on
+`xkb` and `xmodmap`.
+
+My main options are:
+
+* `Capslock` key acts as `Escape`
+* Swap `Left Control` and `Left Alt` keys
+* `Menu` key acts as `Compose`
+* Classic `Control-Alt-Backspace` command to kill X
+* `Escape` and `AltGr-g` act as `dead_greek`
+
+Command used to set layout:
+
+```
+setxkbmap -layout br \
+    -option "caps:escape" \
+    -option "ctrl:swap_lalt_lctl" \
+    -option "compose:menu" \
+    -option "terminate:ctrl_alt_bksp";
+xmodmap ~/.Xmodmap
+```
+
+#### Why a Greek key?
+As a mathematician,
+a great amount of my time on the computer is spent writing in Latex.
+Besides that, I also program a lot in Julia,
+a language with full Unicode support.
+With this in mind and having heard all the legends
+about the Space-cadet keyboard
+from the golden age of the Lisp machines
+(not an emacs user, I swear!),
+I decided to try and see how much my Greek would speed up.
+
+A simple
+`cat '/usr/share/X11/locale/en_US.UTF-8/Compose' | grep 'greek'`
+shows that the xkb system already comes with an interface to handle a Greek dead key.
+From that, a simple remapping allows me to save a few keystrokes
+when writing any text full of Greek characters.
+It also requires a few Latex packages to handle the Unicode input,
+but it is well worth it.
+
+A dead key to directly input special map symbols,
+mirroring the `Top` key on the old Space-cadet,
+would also be really nice.
+But, as there is no preconfigured default,
+I still need to find the time to edit the `xkb` files.
+
 
 ## Packages
+
+Everything is going to  be referenced by its _pacman_ package name.
 
 * base and base-devel packages
 	* `# pacman -S base base-devel`
@@ -159,7 +210,6 @@ sda      8:0    0 465.8G  0 disk
 * Htop
 	* `# pacman -S htop`
 	* A great process and memory usage viewer
-	* mapped to `Shift+Esc`
 	* Substitute for `top`
 
 #### Text editors
@@ -167,7 +217,7 @@ sda      8:0    0 465.8G  0 disk
 	* `# pacman -S neovim`
 	* everyone must take a side someday
 	* Vim plugs are on `.vimrc`
-	* `alias vi=vim`
+	* `alias vi=nvim`
 
 #### Media Players
 
@@ -337,6 +387,10 @@ sda      8:0    0 465.8G  0 disk
 * Pinta
 	* `# pacman -S pinta`
 	* A simple image editor. Extremely simpler than gimp
+
+* Gimp
+	* `# pacman -S gimp`
+	* A not so simple image editor. Someday, I should learn how to properly use it
 
 
 #### Screenshooter
