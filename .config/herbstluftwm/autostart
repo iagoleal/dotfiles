@@ -20,9 +20,9 @@ source ~/.config/herbstluftwm/keybindings.sh
 
 # mousebinds
 hc mouseunbind --all
-hc mousebind $Mod-Button1 move
-hc mousebind $Mod-Button2 zoom
-hc mousebind $Mod-Button3 resize
+hc mousebind Mod4-Button1 move
+hc mousebind Mod4-Button2 zoom
+hc mousebind Mod4-Button3 resize
 
 # theme
 source ~/.config/herbstluftwm/theme.sh

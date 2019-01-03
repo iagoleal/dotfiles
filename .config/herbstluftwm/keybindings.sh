@@ -6,29 +6,31 @@ modes_folder="${HOME}/.config/herbstluftwm/modes"
 herbstclient keyunbind --all
 
 # Keybindings
-Mod=Mod4    # Use the super key as the main modifier
+Super=Mod4    # Use the super key as the main modifier
 Alt=Mod1    # Use Alt key when necessary
 
 #System-wide important stuff
-herbstclient keybind $Mod-Shift-r reload
-herbstclient keybind $Mod-Shift-q close
+herbstclient keybind $Super-Shift-r reload
+herbstclient keybind $Super-Shift-q close
 
 # Main spawn shortcuts
-herbstclient keybind $Mod-Return       spawn termite # use your $TERMINAL with xterm as fallback
-herbstclient keybind $Mod-Shift-d      spawn rofi -show drun
-herbstclient keybind $Mod-Shift-dead_greek spawn termite -e htop
+herbstclient keybind $Super-Return       spawn termite # use your $TERMINAL with xterm as fallback
+herbstclient keybind $Super-Shift-d      spawn rofi -show drun
+herbstclient keybind $Super-Shift-dead_greek spawn termite -e htop
+herbstclient keybind $Super-b            spawn "$HOME/.bin/book_finder"
+
 
 # Notifications
-herbstclient keybind $Mod-q       spawn notify-send "$($HOME/.bin/getinfo)"
-herbstclient keybind $Mod-t       spawn notify-send "$($HOME/.bin/getdate)"
-
+herbstclient keybind $Super-q       spawn "$HOME/.bin/notify_script" "-s" "$HOME/.bin/getinfo"
+herbstclient keybind $Super-t       spawn "$HOME/.bin/notify_script" "-s" "$HOME/.bin/getdate"
+herbstclient keybind $Super-m       spawn "$HOME/.bin/notify_script" "-s" "$HOME/.bin/getmpdstatus"
 
 # Change mode
-herbstclient keybind $Mod-Shift-e spawn sh "${modes_folder}/System.sh"
-herbstclient keybind $Mod-d       spawn sh "${modes_folder}/Launcher.sh"
-herbstclient keybind $Mod-Shift-g spawn bash "${modes_folder}/Gaps.sh"
-herbstclient keybind Print        spawn sh "${modes_folder}/Printscreen.sh"
-herbstclient keybind $Mod-n       spawn sh "${modes_folder}/Notify.sh"
+herbstclient keybind $Super-Shift-e spawn sh "${modes_folder}/System.sh"
+herbstclient keybind $Super-d       spawn sh "${modes_folder}/Launcher.sh"
+herbstclient keybind $Super-Shift-g spawn bash "${modes_folder}/Gaps.sh"
+herbstclient keybind Print          spawn sh "${modes_folder}/Printscreen.sh"
+herbstclient keybind $Super-n       spawn sh "${modes_folder}/Notify.sh"
 
 
 # Bind Media Keys
@@ -45,40 +47,40 @@ herbstclient keybind XF86AudioPrev spawn mpc -q prev
 herbstclient keybind XF86AudioNext spawn mpc -q next
 
 # Toggle touchpad
-herbstclient keybind $Mod-F6 spawn $HOME/.bin/toggle-touchpad.sh
+herbstclient keybind $Super-F6 spawn $HOME/.bin/toggle-touchpad.sh
 
 # Basic movement
 # focusing clients
-herbstclient keybind $Mod-h     focus left
-herbstclient keybind $Mod-j     focus down
-herbstclient keybind $Mod-k     focus up
-herbstclient keybind $Mod-l     focus right
+herbstclient keybind $Super-h     focus left
+herbstclient keybind $Super-j     focus down
+herbstclient keybind $Super-k     focus up
+herbstclient keybind $Super-l     focus right
 
 # moving clients
-herbstclient keybind $Mod-Shift-Left  shift left
-herbstclient keybind $Mod-Shift-Down  shift down
-herbstclient keybind $Mod-Shift-Up    shift up
-herbstclient keybind $Mod-Shift-Right shift right
-herbstclient keybind $Mod-Shift-h     shift left
-herbstclient keybind $Mod-Shift-j     shift down
-herbstclient keybind $Mod-Shift-k     shift up
-herbstclient keybind $Mod-Shift-l     shift right
+herbstclient keybind $Super-Shift-Left  shift left
+herbstclient keybind $Super-Shift-Down  shift down
+herbstclient keybind $Super-Shift-Up    shift up
+herbstclient keybind $Super-Shift-Right shift right
+herbstclient keybind $Super-Shift-h     shift left
+herbstclient keybind $Super-Shift-j     shift down
+herbstclient keybind $Super-Shift-k     shift up
+herbstclient keybind $Super-Shift-l     shift right
 
-herbstclient keybind $Mod-Control-h       split   left    0.5
-herbstclient keybind $Mod-Control-j       split   bottom  0.5
-herbstclient keybind $Mod-Control-k       split   top     0.5
-herbstclient keybind $Mod-Control-l       split   right   0.5
+herbstclient keybind $Super-Control-h       split   left    0.5
+herbstclient keybind $Super-Control-j       split   bottom  0.5
+herbstclient keybind $Super-Control-k       split   top     0.5
+herbstclient keybind $Super-Control-l       split   right   0.5
 
 # resizing frames
 resizestep=0.05
-herbstclient keybind $Mod-$Alt-h       resize left +$resizestep
-herbstclient keybind $Mod-$Alt-j       resize down +$resizestep
-herbstclient keybind $Mod-$Alt-k       resize up +$resizestep
-herbstclient keybind $Mod-$Alt-l       resize right +$resizestep
-herbstclient keybind $Mod-$Alt-Left    resize left +$resizestep
-herbstclient keybind $Mod-$Alt-Down    resize down +$resizestep
-herbstclient keybind $Mod-$Alt-Up      resize up +$resizestep
-herbstclient keybind $Mod-$Alt-Right   resize right +$resizestep
+herbstclient keybind $Super-$Alt-h       resize left +$resizestep
+herbstclient keybind $Super-$Alt-j       resize down +$resizestep
+herbstclient keybind $Super-$Alt-k       resize up +$resizestep
+herbstclient keybind $Super-$Alt-l       resize right +$resizestep
+herbstclient keybind $Super-$Alt-Left    resize left +$resizestep
+herbstclient keybind $Super-$Alt-Down    resize down +$resizestep
+herbstclient keybind $Super-$Alt-Up      resize up +$resizestep
+herbstclient keybind $Super-$Alt-Right   resize right +$resizestep
 
 # Tags
 tag_names=( {1..10} )
@@ -90,52 +92,52 @@ for i in ${!tag_names[@]} ; do
     key="${tag_keys[$i]}"
     if ! [ -z "$key" ] ; then
         # Go to tag i
-        herbstclient keybind "$Mod-$key" use_index "$i"
+        herbstclient keybind "$Super-$key" use_index "$i"
         # Move focused window to tag i
-        herbstclient keybind "$Mod-$Alt-$key" move_index "$i"
+        herbstclient keybind "$Super-$Alt-$key" move_index "$i"
         # Move focused window and go to tag i
-        herbstclient keybind "$Mod-Shift-$key" chain , move_index "$i" , use_index "$i"
+        herbstclient keybind "$Super-Shift-$key" chain , move_index "$i" , use_index "$i"
     fi
 done
 
 # Cycle through tags
-herbstclient keybind $Mod-period  use_index +1 --skip-visible
-herbstclient keybind $Mod-comma   use_index -1 --skip-visible
+herbstclient keybind $Super-period  use_index +1 --skip-visible
+herbstclient keybind $Super-comma   use_index -1 --skip-visible
 
 # splitting frames
 # create an empty frame at the specified direction
-herbstclient keybind $Mod-u         split   bottom  0.5
-herbstclient keybind $Mod-o         split   right   0.5
-herbstclient keybind $Mod-e         split   explode
+herbstclient keybind $Super-u         split   bottom  0.5
+herbstclient keybind $Super-o         split   right   0.5
+herbstclient keybind $Super-e         split   explode
 
-herbstclient keybind $Mod-Left      split   left    0.5
-herbstclient keybind $Mod-Down      split   bottom  0.5
-herbstclient keybind $Mod-Up        split   top     0.5
-herbstclient keybind $Mod-Right     split   right   0.5
+herbstclient keybind $Super-Left      split   left    0.5
+herbstclient keybind $Super-Down      split   bottom  0.5
+herbstclient keybind $Super-Up        split   top     0.5
+herbstclient keybind $Super-Right     split   right   0.5
 # let the current frame explode in  to subframes
-herbstclient keybind $Mod-Multi_key split   explode
-herbstclient keybind $Mod-End       remove
+herbstclient keybind $Super-Multi_key split   explode
+herbstclient keybind $Super-End       remove
 # Remove frame
-herbstclient keybind $Mod-r       remove
+herbstclient keybind $Super-r       remove
 
 # layouting
-herbstclient keybind $Mod-Shift-s floating toggle
-herbstclient keybind $Mod-f       fullscreen toggle
-herbstclient keybind $Mod-p       pseudotile toggle
+herbstclient keybind $Super-Shift-f floating toggle
+herbstclient keybind $Super-f       fullscreen toggle
+herbstclient keybind $Super-p       pseudotile toggle
 # The following cycles through the available layouts within a frame, but skips
 # layouts, if the layout change wouldn't affect the actual window positions.
 # I.e. if there are two windows within a frame, the grid layout is skipped.
-herbstclient keybind $Mod-space                                                           \
+herbstclient keybind $Super-space                                                           \
             or , and . compare tags.focus.curframe_wcount = 2                   \
                      . cycle_layout +1 vertical horizontal max vertical grid    \
                , cycle_layout +1
 
 # Focus
-herbstclient keybind $Mod-BackSpace         cycle_monitor
-herbstclient keybind $Mod-Tab               cycle_all +1
-herbstclient keybind $Mod-Shift-Tab         cycle_all -1
-herbstclient keybind $Mod-apostrophe        cycle +1
-herbstclient keybind $Mod-Shift-apostrophe  cycle -1
-herbstclient keybind $Mod-c                 cycle
-herbstclient keybind $Mod-Shift-c           cycle -1
-herbstclient keybind $Mod-i                 jumpto urgent
+herbstclient keybind $Super-BackSpace         cycle_monitor
+herbstclient keybind $Super-Tab               cycle_all +1
+herbstclient keybind $Super-Shift-Tab         cycle_all -1
+herbstclient keybind $Super-apostrophe        cycle +1
+herbstclient keybind $Super-Shift-apostrophe  cycle -1
+herbstclient keybind $Super-c                 cycle
+herbstclient keybind $Super-Shift-c           cycle -1
+herbstclient keybind $Super-i                 jumpto urgent
