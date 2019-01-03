@@ -23,7 +23,7 @@
 ! Use Menu as dead key for greek characters
 ! keycode 135 = dead_greek
 
-! Use Menu as Compose Kry
+! Use Menu as Compose Key
 keycode 135 = Multi_key
 ! Use Escape as dead key for greek characters
 keycode 9 = dead_greek
