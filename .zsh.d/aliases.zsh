@@ -13,3 +13,5 @@ alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles-gitdir/ --work-tree=$HOME
 # Get weather information
 weather() { curl wttr.in/"$*"; }
 
+# Custom notification sender
+alias notify="$HOME/.bin/notifyme"
