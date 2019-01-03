@@ -25,6 +25,11 @@ if [[ -d $batdir ]]
     else
         batstatus = "ERROR"
 fi
+#------------------------
+# Screen Brightness
+#------------------------
+brightness=$(cat /sys/class/backlight/acpi_video1/brightness)
+max_brightness=$(cat /sys/class/backlight/acpi_video1/max_brightness)
 
 #------------------------
 # Temperature
@@ -50,7 +55,7 @@ mem_perc=$( awk '{perc=$1/$2*100; printf("%.1f", perc) }' <<<"$mem_used $mem_tot
 # Date and Time
 #------------------------
 day=$( date +'%Y.%m.%d')
-hour=$( date +'%H:%M' )
+hour=$(date +'%H:%M' )
 
 
-echo "$vol | ${batlevel}% | ${mem_perc}% | ${temp}°C | $day | $hour"
+echo "$vol | ${batlevel}% | ${mem_perc}% | ${temp}°C | $brightness/$max_brightness | $day | ${hour}"
