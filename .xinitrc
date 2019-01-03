@@ -74,7 +74,7 @@ udiskie &
 # Redshift uses location / time info to control screen temperature and brightness
 redshift &
 #Enable screen lock
-xautolock -time 10 -corners ----  -locker "i3lock -c '#000000'" &
+xautolock -time 10 -corners ----  -locker "i3lock -c '#000000' -e" &
 
 # exec i3
 # exec xmonad
