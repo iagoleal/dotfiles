@@ -31,13 +31,13 @@ fi
     setxkbmap -I $userxkbdir -layout $userxkblayout \
         -option "caps:escape" \
         -option "ctrl:swap_lalt_lctl" \
-        # -option "compose:menu" \
+        -option "compose:menu" \
         -option "terminate:ctrl_alt_bksp"
 
     # Enable sticky keys
-    xkbset sticky -twokey -latchlock
+    # xkbset sticky -twokey -latchlock
     # Disable expiration time for sticky keys and options
-    xkbset exp "=sticky" '=twokey' '=latchlock'
+    # xkbset exp "=sticky" '=twokey' '=latchlock'
 
 # else
 #     # Set keyboard layout to br-abnt2
