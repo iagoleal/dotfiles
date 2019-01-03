@@ -28,6 +28,8 @@ set wildmenu                 " visual menu for command autocompletion
 
 set showmatch                " highlight matching parentheses (useful as hell)
 
+set splitright               " Vertical split to the right (default is left)
+
 " Search settings
 set incsearch                " search as characters are entered
 set hlsearch                 " highlight matches
