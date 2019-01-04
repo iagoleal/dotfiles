@@ -1,0 +1,15 @@
+#!/bin/sh
+
+format () {
+    bg=green
+    fg=black
+    echo "<span color=\'$fg\' background=\'$bg\'>$1<\/span>"
+}
+
+# Get today's date
+today=$(date +%d)
+
+# return formatted text
+formatted=$( cal | sed "s/\(\b$today\b\)/$(format \\1)/")
+
+echo -e "$formatted"
