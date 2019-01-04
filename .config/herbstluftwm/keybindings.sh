@@ -21,14 +21,14 @@ herbstclient keybind $Super-b            spawn "$HOME/.bin/book_finder"
 
 
 # Notifications
-herbstclient keybind $Super-q       spawn "$HOME/.bin/notify_script" "-s" "$HOME/.bin/getinfo"
-herbstclient keybind $Super-t       spawn "$HOME/.bin/notify_script" "-s" "$HOME/.bin/getdate"
-herbstclient keybind $Super-m       spawn "$HOME/.bin/notify_script" "-s" "$HOME/.bin/getmpdstatus"
+herbstclient keybind $Super-q       spawn "$HOME/.bin/notify" "-s" "$HOME/.bin/getinfo"
+herbstclient keybind $Super-t       spawn "$HOME/.bin/notify" "-s" "$HOME/.bin/getdate"
+herbstclient keybind $Super-m       spawn "$HOME/.bin/notify" "-s" "$HOME/.bin/getmpdstatus"
 
 # Change mode
 herbstclient keybind $Super-Shift-e spawn sh "${modes_folder}/System.sh"
 herbstclient keybind $Super-d       spawn sh "${modes_folder}/Launcher.sh"
-herbstclient keybind $Super-Shift-g spawn bash "${modes_folder}/Gaps.sh"
+herbstclient keybind $Super-Shift-g spawn sh "${modes_folder}/Gaps.sh"
 herbstclient keybind Print          spawn sh "${modes_folder}/Printscreen.sh"
 herbstclient keybind $Super-n       spawn sh "${modes_folder}/Notify.sh"
 
@@ -36,9 +36,9 @@ herbstclient keybind $Super-n       spawn sh "${modes_folder}/Notify.sh"
 # Bind Media Keys
 
 # increase/decrease/mute sound volume
-herbstclient keybind XF86AudioRaiseVolume spawn pactl set-sink-volume 0 +5%
-herbstclient keybind XF86AudioLowerVolume spawn pactl set-sink-volume 0 -5%
-herbstclient keybind XF86AudioMute        spawn pactl set-sink-mute 0 toggle
+herbstclient keybind XF86AudioRaiseVolume spawn "$HOME/.bin/volctl" "raise"
+herbstclient keybind XF86AudioLowerVolume spawn "$HOME/.bin/volctl" "lower"
+herbstclient keybind XF86AudioMute        spawn "$HOME/.bin/volctl" "mute"
 
 # Media player controls
 herbstclient keybind XF86AudioPlay spawn mpc -q toggle

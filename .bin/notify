@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# -s : argument is script name
+
+
+while getopts s flag; do
+    case $flag in
+        s)
+            sflag=true
+            ;;
+        \?)
+            echo "Invalid option: -$OPTARG" >&2
+            exit -1
+            ;;
+    esac
+done
+# Remove flag arguments
+shift $((OPTIND-1))
+
+# Remove notifications daemon
+pkill dunst
+
+if [[ "$sflag" ]]; then
+    notify-send "$($@)"
+else
+    notify-send "$@"
+fi
+

@@ -1,0 +1,32 @@
+#!/bin/sh
+
+action=$( echo "$1" | tr '[:upper:]' '[:lower:]' )
+
+case "$action" in
+    "raise")
+        amixer set Master 5%+
+        ;;
+    "lower")
+        amixer set Master 5%-
+        ;;
+    "mute")
+        pactl set-sink-mute 0 toggle
+        # amixer set Master toggle
+        ;;
+esac
+
+read vol_info vol_ison <<< $(amixer sget Master | awk -F'[][]' 'NF > 1 { print $2, $6 }')
+# Check if volume is muted
+if [[ "$vol_ison" = 'on' ]]
+    then
+        vol_symb=🔊
+        vol_color='default'
+        vol="$vol_symb $vol_info"
+    else
+        vol_symb=🔇
+        vol_color='grey'
+        vol="<span color='$vol_color'>$vol_symb $vol_info</span>"
+fi
+
+# Trigger a notification with sound info
+"$HOME/.bin/notify" "$vol"
