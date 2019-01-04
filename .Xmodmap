@@ -28,7 +28,11 @@ keycode 135 = Multi_key
 ! Use Escape as dead key for greek characters
 keycode 9 = dead_greek
 
-! Greek key on g
+! AltGr-minus <- Macron dead key
+keycode 20 = minus underscore minus underscore dead_macron questiondown backslash questiondown minus underscore backslash questiondown minus underscore backslash questiondown
+! AltGr-o <- oe (Œ)
+keycode 32 = o O o O oe OE oslash Oslash o O oslash Oslash o O oslash Oslash
+! AltGr-g <- Greek dead key
 keycode 42 = g G g G dead_greek dead_greek eng
-! Ccedilha on c
+! AltGr-c <- ccedilha (ç)
 keycode 54 = c C c C ccedilla Ccedilla copyright copyright c C copyright copyright
