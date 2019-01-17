@@ -1,0 +1,25 @@
+#!/bin/sh
+alias locker='i3lock -c "#000000"'
+
+case $1 in
+    "lock")
+        locker
+        ;;
+    "suspend")
+        locker && systemctl suspend
+        ;;
+    "logout")
+        herbstclient quit
+        ;;
+    "hibernate")
+        locker && systemctl hibernate
+        ;;
+    "reboot")
+        systemctl reboot
+        ;;
+    "poweroff")
+        systemctl poweroff -i
+        ;;
+    *)
+        exit 1
+esac
