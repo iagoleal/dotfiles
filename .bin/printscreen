@@ -1,0 +1,35 @@
+#!/bin/sh
+
+screenshotsFolder="$HOME/Pictures/Screenshots"
+
+while getopts cwf flag; do
+    case $flag in
+        w)
+            cbflag=true
+            ;;
+        c)
+            cropflag=true
+            ;;
+        f)
+            screenshotsFolder=$OPTARG
+            ;;
+        \?)
+            echo "Invalid option: -$OPTARG" >&2
+            exit -1
+            ;;
+    esac
+done
+
+# Remove flag arguments
+shift $((OPTIND-1))
+
+if [ "$cropflag" -a "$cbflag" ]; then
+    import png:- | xclip -selection c -t image/png
+elif [ "$cropflag" ]; then
+    import "$screenshotsFolder/$(date +%Y-%m-%d_%H:%M:%S)_cropped.png"
+elif [ "$cbflag" ]; then
+    import -window root  png:- | xclip -selection c -t image/png
+else
+    import -window root "$screenshotsFolder/$(date +%Y-%m-%d_%H:%M:%S).png"
+fi
+
