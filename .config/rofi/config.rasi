@@ -10,13 +10,12 @@ configuration {
 
 	// Appearence
 	display-combi: "";
-	display-drun: ">";
-	show-icons: true;
-	sidebar-mode: false;
-	theme: "material";
+	display-drun: "> ";
+	theme: "rofi_full";
+    fullscreen: true;
 
 	//Keyboard shortcuts
-	kb-cancel: "Escape,Super_L+d"; //rofi closes if you press 'Super+d' (windows key) or 'Esc'		
+	kb-cancel: "Escape";
 }
 
 /*	modi: "window,run, ssh"; */
