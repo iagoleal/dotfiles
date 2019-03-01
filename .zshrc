@@ -26,15 +26,12 @@ zle -N down-line-or-beginning-search
 [[ -n "$key[Up]"   ]] && bindkey -- "$key[Up]"   up-line-or-beginning-search
 [[ -n "$key[Down]" ]] && bindkey -- "$key[Down]" down-line-or-beginning-search
 
-
-
 #----------------------------
 # Autocompletion
 #----------------------------
 # zstyle :compinstall filename '/home/iagoleal/.zshrc'
 autoload -Uz compinit
 compinit
-
 
 #----------------------------
 # Enable prompt theme system
@@ -45,9 +42,13 @@ promptinit
 #----------------------------
 # Environment variables
 #----------------------------
-export EDITOR="vi -e"
+export EDITOR="nvim -e"
 export VISUAL="nvim"
 export TERMINAL="termite"
+
+# Append ~/.bin folder to PATH variable
+path+=("$HOME/.bin")
+export PATH
 
 #----------------------------
 # Source additional configs

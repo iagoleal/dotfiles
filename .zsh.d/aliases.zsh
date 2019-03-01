@@ -8,10 +8,18 @@ alias view="nvim -R"
 alias hc=herbstclient
 
 # Git command to manage dotfiles
-alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles-gitdir/ --work-tree=$HOME'
+alias dotfiles='git --git-dir=$HOME/.dotfiles-gitdir/ --work-tree=$HOME'
 
 # Get weather information
-weather() { curl wttr.in/"$*"; }
+function weather { curl wttr.in/"$*"; }
+
+# Open pdf or ebook files
+function zth { zathura "$@" &}
 
 # Custom notification sender
 alias notify="$HOME/.bin/notify"
+
+# Run mpc with mopidy
+port=6601
+alias mpcy="mpc -p ${port}"
+alias ncmpcppy="ncmpcpp -p ${port}"
