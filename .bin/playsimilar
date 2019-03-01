@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# Based on:
+# https://www.reddit.com/r/archlinux/comments/auexo6/i_see_many_people_in_arch_prefer_mopidympc_and/
+
+# This code gets a string,
+# queries tunebat for songs related to it
+# and creates a playlist on mopidy with them
+
+# Start mopidy if it is not running
+if ! [ "$(pidof -x mopidy)" ]; then
+    $HOME/bin/notify "Mopidy process not found. Setting it up..."
+    mopidy &!
+fi
+
+# Test if alias mpcy already exists on system
+if ! [ -x "$(command -v mpcy)" ]; then
+    # Query for mpd port on mopidy
+    port=$(mopidy config | sed -n '/^[ \t]*\[mpd\]/,/\[/s/^[ \t]*port[ \t]*=[ \t]*//p')
+    alias mpcy="mpc -p ${port}"
+fi
+
+function findsong {
+    args="$@"
+    lynx --dump "https://tunebat.com/Search?q=$@" | grep ' 6. https' | cut -d" " -f5
+}
+
+function findrelated {
+    song=$(findsong "$@")
+    # lynx --dump "${song}" | grep 'open.spotify' | cut -f3 -d' ' | grep 'spotify' | awk '!a[$0]++'
+    lynx --dump "$(findsong $@)" | grep 'open.spotify' | sed 's/.*\.\ //g' | uniq
+}
+
+function reformatsong {
+    echo "$@" | sed 's/https:\/\/open.spotify.com\//spotify:/g' | sed 's/\//:/g'
+}
+
+function findsimilar {
+    songs=$(findrelated "$@")
+    mpcy -q stop
+    mpcy -q clear
+    for song in $songs; do
+        mpcy -q add $(reformatsong "$song")
+    done
+}
+
+a="$@"
+if ! [ -z "$a" ]; then
+    # notify-send "$a"
+    # Substitute spaces in input string for +'s
+    findsimilar "${a// /+}"
+    mpc  -q stop
+    mpcy -q play
+    $HOME/.bin/notify "$(mpcy status)"
+fi

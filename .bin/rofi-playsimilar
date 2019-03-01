@@ -1,0 +1,8 @@
+#!/bin/sh
+
+song="$(rofi -dmenu -p '♫ ')"
+exit_code="$?"
+
+if [ $exit_code == 0 ]; then
+    $HOME/.bin/playsimilar "$song"
+fi
