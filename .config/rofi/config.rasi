@@ -1,21 +1,22 @@
-// bindsym $mod+d exec rofi -show run -terminal urxvt -lines 3 -eh 2 -width    100 -padding 800 -opacity "95" -bw 0 -bc "#032c36" -bg "#032c36" -fg "#   065f73" -hlbg "#032c36" -hlfg "a2d9b1"
-
 configuration {
-	// Usability
-	modi: "window,drun,run";
-	//,calc:qalc -u8";// combi-modi: "window,drun";
-	// Search parameters
-	matching: "fuzzy"; //Allows fuzzy search
-	case-sensitive: false; //Search disconsiders case
+    // Usability
+    modi: "drun";
+    // Search parameters
+    matching: "fuzzy"; //Allows fuzzy search
+    case-sensitive: false; //Search disconsiders case
 
-	// Appearence
-	display-combi: "";
-	display-drun: "> ";
-	theme: "rofi_full";
+    // Appearence
+    display-combi: "";
+    display-drun: "> ";
+    /* display-window: "🗔 "; */
+    /* display-window: "䆫 "; */
+    display-window: "🗗 ";
+
+    theme: "rofi_full";
     fullscreen: true;
 
-	//Keyboard shortcuts
-	kb-cancel: "Escape";
+    //Keyboard shortcuts
+    kb-cancel: "Escape";
 }
 
 /*	modi: "window,run, ssh"; */
