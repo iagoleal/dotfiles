@@ -14,16 +14,19 @@ herbstclient keybind $Super-Shift-r reload
 herbstclient keybind $Super-Shift-q close
 
 # Main spawn shortcuts
-herbstclient keybind $Super-Return       spawn termite # use your $TERMINAL with xterm as fallback
-herbstclient keybind $Super-Shift-d      spawn rofi -show drun
+herbstclient keybind $Super-Return           spawn termite
 herbstclient keybind $Super-Shift-dead_greek spawn termite -e htop
-herbstclient keybind $Super-b            spawn "$HOME/.bin/book_finder"
+
+herbstclient keybind $Super-Shift-d          spawn rofi -show drun
+herbstclient keybind $Super-Shift-w          spawn rofi -show window
+herbstclient keybind $Super-m                spawn "$HOME/.bin/rofi-playsimilar"
+herbstclient keybind $Super-XF86AudioPlay    spawn "$HOME/.bin/rofi-playsimilar"
+herbstclient keybind $Super-b                spawn "$HOME/.bin/book-finder"
 
 
 # Notifications
 herbstclient keybind $Super-q       spawn "$HOME/.bin/notify" "-s" "$HOME/.bin/getinfo"
 herbstclient keybind $Super-t       spawn "$HOME/.bin/notify" "-s" "$HOME/.bin/getdate"
-herbstclient keybind $Super-m       spawn "$HOME/.bin/notify" "-s" "$HOME/.bin/getmpdstatus"
 
 # Change mode
 herbstclient keybind $Super-Shift-e spawn sh "${modes_folder}/System.sh"
@@ -57,10 +60,6 @@ herbstclient keybind $Super-k     focus up
 herbstclient keybind $Super-l     focus right
 
 # moving clients
-herbstclient keybind $Super-Shift-Left  shift left
-herbstclient keybind $Super-Shift-Down  shift down
-herbstclient keybind $Super-Shift-Up    shift up
-herbstclient keybind $Super-Shift-Right shift right
 herbstclient keybind $Super-Shift-h     shift left
 herbstclient keybind $Super-Shift-j     shift down
 herbstclient keybind $Super-Shift-k     shift up
@@ -77,10 +76,6 @@ herbstclient keybind $Super-$Alt-h       resize left +$resizestep
 herbstclient keybind $Super-$Alt-j       resize down +$resizestep
 herbstclient keybind $Super-$Alt-k       resize up +$resizestep
 herbstclient keybind $Super-$Alt-l       resize right +$resizestep
-herbstclient keybind $Super-$Alt-Left    resize left +$resizestep
-herbstclient keybind $Super-$Alt-Down    resize down +$resizestep
-herbstclient keybind $Super-$Alt-Up      resize up +$resizestep
-herbstclient keybind $Super-$Alt-Right   resize right +$resizestep
 
 # Tags
 tag_names=( {1..10} )
@@ -141,3 +136,7 @@ herbstclient keybind $Super-Shift-apostrophe  cycle -1
 herbstclient keybind $Super-c                 cycle
 herbstclient keybind $Super-Shift-c           cycle -1
 herbstclient keybind $Super-i                 jumpto urgent
+
+# Gaps
+herbstclient keybind $Super-g       cycle_value window_gap 0 5 10 15 20 25 30 35 40 75 100 200
+herbstclient keybind $Super-Shift-g cycle_value frame_gap 0 5 10 15 20 25 30 35 40 75 100 200
