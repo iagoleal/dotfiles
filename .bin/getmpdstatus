@@ -1,0 +1,5 @@
+#!/bin/sh
+
+status=$(mpc -p $1 status)
+
+echo "${status}"

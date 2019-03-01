@@ -1,5 +1,5 @@
 #!/bin/sh
-alias locker='i3lock -c "#000000"'
+alias locker='mpc pause; mpc -p 6601 pause; i3lock -c "#000000"'
 
 case $1 in
     "lock")

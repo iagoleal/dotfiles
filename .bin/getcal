@@ -7,7 +7,7 @@ format () {
 }
 
 # Get today's date
-today=$(date +%d)
+today=$(date +%-d)
 
 # return formatted text
 formatted=$( cal | sed "s/\(\b$today\b\)/$(format \\1)/")

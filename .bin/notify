@@ -1,16 +1,12 @@
 #!/bin/sh
 
 # -s : argument is script name
-
+# If given, pipes result of script instead of plain text
 
 while getopts s flag; do
     case $flag in
         s)
             sflag=true
-            ;;
-        \?)
-            echo "Invalid option: -$OPTARG" >&2
-            exit -1
             ;;
     esac
 done
@@ -25,4 +21,3 @@ if [[ "$sflag" ]]; then
 else
     notify-send "$@"
 fi
-
