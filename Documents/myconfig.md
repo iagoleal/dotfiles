@@ -179,6 +179,10 @@ Everything is going to  be referenced by its _pacman_ package name.
 		* At first, I only have these three
 		* _cvxpy_ is installed from **pip**, not **aur**. Maybe I should change that.
 
+#### Lua
+* Lua
+	* `# pacman -S lua`
+
 * Pip
 	* `# pacman -S python-pip`
 	* yeah really
