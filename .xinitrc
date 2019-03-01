@@ -63,9 +63,9 @@ xset b off
 xsetroot -cursor_name left_ptr
 
 # Set Wallpaper to my beloved duck image
-# feh --bg-scale ~/Pictures/Wallpapers/duck.jpg &
+feh --bg-scale ~/Pictures/Wallpapers/duck.jpg &
 # Christmas version of my beloved duck image
-feh --bg-scale ~/Pictures/Wallpapers/xmas/duck_xmas.png
+# feh --bg-scale ~/Pictures/Wallpapers/xmas/duck_xmas.png
 
 # Start Compositor
 compton &
