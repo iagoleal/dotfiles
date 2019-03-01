@@ -76,7 +76,7 @@ map <leader>cf :ColorSwapFgBg<CR>
 " Initialize vim-plug
 call plug#begin('~/.vim/bundle')
 
-" Better statusbar
+" Beautifuler statusbar
 Plug 'itchyny/lightline.vim'
 
 " Search highlighted text
@@ -85,6 +85,9 @@ Plug 'nelstrom/vim-visual-star-search'
 " Toggle commentary
 " gcc for a line / gc + motion for target
 Plug 'tpope/vim-commentary'
+
+" Edit surrounding objects
+Plug 'tpope/vim-surround'
 
 " Show colors from code
 Plug 'chrisbra/Colorizer', {'on': 'ColorToggle'}
