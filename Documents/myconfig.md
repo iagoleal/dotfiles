@@ -155,14 +155,6 @@ Everything is going to  be referenced by its _pacman_ package name.
 
 ### The Programming side
 
-#### Notebooks
-* Jupyter Notebook
-	* `# pacman -S jupyter-notebook`
-
-#### Julia
-* Julia
-	* `# pacman -S julia`
-
 #### Haskell
 * GHC compiler
 	* `# pacman -S ghc`
@@ -173,15 +165,15 @@ Everything is going to  be referenced by its _pacman_ package name.
 		* A search tool for haskell functions, types, etc.
 		* Should run `hoogle generate` after installation
 
+#### Julia
+* Julia
+	* `# pacman -S julia`
+
 #### Python
 * The Scipy connundrum
 	* `# pacman -S python-numpy python-scipy python-matplotlib`
 		* At first, I only have these three
 		* _cvxpy_ is installed from **pip**, not **aur**. Maybe I should change that.
-
-#### Lua
-* Lua
-	* `# pacman -S lua`
 
 * Pip
 	* `# pacman -S python-pip`
@@ -191,24 +183,25 @@ Everything is going to  be referenced by its _pacman_ package name.
 	* `pip install cvxpy`
 	* maybe I should change to **aur**...
 
+#### Lua
+* Lua
+	* `# pacman -S lua`
+
+#### Notebooks
+* Jupyter Notebook
+	* `# pacman -S jupyter-notebook`
+
 #### LaTeX
 * Texlive
 	* `# pacman -S texlive-most texlive-lang`
 	* Everything. When it comes to latex, it's better to have *everything* installed.
 
-#### Writing Music
+#### Typesetting Music
 * LilyPond
 	* `community/lilypond`
 	* software for score writing
 
 ### The CLI side
-
-* Tmux
-	* `# pacman -S tmux`
-	* Terminal multiplexer.
-	* Allows me to split screens and run processes as server
-	* Kinda unused after installing _i3_.
-	* I'm thinking about removing it, but let's see.
 
 #### Process Manager
 * Htop
