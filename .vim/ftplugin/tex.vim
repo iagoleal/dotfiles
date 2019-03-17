@@ -1,6 +1,5 @@
 " When in a .tex document,
 " map greek letters to tex equivalent
-
 imap α \alpha
 imap β \beta
 imap γ \gamma
@@ -36,3 +35,35 @@ imap Ψ \Psi
 imap ω \omega
 imap Ω \Omega
 
+" Some useful unicode math symbols
+imap ≥ \geq
+imap ≤ \leq
+imap ≠ \neq
+imap ∞ \infty
+imap √ \sqrt
+imap ∫ \int
+imap ∂ \partial
+" U2207
+imap ∇ \nabla
+
+" Sets
+imap ∅ \emptyset
+imap ⊂ \subset
+imap ⊃ \superset
+" U2208
+imap ∈ \in
+imap ∋ \ni
+" U2229
+imap ∩ \cap
+" U222A
+imap ∪ \cup
+" U22C2
+imap ⋂ \bigcap
+" U22C3
+imap ⋃ \bigcup
+
+
+" U2200
+imap ∀ \forall
+" U2203
+imap ∃ \exists

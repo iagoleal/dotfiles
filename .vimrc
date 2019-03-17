@@ -68,6 +68,8 @@ nnoremap <leader>~ :s/\v\C<([A-ZÀ-Ý])([A-ZÀ-Ý]+)>/\u\1\L\2/g
 "" Filetype-specific keymaps
 " Saves file and run haskell interpreter
 autocmd FileType haskell nnoremap <buffer> <leader>m :w<CR> :!runhaskell %<CR>
+" Saves file and run python interpreter
+autocmd FileType python nnoremap <buffer> <leader>m :w<CR> :!python %<CR>
 
 " Toggle Color Highlight
 map <leader>cc :ColorToggle<CR>
