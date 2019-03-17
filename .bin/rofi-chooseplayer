@@ -1,0 +1,19 @@
+#!/bin/sh
+
+player_file="$HOME/.config/herbstluftwm/player"
+
+# List of players to choose from
+# player_list="MPD\nMopidy\nSpotify\nMPV"
+player_list="$($HOME/.bin/musicctl -l)"
+
+# Get option from list
+player="$( echo -e "$player_list" | rofi -dmenu -no-custom -i -p '🎶 ' )"
+exit_code="$?"
+
+if [ $exit_code == 0 ]; then
+    # Put player name on file to later use
+    echo $player | tr '[:upper:]' '[:lower:]' > "$player_file"
+    herbstclient reload
+else
+    exit "$exit_code"
+fi

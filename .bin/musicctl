@@ -1,0 +1,94 @@
+#!/bin/bash
+
+#Deal with flags
+# -p : player to control
+# -l : list available players
+
+player=mpd
+
+while getopts p:l flag; do
+    case $flag in
+        p)
+            player=${OPTARG}
+            ;;
+        l)
+            echo -e "MPD\nMopidy\nSpotify\nMPV"
+            exit 0;
+    esac
+done
+
+# Remove flag arguments
+shift $((OPTIND-1))
+
+#-------------------------
+# MPD
+#-------------------------
+typeset -A mpc_cmd
+# toggle play / pause
+mpc_cmd[toggle]="mpc -p 6600 toggle"
+# next
+mpc_cmd[next]="mpc -p 6600 next"
+# previous
+mpc_cmd[prev]="mpc -p 6600 prev"
+# stop
+mpc_cmd[stop]="mpc -p 6600 stop"
+
+#-------------------------
+# Mopidy
+#-------------------------
+typeset -A mpcy_cmd
+# toggle play / pause
+mpcy_cmd[toggle]="mpc -p 6601 toggle"
+# next
+mpcy_cmd[next]="mpc -p 6601 next"
+# previous
+mpcy_cmd[prev]="mpc -p 6601 prev"
+# stop
+mpcy_cmd[stop]="mpc -p 6601 stop"
+
+#-------------------------
+# Spotify
+#-------------------------
+typeset -A spotify_cmd
+# toggle play / pause
+spotify_cmd[toggle]="dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
+# next
+spotify_cmd[next]="dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next"
+# previous
+spotify_cmd[prev]="dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous"
+# stop
+spotify_cmd[stop]="dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Stop"
+
+#-------------------------
+# MPV
+#-------------------------
+typeset -A mpv_cmd
+# toggle play / pause
+mpv_cmd[toggle]="xdotool key --window $(xdotool search --class mpv) p"
+# next
+mpv_cmd[next]="xdotool key --window $(xdotool search --class mpv) greater"
+# previous
+mpv_cmd[prev]="xdotool key --window $(xdotool search --class mpv) less"
+# stop
+mpv_cmd[stop]="xdotool key --window $(xdotool search --class mpv) q"
+
+case $player in
+    mpd)
+        typeset -n player_cmd="mpc_cmd"
+        ;;
+    mopidy)
+        typeset -n player_cmd="mpcy_cmd"
+        ;;
+    spotify)
+        typeset -n player_cmd="spotify_cmd"
+        ;;
+    mpv)
+        typeset -n player_cmd="mpv_cmd"
+        ;;
+    *)
+        >&2 echo -e "Error: Unkown player '${player}'.\nSupported options are: mpd, mopidy, spotify, mpv."
+        exit 1
+        ;;
+esac
+
+${player_cmd[$1]}
