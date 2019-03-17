@@ -1,13 +1,15 @@
 #!/bin/zsh
 
+# Folder with scripts to other modes
+config_folder="${HOME}/.config/herbstluftwm"
 modes_folder="${HOME}/.config/herbstluftwm/modes"
-
-# At start unbinding all keys
-herbstclient keyunbind --all
 
 # Keybindings
 Super=Mod4    # Use the super key as the main modifier
 Alt=Mod1    # Use Alt key when necessary
+
+# At start unbinding all keys
+herbstclient keyunbind --all
 
 #System-wide important stuff
 herbstclient keybind $Super-Shift-r reload
@@ -20,9 +22,8 @@ herbstclient keybind $Super-Shift-dead_greek spawn termite -e htop
 herbstclient keybind $Super-Shift-d          spawn rofi -show drun
 herbstclient keybind $Super-Shift-w          spawn rofi -show window
 herbstclient keybind $Super-m                spawn "$HOME/.bin/rofi-playsimilar"
-herbstclient keybind $Super-XF86AudioPlay    spawn "$HOME/.bin/rofi-playsimilar"
-herbstclient keybind $Super-b                spawn "$HOME/.bin/book-finder"
-
+herbstclient keybind $Super-XF86AudioPlay    spawn "$HOME/.bin/rofi-chooseplayer"
+herbstclient keybind $Super-b                spawn "$HOME/.bin/rofi-bookfinder"
 
 # Notifications
 herbstclient keybind $Super-q       spawn "$HOME/.bin/notify" "-s" "$HOME/.bin/getinfo"
@@ -35,7 +36,6 @@ herbstclient keybind $Super-Shift-g spawn sh "${modes_folder}/Gaps.sh"
 herbstclient keybind Print          spawn sh "${modes_folder}/Printscreen.sh"
 herbstclient keybind $Super-n       spawn sh "${modes_folder}/Notify.sh"
 
-
 # Bind Media Keys
 
 # increase/decrease/mute sound volume
@@ -44,10 +44,10 @@ herbstclient keybind XF86AudioLowerVolume spawn "$HOME/.bin/volctl" "lower"
 herbstclient keybind XF86AudioMute        spawn "$HOME/.bin/volctl" "mute"
 
 # Media player controls
-herbstclient keybind XF86AudioPlay spawn mpc -q toggle
-herbstclient keybind XF86AudioStop spawn mpc -q stop
-herbstclient keybind XF86AudioPrev spawn mpc -q prev
-herbstclient keybind XF86AudioNext spawn mpc -q next
+herbstclient keybind XF86AudioPlay spawn "$HOME/.bin/musicctl" "-p" "$(cat ${config_folder}/player)" "toggle"
+herbstclient keybind XF86AudioStop spawn "$HOME/.bin/musicctl" "-p" "$(cat ${config_folder}/player)" "stop"
+herbstclient keybind XF86AudioPrev spawn "$HOME/.bin/musicctl" "-p" "$(cat ${config_folder}/player)" "prev"
+herbstclient keybind XF86AudioNext spawn "$HOME/.bin/musicctl" "-p" "$(cat ${config_folder}/player)" "next"
 
 # Toggle touchpad
 herbstclient keybind $Super-F6 spawn $HOME/.bin/toggle-touchpad.sh
@@ -126,6 +126,10 @@ herbstclient keybind $Super-space                                               
             or , and . compare tags.focus.curframe_wcount = 2                   \
                      . cycle_layout +1 vertical horizontal max vertical grid    \
                , cycle_layout +1
+herbstclient keybind $Super-Shift-space                                                           \
+            or , and . compare tags.focus.curframe_wcount = 2                   \
+                     . cycle_layout -1 vertical horizontal max vertical grid    \
+               , cycle_layout -1
 
 # Focus
 herbstclient keybind $Super-BackSpace         cycle_monitor
