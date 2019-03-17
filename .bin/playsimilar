@@ -49,7 +49,7 @@ if ! [ -z "$a" ]; then
     # notify-send "$a"
     # Substitute spaces in input string for +'s
     findsimilar "${a// /+}"
-    mpc  -q stop
+    echo "mopidy" > $HOME/.config/herbstluftwm/player
     mpcy -q play
     $HOME/.bin/notify "$(mpcy status)"
 fi

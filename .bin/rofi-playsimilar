@@ -1,8 +1,25 @@
 #!/bin/sh
 
-song="$(rofi -dmenu -p '♫ ')"
+histfile="$HOME/.config/rofi/hists/playsimilar-history"
+histsize=30
+
+# Use tac to get histfile in reverse order
+songlist="$( cat ${histfile} )"
+song="$( rofi -dmenu -i -p '♫ ' -input $histfile )"
 exit_code="$?"
 
 if [ $exit_code == 0 ]; then
+    # Add search to history, removing non-unique entries
+    songlist=$( echo -e "${song}\n$( cat $histfile )" | awk '!a[$0]++' )
+    # If history size is greater than maximum, delete old entries
+    if [ "$( echo "$songlist" | wc -l )" -gt "$histsize" ]; then
+        songlist=$(echo "$songlist" | head -n "$histsize")
+    fi
+    # Print to file
+    echo "$songlist" > "$histfile"
+
+    # Make playlist
     $HOME/.bin/playsimilar "$song"
+else
+    exit "$exit_code"
 fi
