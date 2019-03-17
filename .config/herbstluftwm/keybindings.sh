@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 
 # Folder with scripts to other modes
 config_folder="${HOME}/.config/herbstluftwm"
@@ -79,12 +79,13 @@ herbstclient keybind $Super-$Alt-k       resize up +$resizestep
 herbstclient keybind $Super-$Alt-l       resize right +$resizestep
 
 # Tags
-tag_names=( {1..10} )
+# get tag names from client
+tags_raw="$(herbstclient tag_status | sed 's/\t//g')"
+tags_raw="${tags_raw#?}"
+IFS='[.:#]' read -r -a tag_names <<< "$tags_raw"
 tag_keys=( {1..9} 0 )
 
-herbstclient rename default "${tag_names[0]}" || true
 for i in ${!tag_names[@]} ; do
-    herbstclient add "${tag_names[$i]}"
     key="${tag_keys[$i]}"
     if ! [ -z "$key" ] ; then
         # Go to tag i
@@ -138,8 +139,6 @@ herbstclient keybind $Super-Tab               cycle_all +1
 herbstclient keybind $Super-Shift-Tab         cycle_all -1
 herbstclient keybind $Super-apostrophe        cycle +1
 herbstclient keybind $Super-Shift-apostrophe  cycle -1
-herbstclient keybind $Super-c                 cycle
-herbstclient keybind $Super-Shift-c           cycle -1
 herbstclient keybind $Super-i                 jumpto urgent
 
 # Gaps

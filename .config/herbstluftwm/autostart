@@ -1,66 +1,57 @@
 #!/usr/bin/env bash
 
 # this is a simple config for herbstluftwm
-
-hc() {
-    herbstclient "$@"
-}
-
-
-TERMINAL=termite
-
-hc emit_hook reload
+herbstclient emit_hook reload
 
 # Set default frame layout to horizontal split
-hc set default_frame_layout 1
-
-# keybinds
-source ~/.config/herbstluftwm/keybindings.sh
-
-
-# mousebinds
-hc mouseunbind --all
-hc mousebind Mod4-Button1 move
-hc mousebind Mod4-Button2 zoom
-hc mousebind Mod4-Button3 resize
+herbstclient set default_frame_layout 1
 
 # theme
-source ~/.config/herbstluftwm/theme.sh
+source "$HOME/.config/herbstluftwm/theme.sh"
+
+# Create tags
+tag_names=( {1..10} )
+tag_keys=( {1..9} 0 )
+
+herbstclient rename default "${tag_names[0]}" || true
+for tag in "${tag_names[@]}" ; do
+    herbstclient add "$tag"
+done
 
 # rules
-hc unrule -F
-#hc rule class=XTerm tag=3 # move all xterms to tag 3
-#hc rule focus=off # normally do not focus new clients
+herbstclient unrule -F
+#herbstclient rule class=XTerm tag=3 # move all xterms to tag 3
+#herbstclient rule focus=off # normally do not focus new clients
 # give focus to most common terminals
-#hc rule class~'(.*[Rr]xvt.*|.*[Tt]erm|Konsole)' focus=on
-hc rule focus=on # normally focus new clients
-hc rule windowtype~'_NET_WM_WINDOW_TYPE_(DIALOG|UTILITY|SPLASH)' pseudotile=on --focus=on
-hc rule windowtype='_NET_WM_WINDOW_TYPE_DIALOG' focus=on
-hc rule windowtype~'_NET_WM_WINDOW_TYPE_(NOTIFICATION|DOCK|DESKTOP)' manage=off
+#herbstclient rule class~'(.*[Rr]xvt.*|.*[Tt]erm|Konsole)' focus=on
+herbstclient rule focus=on # normally focus new clients
+herbstclient rule windowtype~'_NET_WM_WINDOW_TYPE_(DIALOG|UTILITY|SPLASH)' pseudotile=on --focus=on
+herbstclient rule windowtype='_NET_WM_WINDOW_TYPE_DIALOG' focus=on
+herbstclient rule windowtype~'_NET_WM_WINDOW_TYPE_(NOTIFICATION|DOCK|DESKTOP)' manage=off
 
 # unlock, just to be sure
-hc unlock
+herbstclient unlock
 
 herbstclient set tree_style '╾│ ├└╼─┐'
 
 # do multi monitor setup here, e.g.:
-# hc set_monitors 1280x1024+0+0 1280x1024+1280+0
+# herbstclient set_monitors 1280x1024+0+0 1280x1024+1280+0
 # or simply:
-# hc detect_monitors
+# herbstclient detect_monitors
 
+# keybinds
+source ~/.config/herbstluftwm/keybindings.sh
 
-# find the panel
-panel=~/.config/herbstluftwm/panel.sh
-[ -x "$panel" ] || panel=/etc/xdg/herbstluftwm/panel.sh
-for monitor in $(herbstclient list_monitors | cut -d: -f1) ; do
-    # start it on each monitor
-    "$panel" $monitor &
-done
+# mousebinds
+herbstclient mouseunbind --all
+herbstclient mousebind Mod4-Button1 move
+herbstclient mousebind Mod4-Button2 zoom
+herbstclient mousebind Mod4-Button3 resize
 
 # Features
 # Focus follow mouse
-hc set focus_follows_mouse 1
+herbstclient set focus_follows_mouse 1
 
 # Little hack from the FAQ
 # Necessary to make vertical splitting the default on tag 1
-hc split vertical 0.5 ; hc remove
+herbstclient split vertical 0.5 ; herbstclient remove
