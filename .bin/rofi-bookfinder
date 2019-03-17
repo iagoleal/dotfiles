@@ -1,0 +1,20 @@
+#!/bin/sh
+
+LIBRARY="$HOME/Books"
+# book_ico='📘'
+
+# Find files with right extensions and remove folder from path
+books=$(find $LIBRARY | grep '\.epub\|\.djvu\|\.pdf' | sed "s:${LIBRARY}/::g")
+#
+selected=$(echo "$books" | rofi -matching glob -dmenu -i -p "β ")
+exit_code=$?
+
+# selected="${selected/$book_ico/$LIBRARY}"
+
+if [ $exit_code == 0 ]; then
+    zathura "${LIBRARY}/${selected}"
+    # xdg-open "${selected}"
+    echo "${LIBRARY}/$selected"
+else
+    exit "$exit_code"
+fi
