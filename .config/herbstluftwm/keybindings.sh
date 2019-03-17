@@ -27,6 +27,7 @@ herbstclient keybind $Super-b                spawn "$HOME/.bin/rofi-bookfinder"
 
 # Notifications
 herbstclient keybind $Super-q       spawn "$HOME/.bin/notify" "-s" "$HOME/.bin/getinfo"
+herbstclient keybind $Super-w       spawn "$HOME/.bin/notify" "-s" "$HOME/.bin/hlwm-tags"
 herbstclient keybind $Super-t       spawn "$HOME/.bin/notify" "-s" "$HOME/.bin/getdate"
 
 # Change mode

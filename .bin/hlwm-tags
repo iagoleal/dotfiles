@@ -1,0 +1,51 @@
+#!/bin/zsh
+
+function beautify_active {
+    fg=yellow
+    echo  "<span color='$fg'>$1</span>"
+}
+
+declare -A tag_symbol=( \
+[1]='一'  \
+[2]='二'  \
+[3]='三'  \
+[4]='四'  \
+[5]='五'  \
+[6]='六'  \
+[7]='七'  \
+[8]='八'  \
+[9]='九'  \
+[10]='十' \
+)
+
+IFS_BAK="${IFS}"
+IFS="
+"
+tag_names=( \
+    $(grep -oE '[^][^./(){};:,"#]+|[][^./(){};:,"#]' \
+        <<< "$(herbstclient tag_status | sed 's/\t//g')" ) \
+)
+IFS="${IFS_BAK}"
+
+result=()
+for k in "${tag_names[@]}"; do
+    if [ "$k" = '.' ]; then
+        flag_empty=true
+    elif [ "$k" = ':' ]; then
+        flag_used=true
+    elif [ "$k" = '#' ]; then
+        flag_active=true
+    else
+        symbol="${tag_symbol[$k]}"
+        if $flag_used; then
+            result+=("${symbol}")
+        elif $flag_active; then
+            result+=("$( beautify_active "${symbol}" )")
+        fi
+        # reset flags
+        flag_empty=false ; flag_used=false ; flag_active=false
+    fi
+
+done
+
+IFS=' ' echo -e "${result[*]}"
