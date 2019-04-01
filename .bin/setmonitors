@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 info=$(xrandr -q | grep '\bconnected\b')
 num_active=$( echo "$info" | wc -l)

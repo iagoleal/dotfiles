@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 histfile="$HOME/.config/rofi/hists/playsimilar-history"
 histsize=30

@@ -1,5 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
-status=$(mpc -p $1 status)
-
-echo "${status}"
+format='[%title%][\nby <i>%artist%</i>][\nfrom <i>%album%</i>]|[%file%]'
+status="$(mpc -p ${1:-6600} -f "${format}" status | head -n -2)"
+status="$( echo "$status" | sed 's/&/&amp;/g')"
+echo  "${status}"

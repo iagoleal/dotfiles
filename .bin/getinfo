@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #-------------------------
 # Volume
@@ -31,11 +31,16 @@ if [[ -d $batdir ]]
     else
         batstatus = "ERROR"
 fi
+
 #------------------------
 # Screen Brightness
 #------------------------
-brightness=$(cat /sys/class/backlight/acpi_video1/brightness)
 max_brightness=$(cat /sys/class/backlight/acpi_video1/max_brightness)
+brightness=$(cat /sys/class/backlight/acpi_video1/brightness)
+# if [ "$( expr $brightness \* 3)" -gt "$max_brightness" ]; then
+    # color='yellow'
+    # brightness="<span color='$color'>$brightness</span>"
+# fi
 
 #------------------------
 # Temperature

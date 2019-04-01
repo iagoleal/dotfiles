@@ -1,12 +1,17 @@
-#!/bin/sh
+#!/bin/bash
 
 # -s : argument is script name
+# -l : location of notification on screen
 # If given, pipes result of script instead of plain text
 
-while getopts s flag; do
+direction='northeast'
+while getopts sl: flag; do
     case $flag in
         s)
             sflag=true
+            ;;
+        d)
+            direction="${OPTARG}"
             ;;
     esac
 done

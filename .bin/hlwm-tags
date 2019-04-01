@@ -1,10 +1,16 @@
-#!/bin/zsh
+#!/bin/bash
 
+# TODO: Tags in another monitors
 function beautify_active {
     fg=yellow
-    echo  "<span color='$fg'>$1</span>"
+    echo "<span color='$fg'>$1</span>"
+}
+function beautify_urgent {
+    fg=red
+    echo "<span color='$fg'>$1</span>"
 }
 
+# Chinese
 declare -A tag_symbol=( \
 [1]='一'  \
 [2]='二'  \
@@ -18,6 +24,20 @@ declare -A tag_symbol=( \
 [10]='十' \
 )
 
+# # Tibetan
+# declare -A tag_symbol=( \
+# [0]=༠ \
+# [1]=༡ \
+# [2]=༢ \
+# [3]=༣ \
+# [4]=༤ \
+# [5]=༥ \
+# [6]=༦ \
+# [7]=༧ \
+# [8]=༨ \
+# [9]=༩ \
+# )
+
 IFS_BAK="${IFS}"
 IFS="
 "
@@ -28,6 +48,8 @@ tag_names=( \
 IFS="${IFS_BAK}"
 
 result=()
+flag_empty=false ; flag_used=false ; flag_active=false ; flag_urgent=false
+
 for k in "${tag_names[@]}"; do
     if [ "$k" = '.' ]; then
         flag_empty=true
@@ -35,12 +57,16 @@ for k in "${tag_names[@]}"; do
         flag_used=true
     elif [ "$k" = '#' ]; then
         flag_active=true
+    elif [ "$k" = '!' ]; then
+        flag_urgent=true
     else
         symbol="${tag_symbol[$k]}"
-        if $flag_used; then
+        if [ $flag_used = true ]; then
             result+=("${symbol}")
-        elif $flag_active; then
+        elif [ $flag_active = true ]; then
             result+=("$( beautify_active "${symbol}" )")
+        elif [ $flag_urgent = true ]; then
+            result+=("$( beautify_urgent "${symbol}" )")
         fi
         # reset flags
         flag_empty=false ; flag_used=false ; flag_active=false

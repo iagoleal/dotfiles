@@ -1,6 +1,5 @@
 #!/bin/bash
 
-#Deal with flags
 # -p : player to control
 # -l : list available players
 
@@ -20,70 +19,37 @@ done
 # Remove flag arguments
 shift $((OPTIND-1))
 
-#-------------------------
-# MPD
-#-------------------------
-typeset -A mpc_cmd
-# toggle play / pause
-mpc_cmd[toggle]="mpc -p 6600 toggle"
-# next
-mpc_cmd[next]="mpc -p 6600 next"
-# previous
-mpc_cmd[prev]="mpc -p 6600 prev"
-# stop
-mpc_cmd[stop]="mpc -p 6600 stop"
-
-#-------------------------
-# Mopidy
-#-------------------------
-typeset -A mpcy_cmd
-# toggle play / pause
-mpcy_cmd[toggle]="mpc -p 6601 toggle"
-# next
-mpcy_cmd[next]="mpc -p 6601 next"
-# previous
-mpcy_cmd[prev]="mpc -p 6601 prev"
-# stop
-mpcy_cmd[stop]="mpc -p 6601 stop"
-
-#-------------------------
-# Spotify
-#-------------------------
-typeset -A spotify_cmd
-# toggle play / pause
-spotify_cmd[toggle]="dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
-# next
-spotify_cmd[next]="dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next"
-# previous
-spotify_cmd[prev]="dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous"
-# stop
-spotify_cmd[stop]="dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Stop"
-
-#-------------------------
-# MPV
-#-------------------------
-typeset -A mpv_cmd
-# toggle play / pause
-mpv_cmd[toggle]="xdotool key --window $(xdotool search --class mpv) p"
-# next
-mpv_cmd[next]="xdotool key --window $(xdotool search --class mpv) greater"
-# previous
-mpv_cmd[prev]="xdotool key --window $(xdotool search --class mpv) less"
-# stop
-mpv_cmd[stop]="xdotool key --window $(xdotool search --class mpv) q"
-
-case $player in
+typeset -A player_cmd
+case "${player}" in
     mpd)
-        typeset -n player_cmd="mpc_cmd"
+        player_cmd[toggle]="mpc -p 6600 toggle"
+        player_cmd[play]="mpc -p 6600 play"
+        player_cmd[pause]="mpc -p 6600 pause"
+        player_cmd[next]="mpc -p 6600 next"
+        player_cmd[prev]="mpc -p 6600 prev"
+        player_cmd[stop]="mpc -p 6600 stop"
         ;;
     mopidy)
-        typeset -n player_cmd="mpcy_cmd"
+        player_cmd[toggle]="mpc -p 6601 toggle"
+        player_cmd[play]="mpc -p 6601 play"
+        player_cmd[pause]="mpc -p 6601 pause"
+        player_cmd[next]="mpc -p 6601 next"
+        player_cmd[prev]="mpc -p 6601 prev"
+        player_cmd[stop]="mpc -p 6601 stop"
         ;;
     spotify)
-        typeset -n player_cmd="spotify_cmd"
+        player_cmd[toggle]="dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
+        player_cmd[play]="dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Play"
+        player_cmd[play]="dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Pause"
+        player_cmd[next]="dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next"
+        player_cmd[prev]="dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous"
+        player_cmd[stop]="dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Stop"
         ;;
     mpv)
-        typeset -n player_cmd="mpv_cmd"
+        player_cmd[toggle]="xdotool key --window $(xdotool search --class mpv) p"
+        player_cmd[next]="xdotool key --window $(xdotool search --class mpv) greater"
+        player_cmd[prev]="xdotool key --window $(xdotool search --class mpv) less"
+        player_cmd[stop]="xdotool key --window $(xdotool search --class mpv) q"
         ;;
     *)
         >&2 echo -e "Error: Unkown player '${player}'.\nSupported options are: mpd, mopidy, spotify, mpv."
