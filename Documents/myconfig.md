@@ -362,8 +362,6 @@ Everything is going to  be referenced by its _pacman_ package name.
 * Firefox _(GUI)_
 	* `# pacman -S firefox`
 	* A memory hungry monster, but the best browser I know at the moment
-	* Sidebar:_Tree Style Tab_ addon
-	* Theme: Adapta-Theme (Dark)
 	* Style config file is at `~/.mozilla/firefox/1aytccip.default/chrome/userChrome.css`
 
 #### Pdf viewer
