@@ -28,7 +28,6 @@ herbstclient keybind $Super-b                spawn "$HOME/.bin/rofi-bookfinder"
 # Notifications
 herbstclient keybind $Super-q       spawn "$HOME/.bin/notify" "-s" "$HOME/.bin/getinfo"
 herbstclient keybind $Super-w       spawn "$HOME/.bin/notify" "-s" "$HOME/.bin/hlwm-tags"
-herbstclient keybind $Super-t       spawn "$HOME/.bin/notify" "-s" "$HOME/.bin/getdate"
 
 # Change mode
 herbstclient keybind $Super-Shift-e spawn sh "${modes_folder}/System.sh"
@@ -60,16 +59,11 @@ herbstclient keybind $Super-j     focus down
 herbstclient keybind $Super-k     focus up
 herbstclient keybind $Super-l     focus right
 
-# moving clients
+# moving clients on same tag
 herbstclient keybind $Super-Shift-h     shift left
 herbstclient keybind $Super-Shift-j     shift down
 herbstclient keybind $Super-Shift-k     shift up
 herbstclient keybind $Super-Shift-l     shift right
-
-herbstclient keybind $Super-Control-h       split   left    0.5
-herbstclient keybind $Super-Control-j       split   bottom  0.5
-herbstclient keybind $Super-Control-k       split   top     0.5
-herbstclient keybind $Super-Control-l       split   right   0.5
 
 # resizing frames
 resizestep=0.05
@@ -78,11 +72,29 @@ herbstclient keybind $Super-$Alt-j       resize down +$resizestep
 herbstclient keybind $Super-$Alt-k       resize up +$resizestep
 herbstclient keybind $Super-$Alt-l       resize right +$resizestep
 
-# Tags
+# Screen split
+herbstclient keybind $Super-Control-h       split   left    0.5
+herbstclient keybind $Super-Control-j       split   bottom  0.5
+herbstclient keybind $Super-Control-k       split   top     0.5
+herbstclient keybind $Super-Control-l       split   right   0.5
+
+herbstclient keybind $Super-e         split   explode
+herbstclient keybind $Super-r         remove
+
+# create an empty frame at the specified direction
+# herbstclient keybind $Super-u         split   bottom  0.5
+# herbstclient keybind $Super-o         split   right   0.5
+
+herbstclient keybind $Super-Left      split   left    0.5
+herbstclient keybind $Super-Down      split   bottom  0.5
+herbstclient keybind $Super-Up        split   top     0.5
+herbstclient keybind $Super-Right     split   right   0.5
+
+## Tags
 # get tag names from client
 tags_raw="$(herbstclient tag_status | sed 's/\t//g')"
-tags_raw="${tags_raw#?}"
-IFS='[.:#]' read -r -a tag_names <<< "$tags_raw"
+# tags_raw="${tags_raw#?}"
+IFS='[.:#]' read -r -a tag_names <<< "${tags_raw#?}"
 tag_keys=( {1..9} 0 )
 
 for i in ${!tag_names[@]} ; do
@@ -100,22 +112,6 @@ done
 # Cycle through tags
 herbstclient keybind $Super-period  use_index +1 --skip-visible
 herbstclient keybind $Super-comma   use_index -1 --skip-visible
-
-# splitting frames
-# create an empty frame at the specified direction
-herbstclient keybind $Super-u         split   bottom  0.5
-herbstclient keybind $Super-o         split   right   0.5
-herbstclient keybind $Super-e         split   explode
-
-herbstclient keybind $Super-Left      split   left    0.5
-herbstclient keybind $Super-Down      split   bottom  0.5
-herbstclient keybind $Super-Up        split   top     0.5
-herbstclient keybind $Super-Right     split   right   0.5
-# let the current frame explode in  to subframes
-herbstclient keybind $Super-Multi_key split   explode
-herbstclient keybind $Super-End       remove
-# Remove frame
-herbstclient keybind $Super-r       remove
 
 # layouting
 herbstclient keybind $Super-Shift-f floating toggle

@@ -25,4 +25,3 @@ hc add "$tag"
 hc rule prepend maxage="$expire" pid="$$" tag="$tag" once
 
 exec "$@"
-
