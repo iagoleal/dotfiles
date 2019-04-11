@@ -85,29 +85,57 @@ XTerm*metaSendsEscape:  true
 ! https://www.markusweimar.de/
 ! ----------------------------
 
-*background: black
-*foreground: white
+/* *background: black */
+/* *foreground: white */
+/* ! black */
+/* *color0:  #000000 */
+/* *color8:  #000000 */
+/* ! red */
+/* *color1:  #ff7c4d */
+/* *color9:  #ff7c4d */
+/* ! green */
+/* *color2:  #22ff00 */
+/* *color10: #22ff00 */
+/* ! yellow */
+/* *color3:  #ffcc00 */
+/* *color11: #ffcc00 */
+/* ! blue */
+/* *color4:  #1a66ff */
+/* *color12: #1a66ff */
+/* ! magenta */
+/* *color5:  #ff61df */
+/* *color13: #ff61df */
+/* ! cyan */
+/* *color6:  #00ffff */
+/* *color14: #00ffff */
+/* ! white */
+/* *color7:  #888888 */
+/* *color15: #ffffff */
+
+*background: #000000
+*foreground: #ffffea
 ! black
 *color0:  #000000
-*color8:  #000000
+*color8:  #3c4142
 ! red
-*color1:  #ff7c4d
-*color9:  #ff7c4d
+*color1:  #e50000
+*color9:  #fe0002
 ! green
-*color2:  #22ff00
-*color10: #22ff00
+*color2:  #40fd14
+*color10: #2fef10
 ! yellow
-*color3:  #ffcc00
-*color11: #ffcc00
+*color3:  #dbb40c
+*color11: #fff917
 ! blue
-*color4:  #1a66ff
-*color12: #1a66ff
+*color4:  #247afd
+*color12: #7bc8f6
 ! magenta
-*color5:  #ff61df
-*color13: #ff61df
+*color5:  #f504c9
+*color13: #db4bda
 ! cyan
-*color6:  #00ffff
+*color6:  #41fdfe
 *color14: #00ffff
 ! white
-*color7:  #888888
+*color7:  #ffffea
 *color15: #ffffff
+
