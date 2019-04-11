@@ -75,9 +75,4 @@ udiskie &
 redshift &
 #Enable screen lock
 xautolock -time 10 -corners ----  -locker "i3lock -c '#000000' -e" &
-
-# exec i3
-# exec xmonad
-# exec bspwm
-# exec awesome
 exec herbstluftwm --locked
