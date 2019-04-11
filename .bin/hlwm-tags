@@ -1,41 +1,47 @@
 #!/bin/bash
 
+# -n : Disable pango markup (no markup)
+while getopts n flag; do
+    case $flag in
+        n)
+            nomarkup=true
+            ;;
+    esac
+done
+# Remove flag arguments
+shift $((OPTIND-1))
+
 # TODO: Tags in another monitors
 function beautify_active {
-    fg=yellow
-    echo "<span color='$fg'>$1</span>"
+    if [ "$nomarkup" = true ]
+    then
+        echo "[$1]"
+    else
+        fg=yellow
+        echo "<span font_weight='bold' color='$fg'>$1</span>"
+    fi
 }
 function beautify_urgent {
-    fg=red
-    echo "<span color='$fg'>$1</span>"
+    if [ "$nomarkup" = true ]
+    then
+        echo "$1!"
+    else
+        fg=red
+        echo "<span font_weight='heavy' color='$fg'>$1</span>"
+    fi
 }
 
 # Chinese
 declare -A tag_symbol=( \
-[1]='一'  \
-[2]='二'  \
-[3]='三'  \
-[4]='四'  \
-[5]='五'  \
-[6]='六'  \
-[7]='七'  \
-[8]='八'  \
-[9]='九'  \
-[10]='十' \
+[1]='一' [2]='二' [3]='三' [4]='四' [5]='五'  \
+[6]='六' [7]='七' [8]='八' [9]='九' [10]='十' \
 )
 
 # # Tibetan
 # declare -A tag_symbol=( \
-# [0]=༠ \
-# [1]=༡ \
-# [2]=༢ \
-# [3]=༣ \
-# [4]=༤ \
-# [5]=༥ \
-# [6]=༦ \
-# [7]=༧ \
-# [8]=༨ \
-# [9]=༩ \
+# [0]=༠ [1]=༡ [2]=༢ [3]=༣ [4]=༤ \
+# [5]=༥ [6]=༦ [7]=༧ [8]=༨ [9]=༩ \
+# [10]=༡༠                       \
 # )
 
 IFS_BAK="${IFS}"

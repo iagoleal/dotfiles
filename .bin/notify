@@ -1,28 +1,41 @@
 #!/bin/bash
 
-# -s : argument is script name
-# -l : location of notification on screen
-# If given, pipes result of script instead of plain text
+print_help() {
+echo \
+"Usage: notify [flags] [message]
+       notify [flags] -e [script_name]
+
+Flag options:
+-d : direction of notification on screen
+     Avaiable: northeast.
+-e : argument is script name. Pipes result instead of text;
+-s : Notification summary. Default is 'Notification'."
+}
 
 direction='northeast'
-while getopts sl: flag; do
+summary='Notification'
+while getopts ed:s:h flag; do
     case $flag in
-        s)
-            sflag=true
-            ;;
         d)
             direction="${OPTARG}"
+            ;;
+        e)
+            exec_flag=true
+            ;;
+        s)
+            summary="${OPTARG}"
+            ;;
+        h)
+            print_help >&2
             ;;
     esac
 done
 # Remove flag arguments
 shift $((OPTIND-1))
 
-# Remove notifications daemon
-pkill dunst
+if [ "$exec_flag" = true ]; then
 
-if [[ "$sflag" ]]; then
-    notify-send "$($@)"
+    notify-send -c "${direction}" "${summary}" "$($@)"
 else
-    notify-send "$@"
+    notify-send -c "${direction}" "${summary}" "$@"
 fi
