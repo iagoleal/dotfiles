@@ -19,10 +19,8 @@ filetype plugin indent on
 
 " UI visual settings
 set number                   " show line numbers
-set numberwidth=2            " set minimum width of numbers bar
-set showcmd                  " show last command at bottom right
-" set cursorline             " highlight the current line
-set wildmode=longest,full    " first autocomplete the word, after run across the list
+set numberwidth=3            " set minimum width of numbers bar
+set wildmode=longest,full    " first autocomplete the word, afterwards run across the list
 set wildmenu                 " visual menu for command autocompletion
 set showmatch                " highlight matching parentheses (useful as hell)
 set splitright               " Vertical split to the right (default is left)
@@ -78,7 +76,7 @@ Plug 'chrisbra/Colorizer', {'on': 'ColorToggle'} " Show colors from code
 Plug 'itchyny/lightline.vim'
 if !has("nvim")
     set laststatus=2
-end
+endif
 set noshowmode
 
 " Snippets
@@ -104,7 +102,6 @@ let g:vimtex_quickfix_open_on_warning=1
 Plug 'JuliaEditorSupport/julia-vim', {'for': 'julia'}
 
 "" Themes
-Plug 'bluz71/vim-moonfly-colors'
 Plug 'ayu-theme/ayu-vim'
 
 " Stop plugin system
@@ -116,8 +113,6 @@ if has("termguicolors")
     " colorscheme hyrule-contrast
     let ayucolor="dark"
     colorscheme ayu
-else
-    colorscheme moonfly
 endif
 
 " Highlight color for the head line of a fold
