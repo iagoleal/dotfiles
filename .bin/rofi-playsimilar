@@ -1,6 +1,6 @@
 #!/bin/bash
 
-histfile="$HOME/.config/rofi/hists/playsimilar-history"
+histfile="$HOME/.local/share/hists/playsimilar-history"
 histsize=30
 
 # Use tac to get histfile in reverse order

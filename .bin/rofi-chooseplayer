@@ -1,9 +1,8 @@
 #!/bin/sh
 
-player_file="$HOME/.config/herbstluftwm/player"
+player_file="$HOME/.local/share/hists/player"
 
 # List of players to choose from
-# player_list="MPD\nMopidy\nSpotify\nMPV"
 player_list="$($HOME/.bin/musicctl -l)"
 
 # Get option from list
