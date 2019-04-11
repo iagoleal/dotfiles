@@ -26,13 +26,12 @@ herbstclient keybind $Super-XF86AudioPlay    spawn "$HOME/.bin/rofi-chooseplayer
 herbstclient keybind $Super-b                spawn "$HOME/.bin/rofi-bookfinder"
 
 # Notifications
-herbstclient keybind $Super-q       spawn "$HOME/.bin/notify" "-s" "$HOME/.bin/getinfo"
-herbstclient keybind $Super-w       spawn "$HOME/.bin/notify" "-s" "$HOME/.bin/hlwm-tags"
+herbstclient keybind $Super-q       spawn "$HOME/.bin/notify" "-e" "$HOME/.bin/getinfo"
+herbstclient keybind $Super-w       spawn "$HOME/.bin/notify" "-e" "$HOME/.bin/hlwm-tags"
 
 # Change mode
 herbstclient keybind $Super-Shift-e spawn sh "${modes_folder}/System.sh"
 herbstclient keybind $Super-d       spawn sh "${modes_folder}/Launcher.sh"
-herbstclient keybind $Super-Shift-g spawn sh "${modes_folder}/Gaps.sh"
 herbstclient keybind Print          spawn sh "${modes_folder}/Printscreen.sh"
 herbstclient keybind $Super-n       spawn sh "${modes_folder}/Notify.sh"
 
@@ -44,10 +43,10 @@ herbstclient keybind XF86AudioLowerVolume spawn "$HOME/.bin/volctl" "lower"
 herbstclient keybind XF86AudioMute        spawn "$HOME/.bin/volctl" "mute"
 
 # Media player controls
-herbstclient keybind XF86AudioPlay spawn "$HOME/.bin/musicctl" "-p" "$(cat ${config_folder}/player)" "toggle"
-herbstclient keybind XF86AudioStop spawn "$HOME/.bin/musicctl" "-p" "$(cat ${config_folder}/player)" "stop"
-herbstclient keybind XF86AudioPrev spawn "$HOME/.bin/musicctl" "-p" "$(cat ${config_folder}/player)" "prev"
-herbstclient keybind XF86AudioNext spawn "$HOME/.bin/musicctl" "-p" "$(cat ${config_folder}/player)" "next"
+herbstclient keybind XF86AudioPlay spawn "$HOME/.bin/musicctl" "-p" "$(cat $HOME/.local/share/hists/player)" "toggle"
+herbstclient keybind XF86AudioStop spawn "$HOME/.bin/musicctl" "-p" "$(cat $HOME/.local/share/hists/player)" "stop"
+herbstclient keybind XF86AudioPrev spawn "$HOME/.bin/musicctl" "-p" "$(cat $HOME/.local/share/hists/player)" "prev"
+herbstclient keybind XF86AudioNext spawn "$HOME/.bin/musicctl" "-p" "$(cat $HOME/.local/share/hists/player)" "next"
 
 # Toggle touchpad
 herbstclient keybind $Super-F6 spawn $HOME/.bin/toggle-touchpad.sh
@@ -133,6 +132,8 @@ herbstclient keybind $Super-Shift-space                                         
 herbstclient keybind $Super-BackSpace         cycle_monitor
 herbstclient keybind $Super-Tab               cycle_all +1
 herbstclient keybind $Super-Shift-Tab         cycle_all -1
+herbstclient keybind $Super-$Alt-Tab          cycle_frame +1
+herbstclient keybind $Super-$Alt-Shift-Tab    cycle_frame -1
 herbstclient keybind $Super-apostrophe        cycle +1
 herbstclient keybind $Super-Shift-apostrophe  cycle -1
 herbstclient keybind $Super-i                 jumpto urgent
