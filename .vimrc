@@ -1,68 +1,9 @@
-" Enable syntax highlighting
-syntax enable
-
-" Spaces and Tabs, settling the war
-set tabstop=4                " n spaces per tab visually
-set softtabstop=4            " n spaces per tab when editing
-set shiftwidth=4             " n spaces for autoindent
-set expandtab                " If active, tabs are converted to spaces
-set smarttab
-
-" Show trailing {spaces, tabs}
-set list
-set listchars=tab:├─,trail:۰,nbsp:☻
-
-" Indentation
-set autoindent
 " Load language specific plugin and indentation files
 filetype plugin indent on
 
-" UI visual settings
-set number                   " show line numbers
-set numberwidth=3            " set minimum width of numbers bar
-set wildmode=longest,full    " first autocomplete the word, afterwards run across the list
-set wildmenu                 " visual menu for command autocompletion
-set showmatch                " highlight matching parentheses (useful as hell)
-set splitright               " Vertical split to the right (default is left)
-
-" Search settings
-set incsearch                " search as characters are entered
-set hlsearch                 " highlight matches
-set ignorecase               " case-insensitive searchs / substitutions
-set smartcase                " If terms are all lowercase, ignore case. Consider case otherwise.
-
-" Set backup files
-set backup
-set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp,.
-set backupskip=/tmp/*,/private/tmp/*
-set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
-set writebackup
-
-""" Key bindings
-
-" <leader> key is comma
-let mapleader="\<Space>"
-
-" Disable search highlighting (until next search)
-nnoremap <leader><Space> :nohlsearch<CR>
-" Select all text on file
-nnoremap <leader>a ggVG
-
-" Spell checks previous mistake and corrects to first suggestion
-inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
-
-"" Filetype-specific keymaps
-augroup ftSpecific
-    autocmd!
-    " Saves file and run haskell interpreter
-    autocmd FileType haskell nnoremap <buffer> <leader>m :w<CR> :!runhaskell %<CR>
-    " Saves file and run python interpreter
-    autocmd FileType python nnoremap <buffer> <leader>m :w<CR> :!python %<CR>
-augroup END
-
-" Toggle Color Highlight
-map <leader>cc :ColorToggle<CR>
-map <leader>cf :ColorSwapFgBg<CR>
+"""""""""""
+" Plugins "
+"""""""""""
 
 " Initialize vim-plug
 call plug#begin('~/.vim/bundle')
@@ -107,17 +48,65 @@ Plug 'ayu-theme/ayu-vim'
 " Stop plugin system
 call plug#end()
 
-"" Theme settings
+"""""""""""""""
+" Keybindings "
+"""""""""""""""
+
+" <leader> key is Space
+let mapleader="\<Space>"
+
+" Disable search highlighting (until next search)
+nnoremap <leader><Space> :nohlsearch<CR>
+" Select all text on file
+nnoremap <leader>a ggvG$
+
+" Spell checks previous mistake and corrects to first suggestion
+inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
+
+"" Filetype-specific keymaps
+augroup ftSpecific
+    autocmd!
+    " Saves file and run haskell interpreter
+    autocmd FileType haskell nnoremap <buffer> <leader>m :!runhaskell %<CR>
+    " Saves file and run python interpreter
+    autocmd FileType python  nnoremap <buffer> <leader>m :!python %<CR>
+augroup END
+
+" Toggle Color Highlight
+map <leader>cc :ColorToggle<CR>
+map <leader>cf :ColorSwapFgBg<CR>
+
+"""""""""
+" Theme "
+"""""""""
+
+" Enable syntax highlighting
+syntax enable
+
 if has("termguicolors")
     set termguicolors
-    " colorscheme hyrule-contrast
     let ayucolor="dark"
     colorscheme ayu
+
+    augroup CursorLine
+      autocmd!
+      autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline cursorcolumn
+      autocmd WinLeave * setlocal nocursorline nocursorcolumn
+    augroup END
 endif
 
-" Highlight color for the head line of a fold
+
+set list                  " Show trailing {spaces, tabs}
+set listchars=tab:├─,trail:۰,nbsp:☻,extends:⟩,precedes:⟨
+
+set number                " show line numbers
+set numberwidth=3         " set minimum width of numbers bar
+set showmatch             " highlight matching parentheses (useful as hell)
+
+"" Highlights
+" Head of a Fold
 highlight Folded ctermbg=Black guibg=Black
-" Used for trailing spaces
+" Trailing spaces
 highlight Whitespace ctermfg=magenta guifg=magenta
 " Spell checker colors
 if (v:version >= 700)
@@ -126,3 +115,35 @@ if (v:version >= 700)
     highlight SpellLocal ctermfg=Green   cterm=Underline guifg=LightGreen gui=Underline guisp=Green
     highlight SpellRare  ctermfg=Yellow  cterm=underline guifg=Orange     gui=Underline guisp=Orange
 endif
+
+""""""""
+" MISC "
+""""""""
+
+" Search
+set incsearch             " search as characters are entered
+set hlsearch              " highlight matches
+set ignorecase            " case-insensitive searchs / substitutions
+set smartcase             " If terms are all lowercase, ignore case. Consider case otherwise.
+
+set wildmode=longest,full " first autocomplete the word, afterwards run across the list
+set wildmenu              " visual menu for command autocompletion
+
+set splitright            " Vertical split to the right (default is left)
+
+" Spaces and Tabs, settling the war
+set tabstop=4             " n spaces per tab visually
+set softtabstop=4         " n spaces per tab when editing
+set shiftwidth=4          " n spaces for autoindent
+set expandtab             " If active, tabs are converted to spaces
+set smarttab
+
+" Indentation
+set autoindent
+
+" Set backup files
+set backup
+set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp,.
+set backupskip=/tmp/*,/private/tmp/*
+set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+set writebackup
