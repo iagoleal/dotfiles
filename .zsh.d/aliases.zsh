@@ -15,6 +15,7 @@ function weather { curl wttr.in/"$*"; }
 
 # Open pdf or ebook files
 function zth { zathura "$@" &}
+zstyle ":completion:*:*:zth:*" file-patterns "*.{pdf,djvu,epub,ps,xps}"
 
 # Custom notification sender
 alias notify="$HOME/.bin/notify"

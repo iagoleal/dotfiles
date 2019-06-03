@@ -4,6 +4,11 @@
 bindkey -v # Vim mode for keybinds
 # bindkey -e # Emacs mode for keybinds
 
+autoload edit-command-line
+zle -N edit-command-line
+bindkey '' edit-command-line
+bindkey -M vicmd '' edit-command-line
+
 #----------------------------
 # Beep
 #----------------------------
