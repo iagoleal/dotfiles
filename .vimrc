@@ -105,14 +105,13 @@ if has("termguicolors")
     set termguicolors
     let ayucolor="dark"
     colorscheme ayu
-
-    augroup CursorLine
-      autocmd!
-      autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline cursorcolumn
-      autocmd WinLeave * setlocal nocursorline nocursorcolumn
-    augroup END
 endif
 
+" augroup CursorLine
+"       autocmd!
+"       autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline cursorcolumn
+"       autocmd WinLeave * setlocal nocursorline nocursorcolumn
+" augroup END
 
 set list                  " Show trailing {spaces, tabs}
 set listchars=tab:├─,trail:۰,nbsp:☻,extends:⟩,precedes:⟨
