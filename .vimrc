@@ -5,15 +5,33 @@ filetype plugin indent on
 " Plugins "
 """""""""""
 
+" Verify if vim-plug exists and download it if not
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
 " Initialize vim-plug
 call plug#begin('~/.vim/bundle')
 
 Plug 'nelstrom/vim-visual-star-search'           " Search highlighted text
 Plug 'tpope/vim-commentary'                      " Toggle commentary
 Plug 'tpope/vim-surround'                        " Edit surrounding objects
+Plug 'godlygeek/tabular'                         " Align tables
 Plug 'chrisbra/Colorizer', {'on': 'ColorToggle'} " Show colors from code
 
-" Beautifuler statusbar
+Plug 'jalvesaq/vimcmdline'                       " Send line to REPl
+" vimcmdline mappings
+let cmdline_map_start          = '<LocalLeader>s'
+let cmdline_map_send           = '<LocalLeader><Space>'
+let cmdline_map_send_and_stay  = '<LocalLeader><S-Space>'
+let cmdline_map_source_fun     = '<LocalLeader>f'
+let cmdline_map_send_paragraph = '<LocalLeader>p'
+let cmdline_map_send_block     = '<LocalLeader>b'
+let cmdline_map_quit           = '<LocalLeader>q'
+
+" " Beautifuler statusbar
 Plug 'itchyny/lightline.vim'
 if !has("nvim")
     set laststatus=2
