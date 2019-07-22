@@ -4,8 +4,8 @@
 
 ## Filesystem (on a 500GB HDD)
 
-```
-> lsblk
+```sh
+$ lsblk
 NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
 sda      8:0    0 465.8G  0 disk
 ├─sda1   8:1    0   512M  0 part /boot
@@ -18,6 +18,7 @@ sda      8:0    0 465.8G  0 disk
 
 | Action            | Program       |
 |-------------------|---------------|
+| Operational System| Arch Linux    |
 | Shell             | zsh           |
 | Window Manager    | herbstluftwm  |
 | Terminal Emulator | termite       |
@@ -40,15 +41,15 @@ Over this layout, I am also using some custom modifications on
 
 My main options are:
 
-* `Capslock` key acts as `Escape`
-* Swap `Left Control` and `Left Alt` keys
-* `Menu` key acts as `Compose`
-* Classic `Control-Alt-Backspace` command to kill X
-* `Escape` and `AltGr-g` act as `dead_greek`
+- `Capslock` key acts as `Escape`
+- Swap `Left Control` and `Left Alt` keys
+- `Menu` key acts as `Compose`
+- Classic `Control-Alt-Backspace` command to kill X
+- `Escape` and `AltGr-g` act as `dead_greek`
 
 Command used to set layout:
 
-```
+```sh
 setxkbmap -layout br \
     -option "caps:escape" \
     -option "ctrl:swap_lalt_lctl" \
@@ -68,7 +69,7 @@ from the golden age of the Lisp machines
 (not an emacs user, I swear!),
 I decided to try and see how much my Greek would speed up.
 
-A simple
+The command
 `cat '/usr/share/X11/locale/en_US.UTF-8/Compose' | grep 'greek'`
 shows that the xkb system already comes with an interface to handle a Greek dead key.
 From that, a simple remapping allows me to save a few keystrokes
@@ -77,7 +78,7 @@ It also requires a few Latex packages to handle the Unicode input,
 but it is well worth it.
 
 A dead key to directly input special map symbols,
-mirroring the `Top` key on the old Space-cadet,
+mirroring the _Top_ key on the old Space-cadet,
 would also be really nice.
 But, as there is no preconfigured default,
 I still need to find the time to edit the `xkb` files.
@@ -119,6 +120,12 @@ Everything is going to  be referenced by its _pacman_ package name.
 	* `# pacman -S polkit`
 	* still have to learn how to properly use it
 
+### GPU Drivers
+* Intel
+	* `# pacman -S xf86-video-intel`
+
+* Nvidia (open source)
+	* `# pacman -S xf86-video-nouveau`
 ### External Media
 
 #### Automount
@@ -432,18 +439,3 @@ For styles use: `fc-list | grep _title_`
 	* Icons font, really good
 	* Manual located at:
 	* https://cdn.materialdesignicons.com
-
-
-### Must finish the gpu part D:
-
-## Comments on wms
-### i3
-Easy to use but limited. What it does, it does flawlessly but what it doesn't... is a real pain to get.
-Modes are divine and the config is really well organized.
-### bspwm
-Config is great and it is very powerful but the window spawning layout is *horrible*
-### herbstluft
-Config is great, layout is wonderful but no floating??? D:
-### Xmonad
-Aah the power of Haskell! Gotta sit someday and really configure it
-
