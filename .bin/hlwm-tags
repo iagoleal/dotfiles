@@ -21,6 +21,15 @@ function beautify_active {
         echo "<span font_weight='bold' color='$fg'>$1</span>"
     fi
 }
+function beautify_monitor {
+    if [ "$nomarkup" = true ]
+    then
+        echo "[$1]"
+    else
+        fg='#62FD52'
+        echo "<span font_weight='semibold' color='$fg'>$1</span>"
+    fi
+}
 function beautify_urgent {
     if [ "$nomarkup" = true ]
     then
@@ -48,36 +57,36 @@ IFS_BAK="${IFS}"
 IFS="
 "
 tag_names=( \
-    $(grep -oE '[^][^./(){};:,"#]+|[][^./(){};:,"#]' \
-        <<< "$(herbstclient tag_status | sed 's/\t//g')" ) \
+    $(grep -oE '[^][^.:#+%!-]+|[][^.:#+%!-]' \
+        <<< "$(herbstclient tag_status | sed 's/\t//g')" )
 )
 IFS="${IFS_BAK}"
 
 result=()
-flag_empty=false ; flag_used=false ; flag_active=false ; flag_urgent=false
-
 for k in "${tag_names[@]}"; do
     if [ "$k" = '.' ]; then
-        flag_empty=true
+        flag='empty'
     elif [ "$k" = ':' ]; then
-        flag_used=true
-    elif [ "$k" = '#' ]; then
-        flag_active=true
+        flag='used'
+    elif [ "$k" = '#' -o "$k" = '+' ]; then
+        flag='active'
+    elif [ "$k" = '-' -o "$k" = '+' ]; then
+        flag='monitor'
     elif [ "$k" = '!' ]; then
-        flag_urgent=true
+        flag='urgent'
     else
         symbol="${tag_symbol[$k]}"
-        if [ $flag_used = true ]; then
+        if [ $flag = 'used' ]; then
             result+=("${symbol}")
-        elif [ $flag_active = true ]; then
+        elif [ $flag = 'active' ]; then
             result+=("$( beautify_active "${symbol}" )")
-        elif [ $flag_urgent = true ]; then
+        elif [ $flag = 'monitor' ]; then
+            result+=("$( beautify_monitor "${symbol}" )")
+        elif [ $flag = 'urgent' ]; then
             result+=("$( beautify_urgent "${symbol}" )")
         fi
-        # reset flags
-        flag_empty=false ; flag_used=false ; flag_active=false
+        flag=''
     fi
-
 done
 
 IFS=' ' echo -e "${result[*]}"
