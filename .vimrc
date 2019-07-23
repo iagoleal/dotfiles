@@ -31,13 +31,6 @@ let cmdline_map_send_paragraph = '<LocalLeader>p'
 let cmdline_map_send_block     = '<LocalLeader>b'
 let cmdline_map_quit           = '<LocalLeader>q'
 
-" " Beautifuler statusbar
-Plug 'itchyny/lightline.vim'
-if !has("nvim")
-    set laststatus=2
-endif
-set noshowmode
-
 " Snippets
 Plug 'SirVer/ultisnips'
 let g:UltiSnipsUsePythonVersion = 3
@@ -100,6 +93,10 @@ map <leader>cf :ColorSwapFgBg<CR>
 
 " Enable syntax highlighting
 syntax enable
+
+set laststatus=0
+set showmode
+set showcmd
 
 if has("termguicolors")
     set termguicolors
