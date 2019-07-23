@@ -52,6 +52,7 @@ export VISUAL="nvim"
 export TERMINAL="termite"
 
 # Append ~/.bin folder to PATH variable
+path+=("$HOME/.local/bin")
 path+=("$HOME/.bin")
 export PATH
 
