@@ -23,14 +23,16 @@ fi
 #------------------------
 # Battery
 #------------------------
+bat_symbol='⚡'
 batdir=$( echo /sys/class/power_supply/BAT[01])
 if [[ -d $batdir ]]
     then
-        batlevel=$(cat "$batdir/capacity")%
+        batlevel="$(cat "$batdir/capacity")%"
         batstatus=$(cat "$batdir/status")
     else
-        batstatus = "ERROR"
+        batstatus="ERROR"
 fi
+bat="$bat_symbol $batlevel"
 
 #------------------------
 # Screen Brightness
@@ -38,8 +40,8 @@ fi
 max_brightness=$(cat /sys/class/backlight/acpi_video1/max_brightness)
 brightness=$(cat /sys/class/backlight/acpi_video1/brightness)
 # if [ "$( expr $brightness \* 3)" -gt "$max_brightness" ]; then
-    # color='yellow'
-    # brightness="<span color='$color'>$brightness</span>"
+#     color='yellow'
+#     brightness="<span color='$color'>$brightness</span>"
 # fi
 
 #------------------------
@@ -50,8 +52,8 @@ temp_symb='🌡'
 # Raw temperature in m°C
 temp_mC=$(cat /sys/class/thermal/thermal_zone0/temp)
 # Formatted temperature
-temp_fmt=$( awk '{tp=$1/1000.; printf("%.1f", tp) }' <<<"$temp_mC" )
-temp="$temp_symb$temp_fmt°C"
+temp_fmt=$(awk '{tp=$1/1000.; printf("%.1f", tp) }' <<<"$temp_mC")
+temp="$temp_symb $temp_fmt°C"
 
 #------------------------
 # CPU Status
@@ -62,16 +64,16 @@ temp="$temp_symb$temp_fmt°C"
 #------------------------
 mem_total=$(free -m | grep Mem | awk '{print $2}')
 mem_used=$(free -m | grep Mem | awk '{print $3}')
-mem_perc=$( awk '{perc=$1/$2*100; printf("%.1f", perc) }' <<<"$mem_used $mem_total" )
+mem_perc=$(awk '{perc=$1/$2*100; printf("%.1f", perc) }' <<<"$mem_used $mem_total")
 mem_perc=${mem_perc}%
 #mem_perc=$( free -m | grep Mem | awk '{perc=$2/$3*100; printf("%.1f", perc) }' )
 
 #------------------------
 # Date and Time
 #------------------------
-day=$( date +'%Y.%m.%d')
+day=$(date +'%Y.%m.%d')
 # date +%w gives the day of the week in {0..6} starting on Sunday
-week_day=$(( $(date +%w) + 1 ))
+week_day=$(($(date +%w) + 1 ))
 hour=$(date +'%H:%M')
 
-echo "${vol} | ${batlevel} | ${temp} | ${mem_perc} | $brightness/$max_brightness | ${day} [$week_day] | ${hour}"
+echo "${vol} |${bat} |${temp} | ${mem_perc} | $brightness/$max_brightness | ${day} [$week_day] | ${hour}"
