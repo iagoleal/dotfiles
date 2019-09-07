@@ -10,7 +10,7 @@ case "$action" in
         amixer set Master 5%-
         ;;
     "mute")
-        pactl set-sink-mute 0 toggle
+        amixer -D pulse set Master 1+ toggle
         # amixer set Master toggle
         ;;
 esac
