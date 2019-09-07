@@ -23,7 +23,7 @@ herbstclient keybind $Super-Shift-d          spawn rofi -show drun
 herbstclient keybind $Super-Shift-w          spawn rofi -show window
 herbstclient keybind $Super-m                spawn "$HOME/.bin/rofi-playsimilar"
 herbstclient keybind $Super-XF86AudioPlay    spawn "$HOME/.bin/rofi-chooseplayer"
-herbstclient keybind $Super-b                spawn "$HOME/.bin/rofi-bookfinder"
+herbstclient keybind $Super-b                spawn "$HOME/.bin/dmenu-bookfinder"
 
 # Notifications
 herbstclient keybind $Super-q       spawn "$HOME/.bin/notify" "-e" "$HOME/.bin/getinfo"
