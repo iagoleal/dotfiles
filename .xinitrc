@@ -2,12 +2,10 @@
 
 # Define folders and files to read
 userresources=$HOME/.Xresources
-userxkbdir=$HOME/.xkb
 usermodmap=$HOME/.Xmodmap
 sysresources=/etc/X11/xinit/.Xresources
 sysmodmap=/etc/X11/xinit/.Xmodmap
 
-userxkblayout=br
 # merge in defaults and keymaps
 
 if [ -f $sysresources ]; then
@@ -22,27 +20,16 @@ if [ -f $userresources ]; then
     xrdb -merge "$userresources"
 fi
 
-# if [ -n $userxkbdir ]; then
-    # Set keyboard layout to my custom one
-    # Options are:
-    # Capslock key function as Esc
-    # Swap Left Control and Left Alt keys
-    # Classic Control-Alt-Backspace command to kill X
-    setxkbmap -I $userxkbdir -layout $userxkblayout \
-        -option "caps:escape" \
-        -option "ctrl:swap_lalt_lctl" \
-        -option "compose:menu" \
-        -option "terminate:ctrl_alt_bksp"
-
-    # Enable sticky keys
-    # xkbset sticky -twokey -latchlock
-    # Disable expiration time for sticky keys and options
-    # xkbset exp "=sticky" '=twokey' '=latchlock'
-
-# else
-#     # Set keyboard layout to br-abnt2
-#     setxkbmap -layout br
-# fi
+# Set keyboard layout to br-abnt2
+# Options are:
+# Capslock key function as Esc
+# Swap Left Control and Left Alt keys
+# Classic Control-Alt-Backspace command to kill X
+setxkbmap -layout br \
+    -option "caps:escape" \
+    -option "ctrl:swap_lalt_lctl" \
+    -option "compose:menu" \
+    -option "terminate:ctrl_alt_bksp"
 
 # Run the custom changes AFTER selecting the keyboard
 if [ -f $usermodmap ]; then
@@ -73,6 +60,9 @@ compton &
 udiskie &
 # Redshift uses location / time info to control screen temperature and brightness
 redshift &
-#Enable screen lock
+# Enable CJK support
+fcitx &
+# Enable screen lock
 xautolock -time 10 -corners ----  -locker "i3lock -c '#000000' -e" &
+# Run WM
 exec herbstluftwm --locked
