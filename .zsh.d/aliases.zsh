@@ -24,3 +24,29 @@ alias notify="$HOME/.bin/notify"
 port=6601
 alias mpcy="mpc -p ${port}"
 alias ncmpcppy="ncmpcpp -p ${port}"
+
+function doi2bib {
+    curl -LH "Accept: text/bibliography; style=bibtex" "http://dx.doi.org/$@" | sed -r -e '1s/, /,\n  /' -e 's/}, /},\n  /g' -e '$s/}}/}\n}/' -e '1s/^[[:space:]]*//'
+}
+
+extract() {
+    if [ -f $1 ] ; then
+        case $1 in
+            *.tar.bz2)   tar xjvf $1 ;;
+            *.tar.gz)    tar xzvf $1 ;;
+            *.tar.xz)    tar xJvf $1 ;;
+            *.bz2)       bunzip2 $1 ;;
+            *.rar)       unrar xv $1 ;;
+            *.gz)        gunzip $1 ;;
+            *.tar)       tar xvf $1 ;;
+            *.tbz2)      tar xjvf $1 ;;
+            *.tgz)       tar xzvf $1 ;;
+            *.zip)       unzip $1 ;;
+            *.7z)        7z $1 ;;
+            *.xz)        xz -vd $1 ;;
+            *)           echo "'$1' cannot be extracted via extract()" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
