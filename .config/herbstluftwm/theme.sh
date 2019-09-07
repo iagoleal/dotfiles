@@ -18,15 +18,15 @@ herbstclient attr theme.normal.color       '#454545'
 herbstclient attr theme.urgent.color orange
 herbstclient attr theme.inner_width 1
 herbstclient attr theme.inner_color black
-herbstclient attr theme.border_width 2
-herbstclient attr theme.floating.border_width 4
-herbstclient attr theme.floating.outer_width 1
+herbstclient attr theme.border_width 1
+herbstclient attr theme.floating.border_width 0
+herbstclient attr theme.floating.outer_width 0
 herbstclient attr theme.floating.outer_color black
 herbstclient attr theme.active.inner_color '#3EFF00'
 herbstclient attr theme.active.outer_color '#3EFF00'
 herbstclient attr theme.background_color   '#141414'
 
-herbstclient set window_gap 3
+herbstclient set window_gap 5
 herbstclient set frame_padding 0
 herbstclient set smart_window_surroundings 1
 herbstclient set smart_frame_surroundings 1

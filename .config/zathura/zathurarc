@@ -6,6 +6,7 @@ set statusbar-basename true
 
 #Make default bg color white
 set default-bg "#ededed"
+set default-fg "#dddddd"
 
 #Rebind zoom keys
 map - zoom out

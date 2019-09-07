@@ -87,7 +87,7 @@ scrollbar = off
 # color7  = #888888
 # color15 = #ffffff
 
-background = #000000
+background = #0f1419
 foreground = #ffffea
 # black
 color0  = #000000
