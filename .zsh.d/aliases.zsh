@@ -25,6 +25,8 @@ port=6601
 alias mpcy="mpc -p ${port}"
 alias ncmpcppy="ncmpcpp -p ${port}"
 
+function trash { mv $@ ~/.trash }
+
 function doi2bib {
     curl -LH "Accept: text/bibliography; style=bibtex" "http://dx.doi.org/$@" | sed -r -e '1s/, /,\n  /' -e 's/}, /},\n  /g' -e '$s/}}/}\n}/' -e '1s/^[[:space:]]*//'
 }
@@ -48,5 +50,31 @@ extract() {
         esac
     else
         echo "'$1' is not a valid file"
+    fi
+}
+zstyle ":completion:*:*:extract:*" file-patterns "*.{tar.bz2,tar.gz,tar.xz,bz2,rar,gz,tar,tbz2,tgz,zip,7z,xz}"
+
+open() {
+    if [ -d $1 ] ; then
+        cd $1
+    elif [ -f $1 ] ; then
+        case $1 in
+            *.pdf)     zathura $1;;
+            *.ps)      zathura $1;;
+            *.xps)     zathura $1;;
+            *.djvu)    zathura $1;;
+            *.epub)    zathura $1;;
+            *.jpg)     feh $1;;
+            *.jpeg)    feh $1;;
+            *.png)     feh $1;;
+            *.bmp)     feh $1;;
+            *.avi)     mpv $1;;
+            *.mkv)     mpv $1;;
+            *.mp4)     mpv $1;;
+            *.svg)     feh --conversion-timeout 0 $1;;
+            *)         vi $1;;
+        esac
+    else
+        echo "Cannot open '$1'"
     fi
 }
