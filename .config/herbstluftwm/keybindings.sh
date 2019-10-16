@@ -24,6 +24,7 @@ herbstclient keybind $Super-Shift-w          spawn rofi -show window
 herbstclient keybind $Super-m                spawn "$HOME/.bin/dmenu-playsimilar"
 herbstclient keybind $Super-XF86AudioPlay    spawn "$HOME/.bin/rofi-chooseplayer"
 herbstclient keybind $Super-b                spawn "$HOME/.bin/dmenu-bookfinder"
+herbstclient keybind $Super-slash            spawn "$HOME/.bin/internet-search-cb"
 
 # Notifications
 herbstclient keybind $Super-q       spawn "$HOME/.bin/notify" "-e" "$HOME/.bin/getinfo"
