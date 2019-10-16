@@ -18,6 +18,7 @@ call plug#begin('~/.vim/bundle')
 Plug 'nelstrom/vim-visual-star-search'           " Search highlighted text
 Plug 'tpope/vim-commentary'                      " Toggle commentary
 Plug 'tpope/vim-surround'                        " Edit surrounding objects
+Plug 'tpope/vim-dispatch'                        " Async make
 Plug 'godlygeek/tabular'                         " Align tables
 Plug 'chrisbra/Colorizer', {'on': 'ColorToggle'} " Show colors from code
 
@@ -49,6 +50,8 @@ let g:vimtex_compiler_progname = 'nvr'
 let g:vimtex_quickfix_mode=2
 let g:vimtex_quickfix_autoclose_after_keystrokes=2
 let g:vimtex_quickfix_open_on_warning=1
+let g:vimtex_indent_enabled=0
+let g:vimtex_indent_delims = {}
 
 " Julia
 Plug 'JuliaEditorSupport/julia-vim', {'for': 'julia'}
@@ -75,17 +78,29 @@ nnoremap <leader>a ggvG$
 inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
 
 "" Filetype-specific keymaps
-augroup ftSpecific
-    autocmd!
-    " Saves file and run haskell interpreter
-    autocmd FileType haskell nnoremap <buffer> <leader>m :!runhaskell %<CR>
-    " Saves file and run python interpreter
-    autocmd FileType python  nnoremap <buffer> <leader>m :!python %<CR>
-augroup END
+nnoremap <leader>m :w<CR>:Make<CR>
+nnoremap <leader>M :w<CR>:Make!<CR>
+" augroup ftSpecific
+"     autocmd!
+"     " Saves file and run haskell interpreter
+"     autocmd FileType haskell nnoremap <buffer> <leader>m :!runhaskell %<CR>
+"     " Saves file and run python interpreter
+"     autocmd FileType python  nnoremap <buffer> <leader>m :!python %<CR>
+" augroup END
 
 " Toggle Color Highlight
-map <leader>cc :ColorToggle<CR>
-map <leader>cf :ColorSwapFgBg<CR>
+nnoremap <leader>cc :ColorToggle<CR>
+nnoremap <leader>cf :ColorSwapFgBg<CR>
+" Toggle quickfix
+function! ToggleQuickfix()
+  let l:nr =  winnr("$")
+  if l:nr == 1
+      copen
+  else
+      cclose
+  endif
+endfunction
+nnoremap <leader>q :call ToggleQuickfix()<CR>
 
 """""""""
 " Theme "
@@ -94,9 +109,10 @@ map <leader>cf :ColorSwapFgBg<CR>
 " Enable syntax highlighting
 syntax enable
 
-set laststatus=0
+set laststatus=1
 set showmode
 set showcmd
+set noruler
 
 if has("termguicolors")
     set termguicolors
