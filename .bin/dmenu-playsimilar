@@ -5,7 +5,7 @@ histsize=30
 
 # Use tac to get histfile in reverse order
 songlist="$( cat ${histfile} )"
-song="$( rofi -dmenu -i -p '♫ ' -input $histfile )"
+song="$( echo "$songlist" | dmenu -i -p '♫' -l 25 )"
 exit_code="$?"
 
 if [ $exit_code == 0 ]; then
