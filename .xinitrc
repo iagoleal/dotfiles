@@ -63,6 +63,6 @@ redshift &
 # Enable CJK support
 fcitx &
 # Enable screen lock
-xautolock -time 10 -corners ----  -locker "i3lock -c '#000000' -e" &
+xautolock -time 10 -corners ----  -locker "slock" &
 # Run WM
 exec herbstluftwm --locked

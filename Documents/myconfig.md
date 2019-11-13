@@ -30,6 +30,7 @@ sda      8:0    0 465.8G  0 disk
 | Video Player      | mpv           |
 | Image Viewer      | feh           |
 | PDF   Viewer      | zathura       |
+| Screen Locker     | slock         |
 
 
 ## Keyboard layout
@@ -323,8 +324,8 @@ Everything is going to  be referenced by its _pacman_ package name.
 	* Really useful with something like bspwm
 
 #### Lock screen
-* i3lock
-	* `# pacman -S i3lock`
+* slock
+	* `# pacman -S slock`
 	* locker for when I'm away of my screen
 
 * xautolock
