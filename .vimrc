@@ -8,7 +8,7 @@ filetype plugin indent on
 " Verify if vim-plug exists and download it if not
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
@@ -77,16 +77,9 @@ nnoremap <leader>a ggvG$
 " Spell checks previous mistake and corrects to first suggestion
 inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
 
-"" Filetype-specific keymaps
-nnoremap <leader>m :w<CR>:Make<CR>
-nnoremap <leader>M :w<CR>:Make!<CR>
-" augroup ftSpecific
-"     autocmd!
-"     " Saves file and run haskell interpreter
-"     autocmd FileType haskell nnoremap <buffer> <leader>m :!runhaskell %<CR>
-"     " Saves file and run python interpreter
-"     autocmd FileType python  nnoremap <buffer> <leader>m :!python %<CR>
-" augroup END
+"" Building keymaps
+nnoremap <leader>m :w<CR>:Dispatch<CR>
+nnoremap <leader>M :w<CR>:Dispatch!<CR>
 
 " Toggle Color Highlight
 nnoremap <leader>cc :ColorToggle<CR>
@@ -95,9 +88,9 @@ nnoremap <leader>cf :ColorSwapFgBg<CR>
 function! ToggleQuickfix()
   let l:nr =  winnr("$")
   if l:nr == 1
-      copen
+    copen
   else
-      cclose
+    cclose
   endif
 endfunction
 nnoremap <leader>q :call ToggleQuickfix()<CR>
@@ -115,9 +108,9 @@ set showcmd
 set noruler
 
 if has("termguicolors")
-    set termguicolors
-    let ayucolor="dark"
-    colorscheme ayu
+  set termguicolors
+  let ayucolor="dark"
+  colorscheme ayu
 endif
 
 " augroup CursorLine
@@ -140,10 +133,10 @@ highlight Folded ctermbg=Black guibg=Black
 highlight Whitespace ctermfg=magenta guifg=magenta
 " Spell checker colors
 if (v:version >= 700)
-    highlight SpellBad   ctermfg=Red     cterm=Underline guifg=LightRed   gui=Underline guisp=LightRed
-    highlight SpellCap   ctermfg=Blue    cterm=Underline guifg=LightBlue  gui=Underline guisp=Blue
-    highlight SpellLocal ctermfg=Green   cterm=Underline guifg=LightGreen gui=Underline guisp=Green
-    highlight SpellRare  ctermfg=Yellow  cterm=underline guifg=Orange     gui=Underline guisp=Orange
+  highlight SpellBad   ctermfg=Red     cterm=Underline guifg=LightRed   gui=Underline guisp=LightRed
+  highlight SpellCap   ctermfg=Blue    cterm=Underline guifg=LightBlue  gui=Underline guisp=Blue
+  highlight SpellLocal ctermfg=Green   cterm=Underline guifg=LightGreen gui=Underline guisp=Green
+  highlight SpellRare  ctermfg=Yellow  cterm=underline guifg=Orange     gui=Underline guisp=Orange
 endif
 
 """"""""
@@ -162,7 +155,7 @@ set wildmenu              " visual menu for command autocompletion
 set splitright            " Vertical split to the right (default is left)
 
 " Spaces and Tabs, settling the war
-set tabstop=4             " n spaces per tab visually
+set tabstop=8             " n spaces per tab visually
 set softtabstop=4         " n spaces per tab when editing
 set shiftwidth=4          " n spaces for autoindent
 set expandtab             " If active, tabs are converted to spaces
@@ -177,3 +170,6 @@ set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp,.
 set backupskip=/tmp/*,/private/tmp/*
 set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set writebackup
+
+" Filetype specific
+autocmd FileType scheme setlocal softtabstop=2 shiftwidth=2
