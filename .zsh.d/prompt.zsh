@@ -33,7 +33,7 @@ function _prompt {
 
 function _rprompt {
     # Show current directory
-    local curr_dir='%B%F{magenta}%40<...<%~%f%b'
+    local curr_dir='%B%F{yellow}%40<...<%~%f%b'
     # Show number of running jobs
     local jobs_info='%(1j.[%F{blue}%j%f].)'
     # Info about git branch
