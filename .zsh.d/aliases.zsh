@@ -25,7 +25,7 @@ port=6601
 alias mpcy="mpc -p ${port}"
 alias ncmpcppy="ncmpcpp -p ${port}"
 
-function trash { mv $@ ~/.trash }
+function trash { mv -i $@ ~/.trash }
 
 function doi2bib {
     curl -LH "Accept: text/bibliography; style=bibtex" "http://dx.doi.org/$@" | sed -r -e '1s/, /,\n  /' -e 's/}, /},\n  /g' -e '$s/}}/}\n}/' -e '1s/^[[:space:]]*//'

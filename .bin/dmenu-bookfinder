@@ -5,7 +5,6 @@ LIBRARY="$HOME/Books"
 # Find files with right extensions and remove folder from path
 books=$(find $LIBRARY | grep '\.epub\|\.djvu\|\.pdf' | sed "s:${LIBRARY}/::g")
 selected=$(echo "$books" | dmenu -l 25 -i -p "β")
-# selected=$(echo "$books" | rofi -matching glob -dmenu -i -p "β ")
 exit_code=$?
 
 echo $exit_code
