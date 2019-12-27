@@ -3,13 +3,13 @@ herbstclient keyunbind --all
 
 normalMode="$HOME/.config/herbstluftwm/keybindings.sh"
 exec_on_tag="$HOME/.config/herbstluftwm/scripts/exec_on_tag"
-TERMINAL=termite
+TERMINAL=st
 
 # Exit mod e
 herbstclient keybind Escape spawn sh "$normalMode"
 
 # Bind the normal keys
-herbstclient keybind w           chain , spawn wicd-client                          , spawn sh "$normalMode"
+herbstclient keybind w           chain , spawn networkmanager_dmenu                 , spawn sh "$normalMode"
 herbstclient keybind e           chain , spawn pcmanfm                              , spawn sh "$normalMode"
 herbstclient keybind t           chain , spawn transmission-gtk                     , spawn sh "$normalMode"
 herbstclient keybind p           chain , spawn zathura                              , spawn sh "$normalMode"

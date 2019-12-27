@@ -16,8 +16,8 @@ herbstclient keybind $Super-Shift-r reload
 herbstclient keybind $Super-Shift-q close
 
 # Main spawn shortcuts
-herbstclient keybind $Super-Return           spawn termite
-herbstclient keybind $Super-Shift-dead_greek spawn termite -e htop
+herbstclient keybind $Super-Return           spawn st
+herbstclient keybind $Super-Shift-dead_greek spawn st -e htop
 
 herbstclient keybind $Super-Shift-d          spawn rofi -show drun
 herbstclient keybind $Super-Shift-w          spawn rofi -show window
