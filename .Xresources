@@ -8,6 +8,11 @@ URxvt.font: xft:Source Code Pro:style=Semibold:size=11:antialias=true:hinting=fa
 
 ! Nice font options: Hack, Source Code Pro, Fantasque, Inconsolata
 
+dmenu.font: Source Code Pro:style:Semibold:size=11:antialias=true:hinting=false
+dmenu.background: #0f1419
+dmenu.foreground: #ffffea
+dmenu.selbackground: #56bb78
+dmenu.selforeground: #0f1419
 
 !! Xterm config
 XTerm*termName: xterm-256color
