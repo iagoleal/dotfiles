@@ -49,12 +49,7 @@ xset b off
 # Change the cursor default icon
 xsetroot -cursor_name left_ptr
 
-# Set Wallpaper to my beloved duck image
-feh --bg-scale ~/Pictures/Wallpapers/duck.jpg &
-# Christmas version of my beloved duck image
-# feh --bg-scale ~/Pictures/Wallpapers/xmas/duck_xmas.png
-
-# Start Compositor
+# Start compositor
 compton &
 # udiskie is a automount daemon
 udiskie &
