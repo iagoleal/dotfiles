@@ -6,7 +6,7 @@ player_file="$HOME/.local/share/hists/player"
 player_list="$($HOME/.bin/musicctl -l)"
 
 # Get option from list
-player="$( echo -e "$player_list" | rofi -dmenu -no-custom -i -p '🎶 ' )"
+player="$( echo -e "$player_list" | dmenu -r -i -p '🎶' )"
 exit_code="$?"
 
 if [ $exit_code == 0 ]; then

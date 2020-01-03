@@ -19,10 +19,9 @@ herbstclient keybind $Super-Shift-q close
 herbstclient keybind $Super-Return           spawn st
 herbstclient keybind $Super-Shift-dead_greek spawn st -e htop
 
-herbstclient keybind $Super-Shift-d          spawn rofi -show drun
-herbstclient keybind $Super-Shift-w          spawn rofi -show window
+herbstclient keybind $Super-Shift-d          spawn dmenu_run -r -p '> '
 herbstclient keybind $Super-m                spawn "$HOME/.bin/dmenu-playsimilar"
-herbstclient keybind $Super-XF86AudioPlay    spawn "$HOME/.bin/rofi-chooseplayer"
+herbstclient keybind $Super-XF86AudioPlay    spawn "$HOME/.bin/dmenu-chooseplayer"
 herbstclient keybind $Super-b                spawn "$HOME/.bin/dmenu-bookfinder"
 herbstclient keybind $Super-slash            spawn "$HOME/.bin/internet-search-cb"
 
