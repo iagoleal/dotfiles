@@ -49,7 +49,7 @@ promptinit
 #----------------------------
 export EDITOR="nvim -e"
 export VISUAL="nvim"
-export TERMINAL="termite"
+export TERMINAL="st"
 
 # Append ~/.bin folder to PATH variable
 path+=("$HOME/.local/bin")
