@@ -21,16 +21,18 @@ sda      8:0    0 465.8G  0 disk
 | Operational System| Arch Linux    |
 | Shell             | zsh           |
 | Window Manager    | herbstluftwm  |
-| Terminal Emulator | termite       |
-| App Launcher      | rofi          |
+| Terminal Emulator | st            |
+| App Launcher      | dmenu         |
 | Text Editor       | nvim          |
 | Browser           | firefox       |
 | File Manager      | pcmanfm       |
+| Network Manager   | wicd          |
 | Music Player      | mpd + ncmpcpp |
 | Video Player      | mpv           |
 | Image Viewer      | feh           |
 | PDF   Viewer      | zathura       |
 | Screen Locker     | slock         |
+| Font              | Source Pro    |
 
 
 ## Keyboard layout
@@ -114,7 +116,6 @@ Everything is going to  be referenced by its _pacman_ package name.
 
 * Wicd
 	* `# pacman -S wicd`
-	* Is it better than netctl?
 
 ### Managing permissions
 * Polkit
@@ -127,8 +128,8 @@ Everything is going to  be referenced by its _pacman_ package name.
 
 * Nvidia (open source)
 	* `# pacman -S xf86-video-nouveau`
-### External Media
 
+### External Media
 #### Automount
 * Udisks
 	* `# pacman -S udisks2`
@@ -146,11 +147,10 @@ Everything is going to  be referenced by its _pacman_ package name.
 
 #### MTP file transfer
 * Android File Transfer
-    * `# pacman -S android-file-transfer`
-    * Mount MTP devices (with focus on android)
+	* `# pacman -S android-file-transfer`
+	* Mount MTP devices (with focus on android)
 
 ### Audio (low-level)
-
 * Alsa
 	* `# pacman -S alsa-utils`
 	* test with `alsamixer` and press `m` to unmute
@@ -202,6 +202,7 @@ Everything is going to  be referenced by its _pacman_ package name.
 #### LaTeX
 * Texlive
 	* `# pacman -S texlive-most texlive-lang`
+	* `aur/texlive-most-docs`
 	* Everything. When it comes to latex, it's better to have *everything* installed.
 
 #### Typesetting Music
@@ -246,12 +247,6 @@ Everything is going to  be referenced by its _pacman_ package name.
 	* `# pacman -S ncmpcpp`
 	* Nice media player client for mpd
 
-* cava
-	* `yaourt -S cava`
-	* Audio visualizer. Really pretty
-	* specially alongside ncmppp
-	* (get its input directly from alsa, not mpd)
-
 * mpv
 	* `# pacman -S mpv`
 	* CLI controlled video player (mplayer sucessor)
@@ -274,7 +269,7 @@ Everything is going to  be referenced by its _pacman_ package name.
 	* CLI file manager with vim bindings
 
 * Dropbox
-	* `# yaourt -S dropbox dropbox-cli`
+	* `# yay -S dropbox dropbox-cli`
 	* It's always important to store some files online
 	* Enabled at login via
 	* `$ systemctl --user enable dropbox.service`
@@ -312,17 +307,6 @@ Everything is going to  be referenced by its _pacman_ package name.
 	* `community/herbstluftwm`
 	* Manual tiling window manager. Oh god, it's amazing!
 
-* i3
-	* `# pacman -S i3-gaps i3blocks i3lock i3status` or `# pacman -S i3` to dowloand entire group
-	* Tiling window manager. First experience with something like it
-	* (besides tmux)
-* Alternatives: bspwm, awesome, xmonad, herbstluftwm, spectrwm
-
- * sxhkd
-	* `# pacman -S sxhkd`
-	* Daemon to set and control custom keybindings
-	* Really useful with something like bspwm
-
 #### Lock screen
 * slock
 	* `# pacman -S slock`
@@ -341,10 +325,13 @@ Everything is going to  be referenced by its _pacman_ package name.
 * Rofi
 	* `# pacman -S rofi`
 	* A dmenu substitute.
-	* Good as an applcation / window switcher
+	* Good as an application / window switcher
 	* currently mapped to `Super+Shift+d`
 	* Still need to learn how to really use it
 	* Config file at `~/.config/rofi/config.rasi`
+
+* dmenu
+	* `# pacman -S dmenu`
 
 #### Terminal Emulator
 * Termite
@@ -395,11 +382,6 @@ Everything is going to  be referenced by its _pacman_ package name.
 	* `# pacman -S gimp`
 	* A not so simple image editor. Someday, I should learn how to properly use it
 
-
-#### Screenshooter
-* import
-	* A tool included on imagemagick
-
 ### MISC
 
 #### Spaced Repetition
@@ -424,7 +406,7 @@ For styles use: `fc-list | grep _title_`
 
 * Inconsolata, Hack, mononoki, Fantasque Sans Mono
 	* `# pacman -S ttf-inconsolata ttf-hack`
-	* `$ yaourt -S ttf-monoki ttf-fantasque-sans-mono`
+	* `$ yay -S ttf-monoki ttf-fantasque-sans-mono`
 	* Other monospaced fonts
 
 * Roboto family
