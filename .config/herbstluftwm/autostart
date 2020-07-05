@@ -52,10 +52,6 @@ herbstclient mousebind Mod4-Button3 resize
 # Focus follow mouse
 herbstclient set focus_follows_mouse 1
 
-# Little hack from the FAQ
-# Necessary to make vertical splitting the default on tag 1
-herbstclient split vertical 0.5 ; herbstclient remove
-
 # Set Wallpaper to my beloved duck image
 month=$(date +'%m')
 day=$(date +'%d')
@@ -65,3 +61,8 @@ then
 else
     feh --bg-scale ~/Pictures/Wallpapers/duck.jpg
 fi
+
+# Little hack from the FAQ
+# Necessary to make vertical splitting the default on tag 1
+herbstclient split vertical 0.5 ; herbstclient remove
+
