@@ -68,6 +68,7 @@ open() {
             *.jpeg)    feh $1;;
             *.png)     feh $1;;
             *.bmp)     feh $1;;
+            *.gif)     firefox $1;;
             *.avi)     mpv $1;;
             *.mkv)     mpv $1;;
             *.mp4)     mpv $1;;

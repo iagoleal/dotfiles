@@ -50,6 +50,7 @@ promptinit
 export EDITOR="nvim -e"
 export VISUAL="nvim"
 export TERMINAL="st"
+export BROWSER="firefox"
 
 # Append ~/.bin folder to PATH variable
 path+=("$HOME/.local/bin")
