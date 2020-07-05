@@ -228,24 +228,12 @@ Everything is going to  be referenced by its _pacman_ package name.
 #### Media Players
 
 * mpd (Media Player Daemon)
-	* `# pacman -S mpd`
+	* `# pacman -S mpd mpc ncmpcpp`
 	* Server for music. Allows remote access and has lots of features
 	* Important note, it is bounded to _systemd_ as an user
 	* `$ systemctl --user enable mpd.service`
-
-* Mopidy + Spotify
-	* `# pacman -S mopidy`
-	* `# yaourt -S mopidy-spotify`
-	* MPD or HTTP server with support to various streaming services.
-	* In my case, I use essentially for Spotify.
-
-* mpc
-	* `# pacman -S mpc`
-	* Minimalist CLI to control mpd
-
-* ncmpcpp
-	* `# pacman -S ncmpcpp`
-	* Nice media player client for mpd
+	* mpc: Minimalist CLI to control mpd
+	* ncmpcpp: Nice media player client for mpd
 
 * mpv
 	* `# pacman -S mpv`
@@ -322,22 +310,11 @@ Everything is going to  be referenced by its _pacman_ package name.
 	* X compositor, for that sexy looking effects
 
 #### Application Laucher
-* Rofi
-	* `# pacman -S rofi`
-	* A dmenu substitute.
-	* Good as an application / window switcher
-	* currently mapped to `Super+Shift+d`
-	* Still need to learn how to really use it
-	* Config file at `~/.config/rofi/config.rasi`
-
 * dmenu
 	* `# pacman -S dmenu`
 
 #### Terminal Emulator
-* Termite
-	* `# pacman -S termite`
-	* Config file is `~/.config/termite/config`.
-* Alternatives: urxvt, termite, xterm, st
+* st
 
 * xterm
 	* `# pacman -S xterm`
