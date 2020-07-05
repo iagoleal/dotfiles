@@ -131,6 +131,8 @@ set showmatch             " highlight matching parentheses (useful as hell)
 highlight Folded ctermbg=Black guibg=Black
 " Trailing spaces
 highlight Whitespace ctermfg=magenta guifg=magenta
+" Matching Parentheses
+highlight MatchParen guibg=none guifg=magenta ctermfg=magenta gui=Bold,Underline cterm=underline
 " Spell checker colors
 if (v:version >= 700)
   highlight SpellBad   ctermfg=Red     cterm=Underline guifg=LightRed   gui=Underline guisp=LightRed
@@ -173,3 +175,4 @@ set writebackup
 
 " Filetype specific
 autocmd FileType scheme setlocal softtabstop=2 shiftwidth=2
+autocmd FileType haskell let b:dispatch = 'runhaskell %'"
