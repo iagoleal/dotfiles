@@ -1,5 +1,7 @@
 ! Nice font options: Hack, Source Code Pro, Fantasque, Inconsolata
 
+Xcursor.theme: Vimix-cursors
+
 dmenu.font: Source Code Pro:style:Semibold:size=11:antialias=true:hinting=false
 dmenu.background: #0f1419
 dmenu.foreground: #ffffea
