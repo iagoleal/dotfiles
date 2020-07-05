@@ -3,7 +3,7 @@
 # -p : player to control
 # -l : list available players
 
-player=mpd
+playfile="$HOME/.local/share/hists/player"
 
 while getopts p:l flag; do
     case $flag in
@@ -11,13 +11,17 @@ while getopts p:l flag; do
             player=${OPTARG}
             ;;
         l)
-            echo -e "MPD\nMopidy\nSpotify\nMPV"
+            echo -e "MPD\nSpotify\nMPV"
             exit 0;
     esac
 done
 
 # Remove flag arguments
 shift $((OPTIND-1))
+
+if test -z "$player"; then
+    player="$(cat "$playfile")"
+fi
 
 typeset -A player_cmd
 case "${player}" in
