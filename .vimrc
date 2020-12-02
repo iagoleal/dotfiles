@@ -1,5 +1,6 @@
 " Load language specific plugin and indentation files
 filetype plugin indent on
+set nocompatible
 
 """""""""""
 " Plugins "
@@ -15,35 +16,19 @@ endif
 " Initialize vim-plug
 call plug#begin('~/.vim/bundle')
 
-Plug 'nelstrom/vim-visual-star-search'           " Search highlighted text
-Plug 'tpope/vim-commentary'                      " Toggle commentary
-Plug 'tpope/vim-surround'                        " Edit surrounding objects
-Plug 'tpope/vim-dispatch'                        " Async make
-Plug 'godlygeek/tabular'                         " Align tables
-Plug 'chrisbra/Colorizer', {'on': 'ColorToggle'} " Show colors from code
+Plug 'tpope/vim-commentary'                           " Toggle commentary
+Plug 'tpope/vim-surround'                             " Edit surrounding objects
+Plug 'tpope/vim-dispatch'                             " Async make
+Plug 'godlygeek/tabular'  , { 'on': 'Tabularize'  }   " Align tables
+Plug 'chrisbra/Colorizer' , { 'on': 'ColorToggle' }   " Show colors from code
 
-Plug 'jalvesaq/vimcmdline'                       " Send line to REPl
-" vimcmdline mappings
-let cmdline_map_start          = '<LocalLeader>s'
-let cmdline_map_send           = '<LocalLeader><Space>'
-let cmdline_map_send_and_stay  = '<LocalLeader><S-Space>'
-let cmdline_map_source_fun     = '<LocalLeader>f'
-let cmdline_map_send_paragraph = '<LocalLeader>p'
-let cmdline_map_send_block     = '<LocalLeader>b'
-let cmdline_map_quit           = '<LocalLeader>q'
-
-" Snippets
-Plug 'SirVer/ultisnips'
-let g:UltiSnipsUsePythonVersion = 3
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-let g:UltiSnipsSnippetDirectories=[$HOME."/.vim/snips"]
+" REPLs
+Plug 'hkupty/iron.nvim'
 
 "" Filetype specific
 
 " Latex
-Plug 'lervag/vimtex', { 'for': 'tex'}
+Plug 'lervag/vimtex', { 'for': 'tex' }
 let g:tex_flavor='latex'
 let g:vimtex_view_method='zathura'
 let g:vimtex_compiler_progname = 'nvr'
@@ -53,14 +38,55 @@ let g:vimtex_quickfix_open_on_warning=1
 let g:vimtex_indent_enabled=0
 let g:vimtex_indent_delims = {}
 
+" Markdown
+Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
+let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_conceal = 0
+let g:vim_markdown_fenced_languages = ['c++=cpp', 'viml=vim', 'bash=sh', 'ini=dosini']
+let g:vim_markdown_math = 1
+let g:vim_markdown_frontmatter = 1
+let g:vim_markdown_new_list_item_indent = 4
+
 " Julia
-Plug 'JuliaEditorSupport/julia-vim', {'for': 'julia'}
+Plug 'JuliaEditorSupport/julia-vim', { 'for': 'julia' }
+
+" Haskell
+Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
+let g:haskell_enable_quantification   = 1   " to enable highlighting of `forall`
+let g:haskell_enable_recursivedo      = 1   " to enable highlighting of `mdo` and `rec`
+let g:haskell_enable_arrowsyntax      = 1   " to enable highlighting of `proc`
+let g:haskell_enable_pattern_synonyms = 1   " to enable highlighting of `pattern`
+let g:haskell_enable_typeroles        = 1   " to enable highlighting of type roles
+let g:haskell_enable_static_pointers  = 1   " to enable highlighting of `static`
+let g:haskell_backpack                = 1   " to enable highlighting of backpack keywords
+let g:haskell_indent_in               = 0
+let g:haskell_indent_case_alternative = 1
+
+" Fennel
+Plug 'bakpakin/fennel.vim', { 'for': 'fennel' }
+
+" Racket
+Plug 'wlangstroth/vim-racket', { 'for': 'racket' }
+
+" GLSL
+Plug 'tikhomirov/vim-glsl'
 
 "" Themes
 Plug 'ayu-theme/ayu-vim'
 
+
+"" NeoVim specific
+" Requires nightly build!!!
+" Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'luochen1990/rainbow', { 'on': ['RainbowToggleOn', 'RainbowToggle'] } " Colorize parentheses
+let g:rainbow_active = 0
+
 " Stop plugin system
 call plug#end()
+
+if has("nvim")
+  luafile $HOME/.config/nvim/plugins.lua
+endif
 
 """""""""""""""
 " Keybindings "
@@ -69,10 +95,11 @@ call plug#end()
 " <leader> key is Space
 let mapleader="\<Space>"
 
+" Exit terminal with ESC
+tnoremap <Esc> <C-\><C-n>
+
 " Disable search highlighting (until next search)
 nnoremap <leader><Space> :nohlsearch<CR>
-" Select all text on file
-nnoremap <leader>a ggvG$
 
 " Spell checks previous mistake and corrects to first suggestion
 inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
@@ -80,10 +107,14 @@ inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
 "" Building keymaps
 nnoremap <leader>m :w<CR>:Dispatch<CR>
 nnoremap <leader>M :w<CR>:Dispatch!<CR>
+nnoremap <F12> :w<CR>:Dispatch!<CR>
 
 " Toggle Color Highlight
 nnoremap <leader>cc :ColorToggle<CR>
 nnoremap <leader>cf :ColorSwapFgBg<CR>
+" Toggle Rainbow Parentheses
+nnoremap <leader>cr :RainbowToggle<CR>
+
 " Toggle quickfix
 function! ToggleQuickfix()
   let l:nr =  winnr("$")
@@ -95,6 +126,24 @@ function! ToggleQuickfix()
 endfunction
 nnoremap <leader>q :call ToggleQuickfix()<CR>
 
+
+" Iron REPL
+let g:iron_map_defaults=0
+let g:iron_map_extended=1
+nmap <leader>it    <Plug>(iron-send-motion)
+vmap <leader>iv    <Plug>(iron-visual-send)
+nmap <leader>i.    <Plug>(iron-repeat-cmd)
+nmap <leader>i<Space> <Plug>(iron-send-line)
+nmap <leader>ii    <Plug>(iron-send-line)
+nmap <leader>i<CR> <Plug>(iron-cr)
+nmap <leader>ic    <plug>(iron-interrupt)
+nmap <leader>iq    <Plug>(iron-exit)
+nmap <leader>il    <Plug>(iron-clear)
+nmap <leader>ip    <Plug>(iron-send-motion)ip
+nnoremap <leader>is :IronRepl<CR>
+nnoremap <leader>ir :IronRestart<CR>
+nmap <leader>if <Cmd>lua require("iron").core.send(vim.api.nvim_buf_get_option(0,"ft"), vim.api.nvim_buf_get_lines(0, 0, -1, false))<Cr>
+
 """""""""
 " Theme "
 """""""""
@@ -102,27 +151,30 @@ nnoremap <leader>q :call ToggleQuickfix()<CR>
 " Enable syntax highlighting
 syntax enable
 
-set laststatus=1
+set laststatus=2
 set showmode
 set showcmd
-set noruler
+set ruler
+set conceallevel=0
 
 if has("termguicolors")
   set termguicolors
-  let ayucolor="dark"
+  set background=dark
+  let ayucolor="mirage"
   colorscheme ayu
 endif
 
-" augroup CursorLine
-"       autocmd!
-"       autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline cursorcolumn
-"       autocmd WinLeave * setlocal nocursorline nocursorcolumn
-" augroup END
+augroup CursorLine
+  autocmd!
+  autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline cursorcolumn
+  autocmd WinLeave * setlocal nocursorline nocursorcolumn
+augroup END
 
 set list                  " Show trailing {spaces, tabs}
 set listchars=tab:├─,trail:۰,nbsp:☻,extends:⟩,precedes:⟨
 
 set number                " show line numbers
+set relativenumber        " Show line numbers relative to current line
 set numberwidth=3         " set minimum width of numbers bar
 set showmatch             " highlight matching parentheses (useful as hell)
 
@@ -146,21 +198,21 @@ endif
 """"""""
 
 " Search
-set incsearch             " search as characters are entered
-set hlsearch              " highlight matches
-set ignorecase            " case-insensitive searchs / substitutions
-set smartcase             " If terms are all lowercase, ignore case. Consider case otherwise.
+set incsearch               " search as characters are entered
+set hlsearch                " highlight matches
+set ignorecase              " case-insensitive searchs / substitutions
+set smartcase               " If terms are all lowercase, ignore case. Consider case otherwise.
 
-set wildmode=longest,full " first autocomplete the word, afterwards run across the list
-set wildmenu              " visual menu for command autocompletion
+set wildmenu                " visual menu for command autocompletion
+set wildmode=full,list,full " first autocomplete the word, afterwards run across the list
 
-set splitright            " Vertical split to the right (default is left)
+set splitright              " Vertical split to the right (default is left)
 
 " Spaces and Tabs, settling the war
-set tabstop=8             " n spaces per tab visually
-set softtabstop=4         " n spaces per tab when editing
-set shiftwidth=4          " n spaces for autoindent
-set expandtab             " If active, tabs are converted to spaces
+set tabstop=2               " n spaces per tab visually
+set softtabstop=2           " n spaces per tab when editing
+set shiftwidth=2            " n spaces for autoindent
+set expandtab               " If active, tabs are converted to spaces
 set smarttab
 
 " Indentation
@@ -168,11 +220,20 @@ set autoindent
 
 " Set backup files
 set backup
-set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp,.
+set backupdir=~/.vim/tmp,~/.tmp,~/tmp,/var/tmp,/tmp,.
 set backupskip=/tmp/*,/private/tmp/*
-set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+set directory=~/.vim/tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set writebackup
 
+" Set Thesaurus file
+set thesaurus+=~/.vim/thesaurus/mthesaur.txt
+
 " Filetype specific
-autocmd FileType scheme setlocal softtabstop=2 shiftwidth=2
-autocmd FileType haskell let b:dispatch = 'runhaskell %'"
+if has("autocmd")
+  autocmd FileType scheme setlocal softtabstop=2 shiftwidth=2 lisp autoindent
+  autocmd FileType haskell let b:dispatch = 'stack runhaskell %'
+  autocmd FileType markdown setlocal spell
+  autocmd FileType latex setlocal spell
+  autocmd FileType make setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=0
+  autocmd FileType fennel let b:dispatch = 'love %:p:h'
+endif
