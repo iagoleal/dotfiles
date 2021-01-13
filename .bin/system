@@ -6,19 +6,19 @@ case $1 in
         locker
         ;;
     "suspend")
-        locker systemctl suspend -i
+        systemctl suspend
         ;;
     "logout")
         herbstclient quit
         ;;
-    "hibernate")
-        locker systemctl hibernate
-        ;;
     "reboot")
         systemctl reboot
         ;;
+    "hibernate")
+        systemctl hibernate
+        ;;
     "poweroff")
-        systemctl poweroff -i
+        systemctl poweroff
         ;;
     *)
         exit 1

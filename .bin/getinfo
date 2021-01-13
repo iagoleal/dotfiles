@@ -11,11 +11,11 @@ read vol_info vol_ison <<< $(amixer sget Master | awk -F'[][]' 'NF > 1 { print $
 # Check if volume is muted
 if [[ "$vol_ison" = 'on' ]]
     then
-        vol_symb=🔊
+        vol_symb=''
         vol_color='default'
         vol="$vol_symb $vol_info"
     else
-        vol_symb=🔇
+        vol_symb=''
         vol_color='grey'
         vol="<span color='$vol_color'>$vol_symb $vol_info</span>"
 fi
@@ -24,31 +24,20 @@ fi
 # Battery
 #------------------------
 bat_symbol='⚡'
-batdir=$( echo /sys/class/power_supply/BAT[01])
-if [[ -d $batdir ]]
-    then
-        batlevel="$(cat "$batdir/capacity")%"
-        batstatus=$(cat "$batdir/status")
-    else
-        batstatus="ERROR"
-fi
-bat="$bat_symbol $batlevel"
+bat0="$(cat /sys/class/power_supply/BAT0/capacity)"
+bat1="$(cat /sys/class/power_supply/BAT1/capacity)"
+bat="$bat_symbol 0: ${bat0}% 1: ${bat1}%"
 
 #------------------------
 # Screen Brightness
 #------------------------
-max_brightness=$(cat /sys/class/backlight/acpi_video1/max_brightness)
-brightness=$(cat /sys/class/backlight/acpi_video1/brightness)
-# if [ "$( expr $brightness \* 3)" -gt "$max_brightness" ]; then
-#     color='yellow'
-#     brightness="<span color='$color'>$brightness</span>"
-# fi
+brightness="$( printf "%0.1f\n" $(xbacklight))"
 
 #------------------------
 # Temperature
 #------------------------
 # Temperature in m°C
-temp_symb='🌡'
+temp_symb=''
 # Raw temperature in m°C
 temp_mC=$(cat /sys/class/thermal/thermal_zone0/temp)
 # Formatted temperature
@@ -76,4 +65,11 @@ day=$(date +'%Y.%m.%d')
 week_day=$(($(date +%w) + 1 ))
 hour=$(date +'%H:%M')
 
-echo "${vol} |${bat} |${temp} | ${mem_perc} | $brightness/$max_brightness | ${day} [$week_day] | ${hour}"
+#---------------------
+# Bluetooth
+#---------------------
+bluetooth_status="$(bluetooth | cut -f 3 -d' ')"
+bt="<span color='#0082fc'>bt</span> $bluetooth_status"
+
+
+echo "${vol} |${bat} |${temp} | ${mem_perc} | $brightness | ${bt} | ${day} [$week_day] | ${hour}"

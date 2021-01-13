@@ -1,5 +1,6 @@
 #!/bin/sh
 
+player_dir="$HOME/.local/share/hists"
 player_file="$HOME/.local/share/hists/player"
 
 # List of players to choose from
@@ -11,6 +12,9 @@ exit_code="$?"
 
 if [ $exit_code == 0 ]; then
     # Put player name on file to later use
+    if ! [ -f "$player_file" ]; then
+        mkdir -p "$player_dir" && touch "$player_file"
+    fi
     echo $player | tr '[:upper:]' '[:lower:]' > "$player_file"
     herbstclient reload
 else
