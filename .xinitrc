@@ -48,7 +48,7 @@ xset b off
 xsetroot -cursor_name left_ptr
 
 # Start compositor
-compton &
+# compton &
 # udiskie is a automount daemon
 udiskie &
 # Redshift uses location / time info to control screen temperature and brightness
