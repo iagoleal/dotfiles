@@ -1,8 +1,8 @@
-# Use command `vi` to open neovim.
-# It's only two characters long, after all...
-# vi can still be used via `/bin/vi` or `\vi`
-alias vi=nvim
-alias view="nvim -R"
+# Show folder
+alias ls='ls --color'
+
+# Call haskell interpreter from stack
+alias runhaskell='stack runhaskell'
 
 # herbstclient is too big to keep writing...
 alias hc=herbstclient
@@ -13,6 +13,13 @@ alias dotfiles='git --git-dir=$HOME/.dotfiles-gitdir/ --work-tree=$HOME'
 # Get weather information
 function weather { curl wttr.in/"$*"; }
 
+# Update everything
+function update {
+  yay -Syu --noconfirm
+  nvim --headless +PlugUpdate +PlugUpgrade +qall
+  stack upgrade && stack update
+}
+
 # Open pdf or ebook files
 function zth { zathura "$@" &}
 zstyle ":completion:*:*:zth:*" file-patterns "*.{pdf,djvu,epub,ps,xps}"
@@ -20,16 +27,15 @@ zstyle ":completion:*:*:zth:*" file-patterns "*.{pdf,djvu,epub,ps,xps}"
 # Custom notification sender
 alias notify="$HOME/.bin/notify"
 
-# Run mpc with mopidy
-port=6601
-alias mpcy="mpc -p ${port}"
-alias ncmpcppy="ncmpcpp -p ${port}"
-
 function trash { mv -i $@ ~/.trash }
 
 function doi2bib {
     curl -LH "Accept: text/bibliography; style=bibtex" "http://dx.doi.org/$@" | sed -r -e '1s/, /,\n  /' -e 's/}, /},\n  /g' -e '$s/}}/}\n}/' -e '1s/^[[:space:]]*//'
 }
+
+# For Haskell
+alias ghci='stack ghci'
+alias runhaskell='stack runhaskell'
 
 extract() {
     if [ -f $1 ] ; then
@@ -54,28 +60,34 @@ extract() {
 }
 zstyle ":completion:*:*:extract:*" file-patterns "*.{tar.bz2,tar.gz,tar.xz,bz2,rar,gz,tar,tbz2,tgz,zip,7z,xz}"
 
-open() {
-    if [ -d $1 ] ; then
-        cd $1
-    elif [ -f $1 ] ; then
-        case $1 in
-            *.pdf)     zathura $1;;
-            *.ps)      zathura $1;;
-            *.xps)     zathura $1;;
-            *.djvu)    zathura $1;;
-            *.epub)    zathura $1;;
-            *.jpg)     feh $1;;
-            *.jpeg)    feh $1;;
-            *.png)     feh $1;;
-            *.bmp)     feh $1;;
-            *.gif)     firefox $1;;
-            *.avi)     mpv $1;;
-            *.mkv)     mpv $1;;
-            *.mp4)     mpv $1;;
-            *.svg)     feh --conversion-timeout 0 $1;;
-            *)         vi $1;;
-        esac
-    else
-        echo "Cannot open '$1'"
-    fi
+countdown(){
+    date1=$((`date +%s` + $1));
+    while [ "$date1" -ge `date +%s` ]; do
+    ## Is this more than 24h away?
+    days=$(($(($(( $date1 - $(date +%s))) * 1 ))/86400))
+    echo -ne "$days day(s) and $(date -u --date @$(($date1 - `date +%s`)) +%H:%M:%S)\r";
+    sleep 0.1
+    done
 }
+stopwatch(){
+    date1=`date +%s`;
+    while true; do
+    days=$(( $(($(date +%s) - date1)) / 86400 ))
+    echo -ne "$days day(s) and $(date -u --date @$((`date +%s` - $date1)) +%H:%M:%S)\r";
+    sleep 0.1
+    done
+}
+
+# Open different file formats by extension
+alias -s {pdf,ps,xps,djvu,epub}=zathura
+alias -s {jpg,jpeg,png,bmp}=feh
+alias -s gif=firefox
+alias -s {avi,mkv,webm,mp4}=mpv
+alias -s svg=display
+
+
+# Shortcuts to some dirs
+alias blog="cd $HOME/Documents/site && vi posts/fft-hylo.md"
+alias site="cd $HOME/Documents/site"
+alias wiki="cd $HOME/Documents/wiki"
+alias proj="cd $HOME/Code/MapGenerator"

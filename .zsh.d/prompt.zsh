@@ -26,7 +26,7 @@ function _prompt {
     local error_code='%(?..Exit Code: %B%F{red}%?%f%b
 )'
     # Show different symbols for normal user or root
-    local user_symbol='>'
+    local user_symbol='%(?.%F{118}.%F{160})%B❯%b%f'
     local prompt_symbol="%(!.%F{red}#%f.$user_symbol) "
     echo -n $error_code$prompt_symbol
 }

@@ -8,6 +8,7 @@ autoload edit-command-line
 zle -N edit-command-line
 bindkey '' edit-command-line
 bindkey -M vicmd '' edit-command-line
+bindkey '^R' history-incremental-search-backward
 
 #----------------------------
 # Beep
@@ -23,13 +24,13 @@ HISTSIZE=1000
 SAVEHIST=1000
 setopt appendhistory
 
-# When going over history,
-# only consider commands which match the written characters until now
+# # When going over history,
+# # only consider commands which match the written characters until now
 autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
-[[ -n "$key[Up]"   ]] && bindkey -- "$key[Up]"   up-line-or-beginning-search
-[[ -n "$key[Down]" ]] && bindkey -- "$key[Down]" down-line-or-beginning-search
+bindkey '^[OA' history-beginning-search-backward
+bindkey '^[OB' history-beginning-search-forward
 
 #----------------------------
 # Autocompletion
@@ -49,13 +50,14 @@ promptinit
 #----------------------------
 export EDITOR="nvim -e"
 export VISUAL="nvim"
-export TERMINAL="st"
+export TERMINAL="xterm"
 export BROWSER="firefox"
 
 # Append ~/.bin folder to PATH variable
 path+=("$HOME/.local/bin")
 path+=("$HOME/.bin")
 export PATH
+eval $(luarocks path --bin)
 
 #----------------------------
 # Source additional configs
@@ -66,3 +68,8 @@ source $HOME/.zsh.d/aliases.zsh
 source $HOME/.zsh.d/prompt.zsh
 # Enable syntax highlighting
 source $HOME/.zsh.d/syntax-highlighting.zsh
+# fzf keybindings and completion
+source $HOME/.zsh.d/fzf.zsh
+
+# Make the cursor blink
+echo -e -n "\x1b[\x33 q"
