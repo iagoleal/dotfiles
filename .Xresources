@@ -1,18 +1,56 @@
 ! Nice font options: Hack, Source Code Pro, Fantasque, Inconsolata
 
-Xcursor.theme: Vimix-cursors
+! Color definitions
+#define BG #0f1419
+#define FG #ffffea
 
-dmenu.font: Source Code Pro:style:Semibold:size=11:antialias=true:hinting=false
-dmenu.background: #0f1419
-dmenu.foreground: #ffffea
+! Cursor configuration
+Xcursor.theme: Vimix-cursors
+Xcursor.size: 32
+
+dmenu.font: Source Code Pro:style:Semibold:size=14:antialias=true:hinting=false
+dmenu.background: BG
+dmenu.foreground: FG
 dmenu.selbackground: #56bb78
-dmenu.selforeground: #0f1419
+dmenu.selforeground: BG
 
 !! Xterm config
 XTerm*termName: xterm-256color
-XTerm*faceName: xft:Source Code Pro:style=Semibold:antialias=true:hinting=false
-XTerm*faceSize: 11
+XTerm*faceName: xft:mononoki::antialias=true:hinting=false
+XTerm*faceSize: 15
 XTerm*renderFont: true
 XTerm*locale: true
 ! allows alt+key to be used for commands
 XTerm*metaSendsEscape:  true
+! Fix backspace escape code
+XTerm.vt100.backarrowKey: false
+XTerm.ttyModes: erase ^?
+
+! special
+*.foreground:   #e9e0d3
+*.background:   #1a221a
+*.cursorColor:  #e9e0d3
+! black
+*.color0:       #0d0c0c
+*.color8:       #3c4142
+! red
+*.color1:       #e04a3c
+*.color9:       #e01719
+! green
+*.color2:       #2be353
+*.color10:      #21d225
+! yellow
+*.color3:       #ede945
+*.color11:      #f7e632
+! blue
+*.color4:       #5fafee
+*.color12:      #2ebcf6
+! magenta
+*.color5:       #d96af6
+*.color13:      #db4bda
+! cyan
+*.color6:       #3ff4e7
+*.color14:      #23f9e7
+! white
+*.color7:       #eae3d8
+*.color15:      #e5e5e5
