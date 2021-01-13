@@ -25,10 +25,8 @@ fi
 # Capslock key function as Esc
 # Swap Left Control and Left Alt keys
 # Classic Control-Alt-Backspace command to kill X
-setxkbmap -layout br \
-    -option "caps:escape" \
-    -option "ctrl:swap_lalt_lctl" \
-    -option "compose:menu" \
+setxkbmap -model thinkpad -layout br \
+    -option "caps:swapescape" \
     -option "terminate:ctrl_alt_bksp"
 
 # Run the custom changes AFTER selecting the keyboard
@@ -38,10 +36,10 @@ fi
 
 # Start some nice programs
 if [ -d /etc/X11/xinit/xinitrc.d ] ; then
- for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
-  [ -x "$f" ] && . "$f"
- done
- unset f
+    for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
+        [ -x "$f" ] && . "$f"
+    done
+    unset f
 fi
 
 # Turn the damm bell sound off
