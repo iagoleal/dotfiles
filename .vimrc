@@ -22,9 +22,6 @@ Plug 'tpope/vim-dispatch'                             " Async make
 Plug 'godlygeek/tabular'  , { 'on': 'Tabularize'  }   " Align tables
 Plug 'chrisbra/Colorizer' , { 'on': 'ColorToggle' }   " Show colors from code
 
-" REPLs
-Plug 'hkupty/iron.nvim'
-
 "" Filetype specific
 
 " Latex
@@ -52,15 +49,6 @@ Plug 'JuliaEditorSupport/julia-vim', { 'for': 'julia' }
 
 " Haskell
 Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
-let g:haskell_enable_quantification   = 1   " to enable highlighting of `forall`
-let g:haskell_enable_recursivedo      = 1   " to enable highlighting of `mdo` and `rec`
-let g:haskell_enable_arrowsyntax      = 1   " to enable highlighting of `proc`
-let g:haskell_enable_pattern_synonyms = 1   " to enable highlighting of `pattern`
-let g:haskell_enable_typeroles        = 1   " to enable highlighting of type roles
-let g:haskell_enable_static_pointers  = 1   " to enable highlighting of `static`
-let g:haskell_backpack                = 1   " to enable highlighting of backpack keywords
-let g:haskell_indent_in               = 0
-let g:haskell_indent_case_alternative = 1
 
 " Fennel
 Plug 'bakpakin/fennel.vim', { 'for': 'fennel' }
@@ -76,10 +64,17 @@ Plug 'ayu-theme/ayu-vim'
 
 
 "" NeoVim specific
-" Requires nightly build!!!
-" Plug 'nvim-treesitter/nvim-treesitter'
-Plug 'luochen1990/rainbow', { 'on': ['RainbowToggleOn', 'RainbowToggle'] } " Colorize parentheses
-let g:rainbow_active = 0
+if has("nvim")
+  " REPLs
+  Plug 'hkupty/iron.nvim'
+
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update"
+
+  Plug 'luochen1990/rainbow', { 'on': ['RainbowToggleOn', 'RainbowToggle'] } " Colorize parentheses
+  let g:rainbow_active = 0
+
+endif
+
 
 " Stop plugin system
 call plug#end()
@@ -87,6 +82,29 @@ call plug#end()
 if has("nvim")
   luafile $HOME/.config/nvim/plugins.lua
 endif
+
+"""""""""""""""""""
+" Plugin Settings "
+"""""""""""""""""""
+
+let g:haskell_enable_quantification   = 1   " to enable highlighting of `forall`
+let g:haskell_enable_recursivedo      = 1   " to enable highlighting of `mdo` and `rec`
+let g:haskell_enable_arrowsyntax      = 1   " to enable highlighting of `proc`
+let g:haskell_enable_pattern_synonyms = 1   " to enable highlighting of `pattern`
+let g:haskell_enable_typeroles        = 1   " to enable highlighting of type roles
+let g:haskell_enable_static_pointers  = 1   " to enable highlighting of `static`
+let g:haskell_backpack                = 1   " to enable highlighting of backpack keywords
+let g:haskell_indent_case_alternative = 1
+let g:haskell_indent_if = 0
+let g:haskell_indent_case = 2
+let g:haskell_indent_let = 4
+let g:haskell_indent_where = 10
+let g:haskell_indent_before_where = 1
+let g:haskell_indent_after_bare_where = 1
+let g:haskell_indent_do = 3
+let g:haskell_indent_in = 0
+let g:haskell_indent_guard = 2
+
 
 """""""""""""""
 " Keybindings "
@@ -125,6 +143,12 @@ function! ToggleQuickfix()
   endif
 endfunction
 nnoremap <leader>q :call ToggleQuickfix()<CR>
+
+" Align
+vmap a= :Tab /=<CR>
+vmap a; :Tab /::<CR>
+vmap a- :Tab /-><CR>
+vmap a$ :Tab /$><CR>"
 
 
 " Iron REPL
@@ -229,11 +253,12 @@ set writebackup
 set thesaurus+=~/.vim/thesaurus/mthesaur.txt
 
 " Filetype specific
-if has("autocmd")
+augroup Langs
+  autocmd!
   autocmd FileType scheme setlocal softtabstop=2 shiftwidth=2 lisp autoindent
-  autocmd FileType haskell let b:dispatch = 'stack runhaskell %'
+  autocmd FileType haskell let b:dispatch = 'stack build'
   autocmd FileType markdown setlocal spell
   autocmd FileType latex setlocal spell
   autocmd FileType make setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=0
   autocmd FileType fennel let b:dispatch = 'love %:p:h'
-endif
+augroup END
