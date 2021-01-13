@@ -12,9 +12,9 @@ herbstclient keybind 2 chain , spawn sh "$normalMode" \
 herbstclient keybind 3 chain , spawn sh "$normalMode" \
                              , spawn "$HOME/.bin/system" "logout"
 herbstclient keybind 4 chain , spawn sh "$normalMode" \
-                             , spawn "$HOME/.bin/system" "hibernate"
-herbstclient keybind 5 chain , spawn sh "$normalMode" \
                              , spawn "$HOME/.bin/system" "reboot"
+herbstclient keybind 5 chain , spawn sh "$normalMode" \
+                             , spawn "$HOME/.bin/system" "hibernate"
 herbstclient keybind 6 chain , spawn sh "$normalMode" \
                              , spawn "$HOME/.bin/system" "poweroff"
 

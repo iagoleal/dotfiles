@@ -4,6 +4,9 @@
 config_folder="${HOME}/.config/herbstluftwm"
 modes_folder="${HOME}/.config/herbstluftwm/modes"
 
+Terminal='xterm -uc'
+Browser=firefox
+
 # Keybindings
 Super=Mod4    # Use the super key as the main modifier
 Alt=Mod1    # Use Alt key when necessary
@@ -11,16 +14,11 @@ Alt=Mod1    # Use Alt key when necessary
 # At start unbinding all keys
 herbstclient keyunbind --all
 
-#System-wide important stuff
-herbstclient keybind $Super-Shift-r reload
-herbstclient keybind $Super-Shift-q close
-
 # Main spawn shortcuts
-herbstclient keybind $Super-Return           spawn st
-herbstclient keybind $Super-Shift-dead_greek spawn st -e htop
+herbstclient keybind $Super-Return           spawn $Terminal
+herbstclient keybind $Super-Shift-Escape     spawn "$Terminal -e htop"
 
 herbstclient keybind $Super-Shift-d          spawn dmenu_run -r -p '> '
-herbstclient keybind $Super-XF86AudioPlay    spawn "$HOME/.bin/dmenu-chooseplayer"
 herbstclient keybind $Super-b                spawn "$HOME/.bin/dmenu-bookfinder"
 herbstclient keybind $Super-slash            spawn "$HOME/.bin/internet-search-cb"
 
@@ -31,24 +29,38 @@ herbstclient keybind $Super-w       spawn "$HOME/.bin/notify" "-e" "$HOME/.bin/h
 # Change mode
 herbstclient keybind $Super-Shift-e spawn sh "${modes_folder}/System.sh"
 herbstclient keybind $Super-d       spawn sh "${modes_folder}/Launcher.sh"
-herbstclient keybind Print          spawn sh "${modes_folder}/Printscreen.sh"
 herbstclient keybind $Super-n       spawn sh "${modes_folder}/Notify.sh"
 
-# Bind Media Keys
+# Screenshots
+herbstclient keybind Print              spawn flameshot full -c
+herbstclient keybind $Super-Shift-Print spawn flameshot full -c -p "$HOME/Pictures/Screenshots"
+herbstclient keybind $Super-Print       spawn flameshot gui
+
+# Media
+herbstclient keybind $Super-p             spawn sh "$HOME/.bin/musicctl" "toggle"
+herbstclient keybind $Super-$Alt-p        spawn sh "$HOME/.bin/dmenu-chooseplayer"
+herbstclient keybind $Super-Shift-comma   spawn sh "$HOME/.bin/musicctl" "prev"
+herbstclient keybind $Super-Shift-period  spawn sh "$HOME/.bin/musicctl" "next"
+
+# Bind Special Keys
 
 # increase/decrease/mute sound volume
+herbstclient keybind XF86AudioMute        spawn "$HOME/.bin/volctl" "mute"
 herbstclient keybind XF86AudioRaiseVolume spawn "$HOME/.bin/volctl" "raise"
 herbstclient keybind XF86AudioLowerVolume spawn "$HOME/.bin/volctl" "lower"
-herbstclient keybind XF86AudioMute        spawn "$HOME/.bin/volctl" "mute"
+herbstclient keybind XF86AudioMicMute     spawn "$HOME/.bin/volctl" "micmute"
 
-# Media player controls
-herbstclient keybind XF86AudioPlay spawn "$HOME/.bin/musicctl" "-p" "$(cat $HOME/.local/share/hists/player)" "toggle"
-herbstclient keybind XF86AudioStop spawn "$HOME/.bin/musicctl" "-p" "$(cat $HOME/.local/share/hists/player)" "stop"
-herbstclient keybind XF86AudioPrev spawn "$HOME/.bin/musicctl" "-p" "$(cat $HOME/.local/share/hists/player)" "prev"
-herbstclient keybind XF86AudioNext spawn "$HOME/.bin/musicctl" "-p" "$(cat $HOME/.local/share/hists/player)" "next"
+herbstclient keybind XF86MonBrightnessUp    spawn xbacklight -inc 5
+herbstclient keybind XF86MonBrightnessDown  spawn xbacklight -dec 5
+herbstclient keybind XF86Display            spawn arandr
 
-# Toggle touchpad
-herbstclient keybind $Super-F6 spawn $HOME/.bin/toggle-touchpad.sh
+# fn+4 == XF84Sleep
+
+# Window manager specific
+
+#System-wide important stuff
+herbstclient keybind $Super-Shift-r reload
+herbstclient keybind $Super-Shift-q close
 
 # Basic movement
 # focusing clients
@@ -101,7 +113,7 @@ for i in ${!tag_names[@]} ; do
         # Go to tag i
         herbstclient keybind "$Super-$key" use_index "$i"
         # Move focused window to tag i
-        herbstclient keybind "$Super-$Alt-$key" move_index "$i"
+        herbstclient keybind "$Super-Control-$key" move_index "$i"
         # Move focused window and go to tag i
         herbstclient keybind "$Super-Shift-$key" chain , move_index "$i" , use_index "$i"
     fi
@@ -114,7 +126,7 @@ herbstclient keybind $Super-comma   use_index -1 --skip-visible
 # layouting
 herbstclient keybind $Super-Shift-f floating toggle
 herbstclient keybind $Super-f       fullscreen toggle
-herbstclient keybind $Super-p       pseudotile toggle
+herbstclient keybind $Super-o       pseudotile toggle
 # The following cycles through the available layouts within a frame, but skips
 # layouts, if the layout change wouldn't affect the actual window positions.
 # I.e. if there are two windows within a frame, the grid layout is skipped.
