@@ -62,14 +62,19 @@ mem_perc=${mem_perc}%
 #------------------------
 day=$(date +'%Y.%m.%d')
 # date +%w gives the day of the week in {0..6} starting on Sunday
-week_day=$(($(date +%w) + 1 ))
 hour=$(date +'%H:%M')
 
+# Planet for each day
+declare -A week_symbol=( \
+[1]='☉' [2]='☾' [3]='♂' [4]='☿' \
+[5]='♃' [6]='♀' [7]='♄' )
+
+week_num=$(($(date +%w) + 1 ))
+week_day="<span font-weight='bold' font-size='large' color='yellow'>${week_symbol[$week_num]}</span>"
 #---------------------
 # Bluetooth
 #---------------------
 bluetooth_status="$(bluetooth | cut -f 3 -d' ')"
 bt="<span color='#0082fc'>bt</span> $bluetooth_status"
-
 
 echo "${vol} |${bat} |${temp} | ${mem_perc} | $brightness | ${bt} | ${day} [$week_day] | ${hour}"
