@@ -1,11 +1,11 @@
-
 -- Configure Trreesitter
 
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = {"css", "fennel", "lua"}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+local tscfg = require'nvim-treesitter.configs'
+
+tscfg.setup {
+  ensure_installed = {"bash", "c", "css", "fennel", "json", "julia", "lua", "python"}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
   highlight = {
-    enable = true,              -- false will disable the whole extension
-    --disable = { "c", "rust" },  -- list of language that will be disabled
+    enable = true,
   },
   incremental_selection = {
     enable = true,
@@ -19,16 +19,20 @@ require'nvim-treesitter.configs'.setup {
   indent = {
     enable = true
   },
+  rainbow = {
+    enable = true,
+    disable = {'bash'} -- please disable bash until I figure #1 out
+  },
 }
 
--- Don't highlight braces
--- Needed for compatibility with rainbow.vim
-require "nvim-treesitter.highlight"
-local hlmap = vim.treesitter.highlighter.hl_map
---Misc
-hlmap.error = nil
-hlmap["punctuation.delimiter"] = "Delimiter"
- hlmap["punctuation.bracket"] = nil
+---- Don't highlight braces
+---- Needed for compatibility with rainbow.vim
+--require "nvim-treesitter.highlight"
+--local hlmap = vim.treesitter.highlighter.hl_map
+----Misc
+--hlmap.error = nil
+--hlmap["punctuation.delimiter"] = "Delimiter"
+--hlmap["punctuation.bracket"] = nil
 
 -- Configure Iron Repl
 
@@ -48,7 +52,7 @@ iron.core.add_repl_definitions {
     }
   },
   scheme = {
-    mit = { command = {"scheme"} },
+    chez = { command = {"scheme"} },
     racket = { command = {"racket", "il", "scheme"} }
   }
 }

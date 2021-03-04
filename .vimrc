@@ -1,3 +1,4 @@
+
 " Load language specific plugin and indentation files
 filetype plugin indent on
 set nocompatible
@@ -15,6 +16,14 @@ endif
 
 " Initialize vim-plug
 call plug#begin('~/.vim/bundle')
+
+" Fuzzy search
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 
 Plug 'tpope/vim-commentary'                           " Toggle commentary
 Plug 'tpope/vim-surround'                             " Edit surrounding objects
@@ -44,19 +53,10 @@ let g:vim_markdown_math = 1
 let g:vim_markdown_frontmatter = 1
 let g:vim_markdown_new_list_item_indent = 4
 
-" Julia
-Plug 'JuliaEditorSupport/julia-vim', { 'for': 'julia' }
-
-" Haskell
-Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
-
-" Fennel
-Plug 'bakpakin/fennel.vim', { 'for': 'fennel' }
-
-" Racket
-Plug 'wlangstroth/vim-racket', { 'for': 'racket' }
-
-" GLSL
+Plug 'JuliaEditorSupport/julia-vim', { 'for': 'julia'   }
+Plug 'neovimhaskell/haskell-vim',    { 'for': 'haskell' }
+Plug 'bakpakin/fennel.vim',          { 'for': 'fennel'  }
+Plug 'wlangstroth/vim-racket',       { 'for': 'racket'  }
 Plug 'tikhomirov/vim-glsl'
 
 "" Themes
@@ -69,12 +69,14 @@ if has("nvim")
   Plug 'hkupty/iron.nvim'
 
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update"
+  Plug 'p00f/nvim-ts-rainbow'
 
   Plug 'luochen1990/rainbow', { 'on': ['RainbowToggleOn', 'RainbowToggle'] } " Colorize parentheses
   let g:rainbow_active = 0
-
 endif
 
+" Color picker
+Plug 'KabbAmine/vCoolor.vim'
 
 " Stop plugin system
 call plug#end()
@@ -95,7 +97,7 @@ let g:haskell_enable_typeroles        = 1   " to enable highlighting of type rol
 let g:haskell_enable_static_pointers  = 1   " to enable highlighting of `static`
 let g:haskell_backpack                = 1   " to enable highlighting of backpack keywords
 let g:haskell_indent_case_alternative = 1
-let g:haskell_indent_if = 0
+let g:haskell_indent_if = 1
 let g:haskell_indent_case = 2
 let g:haskell_indent_let = 4
 let g:haskell_indent_where = 10
@@ -192,6 +194,11 @@ augroup CursorLine
   autocmd!
   autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline cursorcolumn
   autocmd WinLeave * setlocal nocursorline nocursorcolumn
+augroup END
+
+augroup Ident
+  autocmd!
+  autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 augroup END
 
 set list                  " Show trailing {spaces, tabs}
