@@ -141,26 +141,23 @@ function! ToggleQuickfix()
 endfunction
 nnoremap <leader>q :call ToggleQuickfix()<CR>
 
-" Align
-vmap a= :Tab /=<CR>
-vmap a; :Tab /::<CR>
-vmap a- :Tab /-><CR>
-vmap a$ :Tab /$><CR>"
-
+" FZF
+nnoremap <leader>fe :Files<CR>
+nnoremap <leader>fb :Buffers<CR>
 
 " Iron REPL
 let g:iron_map_defaults=0
 let g:iron_map_extended=1
-nmap <leader>it    <Plug>(iron-send-motion)
-vmap <leader>iv    <Plug>(iron-visual-send)
-nmap <leader>i.    <Plug>(iron-repeat-cmd)
-nmap <leader>i<Space> <Plug>(iron-send-line)
-nmap <leader>ii    <Plug>(iron-send-line)
-nmap <leader>i<CR> <Plug>(iron-cr)
-nmap <leader>ic    <plug>(iron-interrupt)
-nmap <leader>iq    <Plug>(iron-exit)
-nmap <leader>il    <Plug>(iron-clear)
-nmap <leader>ip    <Plug>(iron-send-motion)ip
+nnoremap <leader>it    <Plug>(iron-send-motion)
+vnoremap <leader>iv    <Plug>(iron-visual-send)
+nnoremap <leader>i.    <Plug>(iron-repeat-cmd)
+nnoremap <leader>i<Space> <Plug>(iron-send-line)
+nnoremap <leader>ii    <Plug>(iron-send-line)
+nnoremap <leader>i<CR> <Plug>(iron-cr)
+nnoremap <leader>ic    <plug>(iron-interrupt)
+nnoremap <leader>iq    <Plug>(iron-exit)
+nnoremap <leader>il    <Plug>(iron-clear)
+nnoremap <leader>ip    <Plug>(iron-send-motion)ip
 nnoremap <leader>is :IronRepl<CR>
 nnoremap <leader>ir :IronRestart<CR>
 nmap <leader>if <Cmd>lua require("iron").core.send(vim.api.nvim_buf_get_option(0,"ft"), vim.api.nvim_buf_get_lines(0, 0, -1, false))<Cr>
@@ -171,6 +168,9 @@ nmap <leader>if <Cmd>lua require("iron").core.send(vim.api.nvim_buf_get_option(0
 
 " Enable syntax highlighting
 syntax enable
+
+set synmaxcol=180
+set nowrap
 
 set laststatus=2
 set showmode
@@ -257,10 +257,16 @@ set thesaurus+=~/.vim/thesaurus/mthesaur.txt
 " Filetype specific
 augroup Langs
   autocmd!
-  autocmd FileType scheme setlocal softtabstop=2 shiftwidth=2 lisp autoindent
-  autocmd FileType haskell let b:dispatch = 'stack build'
+  autocmd FileType scheme   setlocal softtabstop=2 shiftwidth=2 lisp autoindent
+  autocmd FileType haskell  let b:dispatch = 'stack build'
   autocmd FileType markdown setlocal spell
-  autocmd FileType latex setlocal spell
-  autocmd FileType make setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=0
-  autocmd FileType fennel let b:dispatch = 'love %:p:h'
+  autocmd FileType latex    setlocal spell
+  autocmd FileType make     setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=0
+  autocmd FileType fennel   let b:dispatch = 'love %:p:h'
+augroup END
+
+augroup HoogleMaps
+  autocmd!
+  autocmd FileType haskell nnoremap <buffer> <space>hh :Hoogle <C-r><C-w><CR>
+  autocmd FileType haskell setlocal keywordprg=:Hoogle
 augroup END
