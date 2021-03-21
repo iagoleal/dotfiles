@@ -84,10 +84,3 @@ alias -s {jpg,jpeg,png,bmp}=feh
 alias -s gif=firefox
 alias -s {avi,mkv,webm,mp4}=mpv
 alias -s svg=display
-
-
-# Shortcuts to some dirs
-alias blog="cd $HOME/Documents/site && vi posts/fft-hylo.md"
-alias site="cd $HOME/Documents/site"
-alias wiki="cd $HOME/Documents/wiki"
-alias proj="cd $HOME/Code/MapGenerator"
