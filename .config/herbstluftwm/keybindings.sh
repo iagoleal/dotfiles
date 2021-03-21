@@ -130,11 +130,11 @@ herbstclient keybind $Super-o       pseudotile toggle
 # The following cycles through the available layouts within a frame, but skips
 # layouts, if the layout change wouldn't affect the actual window positions.
 # I.e. if there are two windows within a frame, the grid layout is skipped.
-herbstclient keybind $Super-space                                                           \
+herbstclient keybind $Super-space                                               \
             or , and . compare tags.focus.curframe_wcount = 2                   \
                      . cycle_layout +1 vertical horizontal max vertical grid    \
                , cycle_layout +1
-herbstclient keybind $Super-Shift-space                                                           \
+herbstclient keybind $Super-Shift-space                                         \
             or , and . compare tags.focus.curframe_wcount = 2                   \
                      . cycle_layout -1 vertical horizontal max vertical grid    \
                , cycle_layout -1
