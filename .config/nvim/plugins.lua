@@ -3,7 +3,7 @@
 local tscfg = require'nvim-treesitter.configs'
 
 tscfg.setup {
-  ensure_installed = {"bash", "c", "css", "fennel", "json", "julia", "lua", "python"}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  ensure_installed = {"bash", "c", "css", "fennel", "haskell", "html", "json", "julia", "lua", "python"}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
   highlight = {
     enable = true,
   },
@@ -24,15 +24,6 @@ tscfg.setup {
     disable = {'bash'} -- please disable bash until I figure #1 out
   },
 }
-
----- Don't highlight braces
----- Needed for compatibility with rainbow.vim
---require "nvim-treesitter.highlight"
---local hlmap = vim.treesitter.highlighter.hl_map
-----Misc
---hlmap.error = nil
---hlmap["punctuation.delimiter"] = "Delimiter"
---hlmap["punctuation.bracket"] = nil
 
 -- Configure Iron Repl
 

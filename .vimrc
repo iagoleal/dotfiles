@@ -17,18 +17,13 @@ endif
 " Initialize vim-plug
 call plug#begin('~/.vim/bundle')
 
-" Fuzzy search
-Plug 'nvim-lua/popup.nvim'
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
-
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+" Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'monkoose/fzf-hoogle.vim', {'for': 'haskell'}
 
-Plug 'tpope/vim-commentary'                           " Toggle commentary
+Plug 'b3nj5m1n/kommentary'                            " Toggle commentary
 Plug 'tpope/vim-surround'                             " Edit surrounding objects
 Plug 'tpope/vim-dispatch'                             " Async make
-Plug 'godlygeek/tabular'  , { 'on': 'Tabularize'  }   " Align tables
 Plug 'chrisbra/Colorizer' , { 'on': 'ColorToggle' }   " Show colors from code
 
 "" Filetype specific
@@ -61,7 +56,7 @@ Plug 'tikhomirov/vim-glsl'
 
 "" Themes
 Plug 'ayu-theme/ayu-vim'
-
+Plug 'savq/melange'
 
 "" NeoVim specific
 if has("nvim")
@@ -187,7 +182,7 @@ if has("termguicolors")
   set termguicolors
   set background=dark
   let ayucolor="mirage"
-  colorscheme ayu
+  colorscheme melange
 endif
 
 augroup CursorLine
