@@ -1,14 +1,21 @@
 # Show folder
 alias ls='ls --color'
 
-# Call haskell interpreter from stack
-alias runhaskell='stack runhaskell'
+# Editor
+alias vi=nvim
 
 # herbstclient is too big to keep writing...
 alias hc=herbstclient
 
 # Git command to manage dotfiles
 alias dotfiles='git --git-dir=$HOME/.dotfiles-gitdir/ --work-tree=$HOME'
+
+# For Haskell
+alias ghci='stack ghci'
+alias runhaskell='stack runhaskell'
+
+# Custom notification sender
+alias notify="$HOME/.bin/notify"
 
 # Get weather information
 function weather { curl wttr.in/"$*"; }
@@ -24,18 +31,12 @@ function update {
 function zth { zathura "$@" &}
 zstyle ":completion:*:*:zth:*" file-patterns "*.{pdf,djvu,epub,ps,xps}"
 
-# Custom notification sender
-alias notify="$HOME/.bin/notify"
-
 function trash { mv -i $@ ~/.trash }
 
 function doi2bib {
     curl -LH "Accept: text/bibliography; style=bibtex" "http://dx.doi.org/$@" | sed -r -e '1s/, /,\n  /' -e 's/}, /},\n  /g' -e '$s/}}/}\n}/' -e '1s/^[[:space:]]*//'
 }
 
-# For Haskell
-alias ghci='stack ghci'
-alias runhaskell='stack runhaskell'
 
 extract() {
     if [ -f $1 ] ; then
@@ -69,6 +70,7 @@ countdown(){
     sleep 0.1
     done
 }
+
 stopwatch(){
     date1=`date +%s`;
     while true; do
