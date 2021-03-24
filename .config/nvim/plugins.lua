@@ -21,7 +21,6 @@ tscfg.setup {
   },
   rainbow = {
     enable = true,
-    disable = {'bash'} -- please disable bash until I figure #1 out
   },
 }
 
@@ -57,3 +56,9 @@ iron.core.set_config {
   },
   repl_open_cmd = "rightbelow 66 vsplit"
 }
+
+-- Configure Colorizer
+
+local colorizer = require'colorizer'
+
+colorizer.setup()

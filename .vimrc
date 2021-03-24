@@ -1,4 +1,3 @@
-
 " Load language specific plugin and indentation files
 filetype plugin indent on
 set nocompatible
@@ -30,23 +29,9 @@ Plug 'chrisbra/Colorizer' , { 'on': 'ColorToggle' }   " Show colors from code
 
 " Latex
 Plug 'lervag/vimtex', { 'for': 'tex' }
-let g:tex_flavor='latex'
-let g:vimtex_view_method='zathura'
-let g:vimtex_compiler_progname = 'nvr'
-let g:vimtex_quickfix_mode=2
-let g:vimtex_quickfix_autoclose_after_keystrokes=2
-let g:vimtex_quickfix_open_on_warning=1
-let g:vimtex_indent_enabled=0
-let g:vimtex_indent_delims = {}
 
 " Markdown
 Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
-let g:vim_markdown_folding_disabled = 1
-let g:vim_markdown_conceal = 0
-let g:vim_markdown_fenced_languages = ['c++=cpp', 'viml=vim', 'bash=sh', 'ini=dosini']
-let g:vim_markdown_math = 1
-let g:vim_markdown_frontmatter = 1
-let g:vim_markdown_new_list_item_indent = 4
 
 Plug 'JuliaEditorSupport/julia-vim', { 'for': 'julia'   }
 Plug 'neovimhaskell/haskell-vim',    { 'for': 'haskell' }
@@ -57,6 +42,7 @@ Plug 'tikhomirov/vim-glsl'
 "" Themes
 Plug 'ayu-theme/ayu-vim'
 Plug 'savq/melange'
+" Plug 'rktjmp/lush.nvim'
 
 "" NeoVim specific
 if has("nvim")
@@ -84,6 +70,25 @@ endif
 " Plugin Settings "
 """""""""""""""""""
 
+" VimTeX
+let g:tex_flavor='latex'
+let g:vimtex_view_method='zathura'
+let g:vimtex_compiler_progname = 'nvr'
+let g:vimtex_quickfix_mode=2
+let g:vimtex_quickfix_autoclose_after_keystrokes=2
+let g:vimtex_quickfix_open_on_warning=1
+let g:vimtex_indent_enabled=0
+let g:vimtex_indent_delims = {}
+
+" Vim Markdown
+let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_conceal = 0
+let g:vim_markdown_fenced_languages = ['c++=cpp', 'viml=vim', 'bash=sh', 'ini=dosini']
+let g:vim_markdown_math = 1
+let g:vim_markdown_frontmatter = 1
+let g:vim_markdown_new_list_item_indent = 4
+
+" Haskell
 let g:haskell_enable_quantification   = 1   " to enable highlighting of `forall`
 let g:haskell_enable_recursivedo      = 1   " to enable highlighting of `mdo` and `rec`
 let g:haskell_enable_arrowsyntax      = 1   " to enable highlighting of `proc`
