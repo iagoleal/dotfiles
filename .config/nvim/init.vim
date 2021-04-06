@@ -15,10 +15,12 @@ endif
 
 " Initialize vim-plug
 call plug#begin('~/.config/nvim/bundle')
-
 " Treesitter
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'p00f/nvim-ts-rainbow'
+
+" LSP
+Plug 'neovim/nvim-lspconfig'
 
 " REPL
 Plug 'hkupty/iron.nvim'
@@ -26,6 +28,7 @@ Plug 'hkupty/iron.nvim'
 " Fuzzy Search
 " Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+let g:fzf_command_prefix = 'FZF'
 Plug 'monkoose/fzf-hoogle.vim', {'for': 'haskell'}
 
 " Major utilities
@@ -48,6 +51,7 @@ Plug 'neovimhaskell/haskell-vim',    { 'for': 'haskell' }
 Plug 'bakpakin/fennel.vim',          { 'for': 'fennel'  }
 Plug 'wlangstroth/vim-racket',       { 'for': 'racket'  }
 Plug 'tikhomirov/vim-glsl'
+Plug 'derekelkins/agda-vim'
 
 "" Themes
 Plug 'ayu-theme/ayu-vim'
@@ -67,8 +71,6 @@ syntax enable
 set synmaxcol=180
 set nowrap
 
-set laststatus=2
-set showmode
 set showcmd
 set ruler
 set conceallevel=0
@@ -77,7 +79,7 @@ if has("termguicolors")
   set termguicolors
   set background=dark
   let ayucolor="mirage"
-  colorscheme melange
+  colorscheme ayu
 endif
 
 augroup CursorLine
@@ -96,7 +98,7 @@ set listchars=tab:├─,trail:۰,nbsp:☻,extends:⟩,precedes:⟨
 
 set number                " show line numbers
 set relativenumber        " Show line numbers relative to current line
-set numberwidth=3         " set minimum width of numbers bar
+set numberwidth=2         " set minimum width of numbers bar
 set showmatch             " highlight matching parentheses (useful as hell)
 
 "" Highlights
@@ -113,6 +115,9 @@ if (v:version >= 700)
   highlight SpellLocal ctermfg=Green   cterm=Underline guifg=LightGreen gui=Underline guisp=Green
   highlight SpellRare  ctermfg=Yellow  cterm=underline guifg=Orange     gui=Underline guisp=Orange
 endif
+
+" Configure statusline
+lua require("statusline")
 
 """"""""
 " MISC "
@@ -146,14 +151,19 @@ set backupskip=/tmp/*,/private/tmp/*
 set directory=~/.vim/tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set writebackup
 
+" Set undo
+set undofile
+
 " Set Thesaurus file
-set thesaurus+=~/.vim/thesaurus/mthesaur.txt
+set thesaurus+=~/.config/nvim/thesaurus/mthesaur.txt
 
 """""""""""""""""""
 " Plugin Settings "
 """""""""""""""""""
 
-luafile $HOME/.config/nvim/plugins.lua
+lua require("plugins")
+lua require("lsp")
+
 
 " Vimtex
 let g:tex_flavor='latex'
@@ -192,7 +202,6 @@ let g:haskell_indent_do = 3
 let g:haskell_indent_in = 0
 let g:haskell_indent_guard = 2
 
-
 """""""""""""""
 " Keybindings "
 """""""""""""""
@@ -208,6 +217,19 @@ nnoremap <leader><Space> :nohlsearch<CR>
 
 " Spell checks previous mistake and corrects to first suggestion
 inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
+
+"" Navigation
+" Quickfix
+nnoremap ]q :cnext<cr>zz
+nnoremap [q :cprev<cr>zz
+nnoremap ]l :lnext<cr>zz
+nnoremap [l :lprev<cr>zz
+" Buffers
+nnoremap ]b :bnext<cr>
+nnoremap [b :bprev<cr>
+" Tabs
+nnoremap ]t :tabn<cr>
+nnoremap [t :tabp<cr>
 
 "" Building keymaps
 nnoremap <leader>m :w<CR>:Dispatch<CR>
@@ -231,8 +253,8 @@ endfunction
 nnoremap <leader>q :call ToggleQuickfix()<CR>
 
 " FZF
-nnoremap <leader>fe :Files<CR>
-nnoremap <leader>fb :Buffers<CR>
+nnoremap <leader>fe :FZFFiles<CR>
+nnoremap <leader>fb :FZFBuffers<CR>
 
 " Alignment
 nmap <leader>a <Plug>(EasyAlign)
@@ -241,19 +263,19 @@ xmap <leader>a <Plug>(EasyAlign)
 " Iron REPL
 let g:iron_map_defaults=0
 let g:iron_map_extended=1
-nnoremap <leader>it    <Plug>(iron-send-motion)
-vnoremap <leader>iv    <Plug>(iron-visual-send)
-nnoremap <leader>i.    <Plug>(iron-repeat-cmd)
+nmap <leader>it    <Plug>(iron-send-motion)
+vmap <leader>i<Space> <Plug>(iron-visual-send)
+nmap <leader>i.    <Plug>(iron-repeat-cmd)
 nmap <leader>i<Space> <Plug>(iron-send-line)
-nnoremap <leader>ii    <Plug>(iron-send-line)
-nnoremap <leader>i<CR> <Plug>(iron-cr)
-nnoremap <leader>ic    <plug>(iron-interrupt)
-nnoremap <leader>iq    <Plug>(iron-exit)
-nnoremap <leader>il    <Plug>(iron-clear)
-nnoremap <leader>ip    <Plug>(iron-send-motion)ip
-nnoremap <leader>is :IronRepl<CR>
-nnoremap <leader>ir :IronRestart<CR>
-nnoremap <leader>if <Cmd>lua require("iron").core.send(vim.api.nvim_buf_get_option(0,"ft"), vim.api.nvim_buf_get_lines(0, 0, -1, false))<Cr>
+nmap <leader>ii    <Plug>(iron-send-line)
+nmap <leader>i<CR> <Plug>(iron-cr)
+nmap <leader>ic    <plug>(iron-interrupt)
+nmap <leader>iq    <Plug>(iron-exit)
+nmap <leader>il    <Plug>(iron-clear)
+nmap <leader>ip    <Plug>(iron-send-motion)ip
+nmap <leader>is :IronRepl<CR>
+nmap <leader>ir :IronRestart<CR>
+nmap <leader>if <Cmd>lua require("iron").core.send(vim.api.nvim_buf_get_option(0,"ft"), vim.api.nvim_buf_get_lines(0, 0, -1, false))<Cr>
 
 
 """""""""""""""""""""
@@ -275,3 +297,11 @@ augroup HoogleMaps
   autocmd FileType haskell nnoremap <buffer> <space>hh :Hoogle <C-r><C-w><CR>
   autocmd FileType haskell setlocal keywordprg=:Hoogle
 augroup END
+
+" Reload this file
+augroup ReloadRC
+  autocmd!
+  autocmd BufWritePost $MYVIMRC source $MYVIMRC | redraw | echo "Reloaded init.vim"
+augroup END
+
+

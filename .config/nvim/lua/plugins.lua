@@ -29,26 +29,28 @@ tscfg.setup {
 local iron = require('iron')
 
 iron.core.add_repl_definitions {
+  lua    = {
+    luajit = { command = {"luajit"} }
+  },
   fennel = {
-    love = {
-      command = {"love", "."}
-    }
+    love = { command = {"love", "."} }
   },
   haskell = {
     stack = {
       command = {"stack", "ghci"},
-      open = ":{",
-      close = {":}", ""}
+      open    = ":{",
+      close   = {":}", ""}
     }
   },
   scheme = {
     chez = { command = {"scheme"} },
-    racket = { command = {"racket", "il", "scheme"} }
+    racket = { command = {"racket", "-il", "scheme"} }
   }
 }
 
 iron.core.set_config {
   preferred = {
+    lua     = "luajit",
     fennel  = "fennel",
     haskell = "stack",
     python  = "python",
@@ -57,8 +59,8 @@ iron.core.set_config {
   repl_open_cmd = "rightbelow 66 vsplit"
 }
 
+
 -- Configure Colorizer
 
 local colorizer = require'colorizer'
-
 colorizer.setup()
