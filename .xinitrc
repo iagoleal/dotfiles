@@ -23,11 +23,8 @@ fi
 # Set keyboard layout to br-abnt2
 # Options are:
 # Capslock key function as Esc
-# Swap Left Control and Left Alt keys
 # Classic Control-Alt-Backspace command to kill X
-setxkbmap -model thinkpad -layout br \
-    -option "caps:swapescape" \
-    -option "terminate:ctrl_alt_bksp"
+setxkbmap -model thinkpad -layout br -option "caps:swapescape" -option "terminate:ctrl_alt_bksp"
 
 # Run the custom changes AFTER selecting the keyboard
 if [ -f $usermodmap ]; then
