@@ -1,7 +1,7 @@
 local nvim_lsp = require('lspconfig')
 
 local on_attach = function(client, bufnr)
-  print("LSP started")
+  print("bump LSP")
   local opts = { noremap=true, silent=true }
   local function buf_set_keymap(mode, keys, cmd)
     vim.api.nvim_buf_set_keymap(bufnr, mode, keys, cmd, opts)
@@ -12,7 +12,7 @@ local on_attach = function(client, bufnr)
 
   buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
-     -- Mappings.
+  -- Mappings.
   buf_set_keymap('n', 'gD',        '<Cmd>lua vim.lsp.buf.declaration()<CR>')
   buf_set_keymap('n', 'gd',        '<Cmd>lua vim.lsp.buf.definition()<CR>')
   buf_set_keymap('n', 'K',         '<Cmd>lua vim.lsp.buf.hover()<CR>')
@@ -89,6 +89,11 @@ nvim_lsp.sumneko_lua.setup {
   },
 }
 
+-- Haskell
+nvim_lsp.hls.setup{
+  on_attach = on_attach
+}
+
 -- Julia
 nvim_lsp.julials.setup{
     on_attach = on_attach,
@@ -116,3 +121,6 @@ nvim_lsp.julials.setup{
       new_config.cmd = cmd
     end
 }
+
+-- Python
+require'lspconfig'.pyright.setup{}

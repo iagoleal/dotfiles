@@ -152,6 +152,7 @@ set directory=~/.vim/tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set writebackup
 
 " Set undo
+set undodir=~/.tmp,~/tmp,/var/tmp,/tmp,$XDG_DATA_HOME/nvim/undo,.
 set undofile
 
 " Set Thesaurus file
@@ -263,19 +264,19 @@ xmap <leader>a <Plug>(EasyAlign)
 " Iron REPL
 let g:iron_map_defaults=0
 let g:iron_map_extended=1
-nmap <leader>it    <Plug>(iron-send-motion)
+nmap <leader>it       <Plug>(iron-send-motion)
 vmap <leader>i<Space> <Plug>(iron-visual-send)
-nmap <leader>i.    <Plug>(iron-repeat-cmd)
+nmap <leader>i.       <Plug>(iron-repeat-cmd)
 nmap <leader>i<Space> <Plug>(iron-send-line)
-nmap <leader>ii    <Plug>(iron-send-line)
-nmap <leader>i<CR> <Plug>(iron-cr)
-nmap <leader>ic    <plug>(iron-interrupt)
-nmap <leader>iq    <Plug>(iron-exit)
-nmap <leader>il    <Plug>(iron-clear)
-nmap <leader>ip    <Plug>(iron-send-motion)ip
-nmap <leader>is :IronRepl<CR>
-nmap <leader>ir :IronRestart<CR>
-nmap <leader>if <Cmd>lua require("iron").core.send(vim.api.nvim_buf_get_option(0,"ft"), vim.api.nvim_buf_get_lines(0, 0, -1, false))<Cr>
+nmap <leader>ii       <Plug>(iron-send-line)
+nmap <leader>i<CR>    <Plug>(iron-cr)
+nmap <leader>ic       <plug>(iron-interrupt)
+nmap <leader>iq       <Plug>(iron-exit)
+nmap <leader>il       <Plug>(iron-clear)
+nmap <leader>ip       <Plug>(iron-send-motion)ip
+nmap <leader>is       :IronRepl<CR>
+nmap <leader>ir       :IronRestart<CR>
+nmap <leader>if       <Cmd>lua require("iron").core.send(vim.api.nvim_buf_get_option(0,"ft"), vim.api.nvim_buf_get_lines(0, 0, -1, false))<Cr>
 
 
 """""""""""""""""""""
@@ -295,7 +296,6 @@ augroup END
 augroup HoogleMaps
   autocmd!
   autocmd FileType haskell nnoremap <buffer> <space>hh :Hoogle <C-r><C-w><CR>
-  autocmd FileType haskell setlocal keywordprg=:Hoogle
 augroup END
 
 " Reload this file
@@ -303,5 +303,3 @@ augroup ReloadRC
   autocmd!
   autocmd BufWritePost $MYVIMRC source $MYVIMRC | redraw | echo "Reloaded init.vim"
 augroup END
-
-

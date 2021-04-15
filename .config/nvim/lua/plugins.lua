@@ -30,7 +30,8 @@ local iron = require('iron')
 
 iron.core.add_repl_definitions {
   lua    = {
-    luajit = { command = {"luajit"} }
+    luajit = { command = {"luajit"} },
+    lua53 = { command = {"lua5.3"} }
   },
   fennel = {
     love = { command = {"love", "."} }
@@ -50,7 +51,7 @@ iron.core.add_repl_definitions {
 
 iron.core.set_config {
   preferred = {
-    lua     = "luajit",
+    lua     = "lua53",
     fennel  = "fennel",
     haskell = "stack",
     python  = "python",
