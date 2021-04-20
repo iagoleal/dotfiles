@@ -8,6 +8,7 @@ function CursorMode()
         ['R']  = 'Replace  ',
         ['Rv'] = 'V-replace',
         ['c']  = 'Command  ',
+        ['t']  = 'Terminal ',
     }
 
     return mode_map[vim.fn.mode()]

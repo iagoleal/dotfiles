@@ -129,6 +129,9 @@ set hlsearch                " highlight matches
 set ignorecase              " case-insensitive searchs / substitutions
 set smartcase               " If terms are all lowercase, ignore case. Consider case otherwise.
 
+" Find files on subfolders
+set path+=**
+
 set wildmenu                " visual menu for command autocompletion
 set wildmode=full,list,full " first autocomplete the word, afterwards run across the list
 
@@ -287,15 +290,11 @@ augroup Langs
   autocmd!
   autocmd FileType scheme   setlocal softtabstop=2 shiftwidth=2 lisp autoindent
   autocmd FileType haskell  let b:dispatch = 'stack build'
+  autocmd FileType haskell nnoremap <buffer> <space>hh :Hoogle <C-r><C-w><CR>
   autocmd FileType markdown setlocal spell
   autocmd FileType latex    setlocal spell
   autocmd FileType make     setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=0
   autocmd FileType fennel   let b:dispatch = 'love %:p:h'
-augroup END
-
-augroup HoogleMaps
-  autocmd!
-  autocmd FileType haskell nnoremap <buffer> <space>hh :Hoogle <C-r><C-w><CR>
 augroup END
 
 " Reload this file
