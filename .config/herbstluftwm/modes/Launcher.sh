@@ -26,15 +26,15 @@ tag_names=( {1..10} )
 tag_keys=( {1..9} 0 )
 
 for i in ${!tag_names[@]}; do
-    herbstclient keybind "${tag_keys[$i]}" chain \
-        '->' keybind e      chain , spawn "$exec_on_tag" "${tag_names[$i]}" pcmanfm            , spawn sh "$normalMode" \
-        '->' keybind i      chain , spawn "$exec_on_tag" "${tag_names[$i]}" inkspace           , spawn sh "$normalMode" \
-        '->' keybind p      chain , spawn "$exec_on_tag" "${tag_names[$i]}" pavucontrol        , spawn sh "$normalMode"
-        '->' keybind a      chain , spawn "$exec_on_tag" "${tag_names[$i]}" anki               , spawn sh "$normalMode" \
-        '->' keybind s      chain , spawn "$exec_on_tag" "${tag_names[$i]}" spotify            , spawn sh "$normalMode" \
-        '->' keybind f      chain , spawn "$exec_on_tag" "${tag_names[$i]}" firefox            , spawn sh "$normalMode" \
-        '->' keybind g      chain , spawn "$exec_on_tag" "${tag_names[$i]}" gimp               , spawn sh "$normalMode" \
-        '->' keybind h      chain , spawn "$exec_on_tag" "${tag_names[$i]}" $TERMINAL -e htop  , spawn sh "$normalMode" \
-        '->' keybind n      chain , spawn "$exec_on_tag" "${tag_names[$i]}" $TERMINAL -e nmtui , spawn sh "$normalMode" \
-        '->' keybind Return chain , spawn "$exec_on_tag" "${tag_names[$i]}" $TERMINAL          , spawn sh "$normalMode"
+  herbstclient keybind "${tag_keys[$i]}" chain \
+    '->' keybind e      chain , spawn "$exec_on_tag" "${tag_names[$i]}" pcmanfm            , spawn sh "$normalMode" \
+    '->' keybind i      chain , spawn "$exec_on_tag" "${tag_names[$i]}" inkspace           , spawn sh "$normalMode" \
+    '->' keybind p      chain , spawn "$exec_on_tag" "${tag_names[$i]}" pavucontrol        , spawn sh "$normalMode" \
+    '->' keybind a      chain , spawn "$exec_on_tag" "${tag_names[$i]}" anki               , spawn sh "$normalMode" \
+    '->' keybind s      chain , spawn "$exec_on_tag" "${tag_names[$i]}" spotify            , spawn sh "$normalMode" \
+    '->' keybind f      chain , spawn "$exec_on_tag" "${tag_names[$i]}" firefox            , spawn sh "$normalMode" \
+    '->' keybind g      chain , spawn "$exec_on_tag" "${tag_names[$i]}" gimp               , spawn sh "$normalMode" \
+    '->' keybind h      chain , spawn "$exec_on_tag" "${tag_names[$i]}" $TERMINAL -e htop  , spawn sh "$normalMode" \
+    '->' keybind n      chain , spawn "$exec_on_tag" "${tag_names[$i]}" $TERMINAL -e nmtui , spawn sh "$normalMode" \
+    '->' keybind Return chain , spawn "$exec_on_tag" "${tag_names[$i]}" $TERMINAL          , spawn sh "$normalMode"
 done
