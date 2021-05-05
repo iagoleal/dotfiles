@@ -2,7 +2,7 @@
 local function highlight(mode, opts)
   local hi = {"highlight " .. mode}
   for k, v in pairs(opts) do
-    table.insert(hi, string.format(" %s=%s", k, v))
+    table.insert(hi, " " .. k .. "=" .. v)
   end
   vim.cmd(table.concat(hi))
 end
@@ -34,8 +34,7 @@ local function cursor_mode()
         ['t']  = 'Terminal',
     }
     local mode = vim.fn.mode()
-
-    return "%-10( " .. (mode_name[mode] or mode) .. "%)"
+    return "%-10(%#StatusMode# " .. (mode_name[mode] or mode) .. "%)"
 end
 
 local function filetype()
@@ -50,14 +49,13 @@ end
 local function get_lsp_diagnostics(bufnr)
   bufnr = bufnr or 0
   local result = {}
-  local levels = {
-    errors = "Error",
-    warnings = "Warning",
-    info = "Information",
-    hints = "Hint"
-  }
+  local levels = { errors   = "Error"
+                 , warnings = "Warning"
+                 , info     = "Information"
+                 , hints    = "Hint"
+                 }
   for k, level in pairs(levels) do
-      result[k] = vim.lsp.diagnostic.get_count(bufnr, level)
+    result[k] = vim.lsp.diagnostic.get_count(bufnr, level)
   end
   return result
 end
@@ -70,14 +68,14 @@ local function diagnostics()
   return table.concat({"%-24("
     , "%#LspDiagnosticsDefaultError#"        , "E:" , num.errors   , "%#StatusLine# | "
     , "%#LspDiagnosticsDefaultWarning#"      , "W:" , num.warnings , "%#StatusLine# | "
-    , "%#LspDiagnosticsDefaultInformation#"  , "I:" , num.info     , "%#StatusLine# "
+    , "%#LspDiagnosticsDefaultInformation#"  , "I:" , num.info     , "%#StatusLine# | "
+    , "%#LspDiagnosticsDefaultHints#"        , "H:" , num.hints    , "%#StatusLine# "
     , "%)"})
 end
 
 function statusline()
   local sl = table.concat(
-    { "%#StatusMode#"
-    , cursor_mode()
+    { cursor_mode()
     , "%#StatusLine#"
     , " %-t %-m %-r"
     , "%="
@@ -97,6 +95,6 @@ vim.o.showmode   = false
 vim.o.statusline = "%!v:lua.statusline()"
 -- Guarantee that correct buffer is used
 augroup('StatusLine',
-        {{'WinEnter,BufEnter', '*', 'set statusline<'}
-         ,{'WinLeave,BufLeave', '*', 'lua vim.wo.statusline=statusline()'}
-       })
+        { {'WinEnter,BufEnter', '*', 'set statusline<'}
+        , {'WinLeave,BufLeave', '*', 'lua vim.wo.statusline=statusline()'}
+        })
