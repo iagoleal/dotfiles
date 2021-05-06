@@ -18,6 +18,11 @@ local function augroup(name, autocmds)
     vim.cmd('augroup END')
 end
 
+-- Test whether the current buffer is the focused one
+local function is_buffer_active()
+  return vim.g.statusline_winid == vim.fn.win_getid()
+end
+
 local function cursor_mode()
     local mode_name = {
         ['n']  = 'Normal',
@@ -34,7 +39,11 @@ local function cursor_mode()
         ['t']  = 'Terminal',
     }
     local mode = vim.fn.mode()
-    return "%-10(%#StatusMode# " .. (mode_name[mode] or mode) .. "%)"
+    if is_buffer_active() then
+      return "%-10(%#StatusMode# " .. (mode_name[mode] or mode) .. "%)"
+    else
+      return ""
+    end
 end
 
 local function filetype()
