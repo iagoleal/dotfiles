@@ -23,17 +23,16 @@ local function cursor_mode()
     }
     local mode = vim.fn.mode()
     if is_buffer_active() then
-      return "%-10(%#StatusMode# " .. (mode_name[mode] or mode) .. "%)"
+      return "%-(%#StatusMode# " .. (mode_name[mode] or mode) .. " %)"
     else
       return ""
     end
 end
 
-local function filetype()
-  if vim.bo.filetype ~= "" then
-    return "%#StatusLang# " .. vim.bo.filetype .. " "
-  end
-  return ""
+function filetype()
+  local color = vim.bo.modified and "%#StatusModified#" or "%#StatusLang#"
+  local ft = vim.bo.filetype
+  return table.concat{color, " ", ft, " "}
 end
 
 -- Get number of diagnostics for each type
@@ -57,11 +56,11 @@ local function diagnostics()
     return ""
   end
   local num = get_lsp_diagnostics()
-  return table.concat({"%-24("
-    , "%#LspDiagnosticsDefaultError#"        , "E:" , num.errors   , "%#StatusLine# | "
-    , "%#LspDiagnosticsDefaultWarning#"      , "W:" , num.warnings , "%#StatusLine# | "
-    , "%#LspDiagnosticsDefaultInformation#"  , "I:" , num.info     , "%#StatusLine# | "
-    , "%#LspDiagnosticsDefaultHints#"        , "H:" , num.hints    , "%#StatusLine# "
+  return table.concat({"%21("
+    , "%#LspDiagnosticsDefaultError#"        , "E:" , num.errors   , "%#StatusLine# "
+    , "%#LspDiagnosticsDefaultWarning#"      , "W:" , num.warnings , "%#StatusLine# "
+    , "%#LspDiagnosticsDefaultInformation#"  , "I:" , num.info     , "%#StatusLine# "
+    , "%#LspDiagnosticsDefaultHint#"         , "H:" , num.hints    , "%#StatusLine# "
     , "%)"})
 end
 
@@ -72,16 +71,18 @@ function statusline()
     , " %-t %-m %-r"
     , "%="
     , diagnostics()
-    , "%=%c, %l:%L "
+    , "%2(%c%), %l:%L "
     , filetype()
     })
   return sl
 end
 
-
 -- Generate the statusline
-api.highlight("StatusMode", {gui = "bold", guifg = "Black", guibg = "White"})
-api.highlight("StatusLang", {gui = "bold", guifg = "Black", guibg = "#81A3FA"})
+api.highlight("StatusMode",     {gui = "bold", guifg = "Black", guibg = "White"})
+api.highlight("StatusLang",     {gui = "bold", guifg = "Black", guibg = "#81A3FA"})
+api.highlight("StatusModified", {gui = "bold", guifg = "Black", guibg = "#FF6B6B"})
+api.highlight("StatusMixed",    {gui = "bold", guifg = "Black", guibg = "#A36BF0"})
+
 vim.o.laststatus = 2
 vim.o.showmode   = false
 vim.o.statusline = "%!v:lua.statusline()"
