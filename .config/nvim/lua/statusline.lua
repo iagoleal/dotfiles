@@ -1,22 +1,5 @@
 -- TODO: change color when RO or modified
-local function highlight(mode, opts)
-  local hi = {"highlight " .. mode}
-  for k, v in pairs(opts) do
-    table.insert(hi, " " .. k .. "=" .. v)
-  end
-  vim.cmd(table.concat(hi))
-end
-
-local function augroup(name, autocmds)
-    vim.cmd('augroup ' .. name)
-    vim.cmd('autocmd!')
-
-    for _, autocmd in ipairs(autocmds) do
-        vim.cmd('autocmd ' .. table.concat(autocmd, ' '))
-    end
-
-    vim.cmd('augroup END')
-end
+local api = require "api"
 
 -- Test whether the current buffer is the focused one
 local function is_buffer_active()
@@ -97,13 +80,13 @@ end
 
 
 -- Generate the statusline
-highlight("StatusMode", {gui = "bold", guifg = "Black", guibg = "White"})
-highlight("StatusLang", {gui = "bold", guifg = "Black", guibg = "#81A3FA"})
+api.highlight("StatusMode", {gui = "bold", guifg = "Black", guibg = "White"})
+api.highlight("StatusLang", {gui = "bold", guifg = "Black", guibg = "#81A3FA"})
 vim.o.laststatus = 2
 vim.o.showmode   = false
 vim.o.statusline = "%!v:lua.statusline()"
 -- Guarantee that correct buffer is used
-augroup('StatusLine',
-        { {'WinEnter,BufEnter', '*', 'set statusline<'}
-        , {'WinLeave,BufLeave', '*', 'lua vim.wo.statusline=statusline()'}
-        })
+api.augroup('StatusLine',
+            { {'WinEnter,BufEnter', '*', 'set statusline<'}
+            , {'WinLeave,BufLeave', '*', 'lua vim.wo.statusline=statusline()'}
+            })
