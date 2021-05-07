@@ -118,6 +118,7 @@ endif
 
 " Configure statusline
 lua require("statusline")
+lua require("tabline")
 
 """"""""
 " MISC "
