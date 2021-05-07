@@ -32,26 +32,27 @@ let g:fzf_command_prefix = 'FZF'
 Plug 'monkoose/fzf-hoogle.vim', {'for': 'haskell'}
 
 " Major utilities
-Plug 'b3nj5m1n/kommentary'                            " Toggle commentary
-Plug 'tpope/vim-surround'                             " Edit surrounding objects
-Plug 'tpope/vim-dispatch'                             " Async make
-Plug 'junegunn/vim-easy-align'                        " Alignment utils
+Plug 'terrortylor/nvim-comment'                       " Toggle commentary
+Plug 'tpope/vim-surround'                             " Edit surrounding objects (vimscript)
+Plug 'tpope/vim-dispatch'                             " Async make      (vimscript)
+Plug 'junegunn/vim-easy-align'                        " Alignment utils (vimscript)
 Plug 'norcalli/nvim-colorizer.lua'                    " Colorize color codes
 Plug 'luochen1990/rainbow', { 'on': ['RainbowToggleOn', 'RainbowToggle'] } " Colorize parentheses
 let g:rainbow_active = 0
 
 " Color picker
+" Can I remake this in lua with floating windows?
 Plug 'KabbAmine/vCoolor.vim'
 
 "" Filetype specific
-Plug 'lervag/vimtex',                { 'for': 'tex' }
+Plug 'lervag/vimtex',                { 'for': 'tex'      }
 Plug 'plasticboy/vim-markdown',      { 'for': 'markdown' }
-Plug 'JuliaEditorSupport/julia-vim', { 'for': 'julia'   }
-Plug 'neovimhaskell/haskell-vim',    { 'for': 'haskell' }
-Plug 'bakpakin/fennel.vim',          { 'for': 'fennel'  }
-Plug 'wlangstroth/vim-racket',       { 'for': 'racket'  }
+Plug 'JuliaEditorSupport/julia-vim', { 'for': 'julia'    }
+Plug 'neovimhaskell/haskell-vim',    { 'for': 'haskell'  }
+Plug 'bakpakin/fennel.vim',          { 'for': 'fennel'   }
+Plug 'wlangstroth/vim-racket',       { 'for': 'racket'   }
 Plug 'tikhomirov/vim-glsl'
-Plug 'derekelkins/agda-vim'
+" Plug 'derekelkins/agda-vim'
 
 "" Themes
 Plug 'ayu-theme/ayu-vim'
@@ -165,10 +166,10 @@ set thesaurus+=~/.config/nvim/thesaurus/mthesaur.txt
 """""""""""""""""""
 " Plugin Settings "
 """""""""""""""""""
-
 lua require("plugins")
 lua require("lsp")
 
+lua require('nvim_comment').setup({comment_empty = false})
 
 " Vimtex
 let g:tex_flavor='latex'
