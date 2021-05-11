@@ -83,15 +83,21 @@ if has("termguicolors")
   colorscheme ayu
 endif
 
-augroup CursorLine
-  autocmd!
-  autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline cursorcolumn
-  autocmd WinLeave * setlocal nocursorline nocursorcolumn
-augroup END
+" augroup CursorLine
+"   autocmd!
+"   autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline cursorcolumn
+"   autocmd WinLeave * setlocal nocursorline nocursorcolumn
+" augroup END
 
 augroup Ident
   autocmd!
   autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+augroup END
+
+" No need for numbers and cursors on terminal lines
+augroup Terminal
+  autocmd!
+  autocmd TermOpen * setlocal nonumber norelativenumber nocursorline nocursorcolumn
 augroup END
 
 set list                  " Show trailing {spaces, tabs}
@@ -172,21 +178,21 @@ lua require("lsp")
 lua require('nvim_comment').setup({comment_empty = false})
 
 " Vimtex
-let g:tex_flavor='latex'
-let g:vimtex_view_method='zathura'
-let g:vimtex_compiler_progname = 'nvr'
-let g:vimtex_quickfix_mode=2
-let g:vimtex_quickfix_autoclose_after_keystrokes=2
-let g:vimtex_quickfix_open_on_warning=1
-let g:vimtex_indent_enabled=0
-let g:vimtex_indent_delims = {}
+let g:tex_flavor                                 = 'latex'
+let g:vimtex_view_method                         = 'zathura'
+let g:vimtex_compiler_progname                   = 'nvr'
+let g:vimtex_quickfix_mode                       = 2
+let g:vimtex_quickfix_autoclose_after_keystrokes = 2
+let g:vimtex_quickfix_open_on_warning            = 1
+let g:vimtex_indent_enabled                      = 0
+let g:vimtex_indent_delims                       = {}
 
 " Vim Markdown
-let g:vim_markdown_folding_disabled = 1
-let g:vim_markdown_conceal = 0
-let g:vim_markdown_fenced_languages = ['c++=cpp', 'viml=vim', 'bash=sh', 'ini=dosini']
-let g:vim_markdown_math = 1
-let g:vim_markdown_frontmatter = 1
+let g:vim_markdown_folding_disabled     = 1
+let g:vim_markdown_conceal              = 0
+let g:vim_markdown_fenced_languages     = ['c++=cpp', 'viml=vim', 'bash=sh', 'ini=dosini']
+let g:vim_markdown_math                 = 1
+let g:vim_markdown_frontmatter          = 1
 let g:vim_markdown_new_list_item_indent = 4
 
 " Nvim Haskell
@@ -198,15 +204,15 @@ let g:haskell_enable_typeroles        = 1   " to enable highlighting of type rol
 let g:haskell_enable_static_pointers  = 1   " to enable highlighting of `static`
 let g:haskell_backpack                = 1   " to enable highlighting of backpack keywords
 let g:haskell_indent_case_alternative = 1
-let g:haskell_indent_if = 1
-let g:haskell_indent_case = 2
-let g:haskell_indent_let = 4
-let g:haskell_indent_where = 10
-let g:haskell_indent_before_where = 1
+let g:haskell_indent_if               = 1
+let g:haskell_indent_case             = 2
+let g:haskell_indent_let              = 4
+let g:haskell_indent_where            = 10
+let g:haskell_indent_before_where     = 1
 let g:haskell_indent_after_bare_where = 1
-let g:haskell_indent_do = 3
-let g:haskell_indent_in = 0
-let g:haskell_indent_guard = 2
+let g:haskell_indent_do               = 3
+let g:haskell_indent_in               = 0
+let g:haskell_indent_guard            = 2
 
 """""""""""""""
 " Keybindings "
@@ -220,6 +226,9 @@ tnoremap <Esc> <C-\><C-n>
 
 " Disable search highlighting (until next search)
 nnoremap <leader><Space> :nohlsearch<CR>
+
+" Highlight cross around cursor
+nnoremap <leader>cl :set cursorline! cursorcolumn!<CR>
 
 " Spell checks previous mistake and corrects to first suggestion
 inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
@@ -238,9 +247,8 @@ nnoremap ]t :tabn<cr>
 nnoremap [t :tabp<cr>
 
 "" Building keymaps
-nnoremap <leader>m :w<CR>:Dispatch<CR>
-nnoremap <leader>M :w<CR>:Dispatch!<CR>
-nnoremap <F12> :w<CR>:Dispatch!<CR>
+nnoremap <silent> <leader>m :Make<CR>
+" nnoremap <leader>M :w<CR>:Dispatch!<CR>
 
 " Toggle Color Highlight
 nnoremap <leader>cc :ColorizerToggle<CR>
@@ -290,9 +298,9 @@ nmap <leader>if       <Cmd>lua require("iron").core.send(vim.api.nvim_buf_get_op
 
 augroup Langs
   autocmd!
-  autocmd FileType scheme   setlocal softtabstop=2 shiftwidth=2 lisp autoindent
+  autocmd FileType scheme   setlocal softtabstop=2   shiftwidth=2 lisp autoindent
   autocmd FileType haskell  let b:dispatch = 'stack build'
-  autocmd FileType haskell nnoremap <buffer> <space>hh :Hoogle <C-r><C-w><CR>
+  autocmd FileType haskell  nnoremap <buffer> <space>hh :Hoogle <C-r><C-w><CR>
   autocmd FileType markdown setlocal spell
   autocmd FileType latex    setlocal spell
   autocmd FileType make     setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=0
