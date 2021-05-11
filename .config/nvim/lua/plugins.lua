@@ -6,6 +6,8 @@ tscfg.setup {
   ensure_installed = {"bash", "c", "css", "fennel", "haskell", "html", "json", "julia", "lua", "python"}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
   highlight = {
     enable = true,
+    -- https://www.reddit.com/r/neovim/comments/n9aupn/set_spell_that_only_considers_code_comments/
+    additional_vim_regex_highlighting = true
   },
   incremental_selection = {
     enable = true,

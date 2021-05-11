@@ -65,11 +65,11 @@ function tabline()
 end
 
 -- Use same colors as statusline
-vim.cmd("highlight! default link TabLine StatusLine")
-vim.cmd("highlight! default link TabLineFill StatusLine")
-vim.cmd("highlight! default link TabLineSel StatusLang")
-vim.cmd("highlight! default link TabLineMixed StatusMixed")
-vim.cmd("highlight! default link TabLineModified StatusModified")
+vim.cmd "highlight! default link TabLine StatusLine"
+vim.cmd "highlight! default link TabLineFill StatusLine"
+vim.cmd "highlight! default link TabLineSel StatusLang"
+vim.cmd "highlight! default link TabLineMixed StatusMixed"
+vim.cmd "highlight! default link TabLineModified StatusModified"
 
 vim.g.showtabline = 1
-vim.o.tabline = [[%!v:lua.tabline()]]
+vim.o.tabline = "%!v:lua.tabline()"
