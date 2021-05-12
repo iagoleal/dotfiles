@@ -11,6 +11,7 @@ alias hc=herbstclient
 alias dotfiles='git --git-dir=$HOME/.dotfiles-gitdir/ --work-tree=$HOME'
 
 # For Haskell
+alias ghc='stack ghc'
 alias ghci='stack ghci'
 alias runhaskell='stack runhaskell'
 
@@ -23,7 +24,7 @@ function weather { curl wttr.in/"$*"; }
 # Update everything
 function update {
   yay -Syu --noconfirm
-  nvim --headless +PlugUpdate +PlugUpgrade +qall
+  nvim --headless +PackerSync +PackerCompile +qall
   stack upgrade && stack update
 }
 

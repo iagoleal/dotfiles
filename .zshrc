@@ -59,6 +59,12 @@ path+=("$HOME/.bin")
 export PATH
 eval $(luarocks path --bin)
 
+
+#----------------------------
+# Make the cursor blink
+#----------------------------
+echo -e -n "\x1b[\x33 q"
+
 #----------------------------
 # Source additional configs
 #----------------------------
@@ -66,10 +72,8 @@ eval $(luarocks path --bin)
 source $HOME/.zsh.d/aliases.zsh
 # Prompt customization
 source $HOME/.zsh.d/prompt.zsh
-# Enable syntax highlighting
-source $HOME/.zsh.d/syntax-highlighting.zsh
 # fzf keybindings and completion
 source $HOME/.zsh.d/fzf.zsh
+# Enable syntax highlighting
+source $HOME/.zsh.d/syntax-highlighting.zsh
 
-# Make the cursor blink
-echo -e -n "\x1b[\x33 q"
