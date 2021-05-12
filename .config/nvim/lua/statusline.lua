@@ -1,5 +1,5 @@
 -- TODO: change color when RO or modified
-local api = require "api"
+require "utils"
 
 -- Test whether the current buffer is the focused one
 local function is_buffer_active()
@@ -57,11 +57,11 @@ local function diagnostics()
   end
   local num = get_lsp_diagnostics()
   return table.concat({"%21("
-    , "%#LspDiagnosticsDefaultError#"        , "E:" , num.errors   , "%#StatusLine# "
-    , "%#LspDiagnosticsDefaultWarning#"      , "W:" , num.warnings , "%#StatusLine# "
-    , "%#LspDiagnosticsDefaultInformation#"  , "I:" , num.info     , "%#StatusLine# "
-    , "%#LspDiagnosticsDefaultHint#"         , "H:" , num.hints    , "%#StatusLine# "
-    , "%)"})
+    , "%#StatusLspDiagnosticsError#"        , " E:" , num.errors   , " %#StatusLine#"
+    , "%#StatusLspDiagnosticsWarning#"      , " W:" , num.warnings , " %#StatusLine#"
+    , "%#StatusLspDiagnosticsInformation#"  , " I:" , num.info     , " %#StatusLine#"
+    , "%#StatusLspDiagnosticsHint#"         , " H:" , num.hints    , " %#StatusLine#"
+    , " %)"})
 end
 
 function statusline()
@@ -71,23 +71,30 @@ function statusline()
     , " %-t %-m %-r"
     , "%="
     , diagnostics()
-    , "%2(%c%), %l:%L "
+    , "%2(%c%), %2(%l%):%L "
     , filetype()
     })
   return sl
 end
 
+highlight("StatusLspDiagnosticsError",       {gui = "bold", guifg = "Black", guibg = "#CC2A1F"})
+highlight("StatusLspDiagnosticsWarning",     {gui = "bold", guifg = "Black", guibg = "#EF981C"})
+highlight("StatusLspDiagnosticsInformation", {gui = "bold", guifg = "Black", guibg = "#93DCF4"})
+highlight("StatusLspDiagnosticsHint",        {gui = "bold", guifg = "Black", guibg = "#E2E5E6"})
+
+
 -- Generate the statusline
-api.highlight("StatusMode",     {gui = "bold", guifg = "Black", guibg = "White"})
-api.highlight("StatusLang",     {gui = "bold", guifg = "Black", guibg = "#81A3FA"})
-api.highlight("StatusModified", {gui = "bold", guifg = "Black", guibg = "#FF6B6B"})
-api.highlight("StatusMixed",    {gui = "bold", guifg = "Black", guibg = "#A36BF0"})
+highlight("StatusMode",     {gui = "bold", guifg = "Black", guibg = "White"})
+highlight("StatusLang",     {gui = "bold", guifg = "Black", guibg = "#81A3FA"})
+highlight("StatusModified", {gui = "bold", guifg = "Black", guibg = "#FF6B6B"})
+highlight("StatusMixed",    {gui = "bold", guifg = "Black", guibg = "#A36BF0"})
+
 
 vim.o.laststatus = 2
 vim.o.showmode   = false
 vim.o.statusline = "%!v:lua.statusline()"
 -- Guarantee that correct buffer is used
-api.augroup('StatusLine',
-            { {'WinEnter,BufEnter', '*', 'set statusline<'}
-            , {'WinLeave,BufLeave', '*', 'lua vim.wo.statusline=statusline()'}
-            })
+augroup('StatusLine',
+        { {'WinEnter,BufEnter', '*', 'set statusline<'}
+        , {'WinLeave,BufLeave', '*', 'lua vim.wo.statusline=statusline()'}
+        })
