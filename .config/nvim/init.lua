@@ -61,6 +61,7 @@ packer.startup(function()
           vim.g.matchup_matchparen_offscreen = {method = 'popup'}
           vim.g.matchup_matchparen_deferred = 1
           vim.g.matchup_matchparen_hi_surround_always = 1
+          vim.g.matchup_matchparen_deferred_show_delay = 150
           vim.g.matchup_override_vimtex = 0 -- let vimtex deal with matchs in tex files
           vim.g.matchup_matchpref = {
             html = {tagnameonly = 1}
@@ -82,7 +83,8 @@ packer.startup(function()
       }
   -- Colorize parentheses
   use {'luochen1990/rainbow',
-       cmd    = {'RainbowToggleOn', 'RainbowToggle'},
+       disable = true,
+       -- cmd    = {'RainbowToggle', 'RainbowToggleOn'},
        config = function()
          vim.g.rainbow_active = 0
        end
@@ -92,7 +94,8 @@ packer.startup(function()
   -- Can I remake this in lua with floating windows?
   use {'KabbAmine/vCoolor.vim',
        config = function()
-         vim.g.vcoolor_map = '<leader>ce'
+         vim.g.vcoolor_disable_mappings = 1
+         map('n', '<leader>ce', ':VCoolor<cr>')
         end
       }
 
@@ -143,7 +146,7 @@ packer.startup(function()
          vim.g.haskell_indent_guard            = 2
        end
       }
-  use {'JuliaEditorSupport/julia-vim', opt=false}
+  -- use {'JuliaEditorSupport/julia-vim', opt=false}
   use {'bakpakin/fennel.vim',    ft = 'fennel'}
   use {'wlangstroth/vim-racket', ft = 'racket'}
   use {'tikhomirov/vim-glsl',    ft = 'glsl'}
@@ -155,6 +158,7 @@ packer.startup(function()
 end)
 
 require("async_make")
+require("async_grep")
 
 -----------------------
 -- Theme and colors
@@ -261,6 +265,8 @@ vim.g.mapleader = " "
 
 -- Exit terminal with ESC
 map('t', "<Esc>", [[<C-\><C-n>]])
+-- And use the default keybind to send ESC (This must be norecursive!!!)
+map('t', [[<C-\><C-n>]], "<Esc>")
 
 -- Disable search highlighting (until next search)
 map('n', "<leader><Space>", ":nohlsearch<CR>")
@@ -308,6 +314,10 @@ map('n', "<leader>is",       ":IronRepl<CR>")
 map('n', "<leader>ir",       ":IronRestart<CR>")
 map('n', "<leader>if",       "<Cmd>lua require('iron').core.send(vim.api.nvim_buf_get_option(0,'ft'), vim.api.nvim_buf_get_lines(0, 0, -1, false))<Cr>")
 
+-- FZF
+map('n', "<leader>fe", ":FZFFiles<cr>")
+map('n', "<leader>fb", ":FZFBuffers<cr>")
+
 -----------------------
 -- Filetype Specific
 -----------------------
@@ -326,7 +336,7 @@ augroup('Langs', {
 
 -- Configure Treesitter
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = {"bash", "c", "comment", "css", "fennel", "haskell", "html", "json", "julia", "lua", "python"}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  ensure_installed = {"bash", "bibtex", "c", "comment", "cpp", "css", "fennel", "haskell", "html", "javascript", "json", "julia", "latex", "lua", "python", "yaml"}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
   highlight = {
     enable = true,
     -- https://www.reddit.com/r/neovim/comments/n9aupn/set_spell_that_only_considers_code_comments/
@@ -360,7 +370,10 @@ local iron = require('iron')
 iron.core.add_repl_definitions {
   lua = {
     luajit = { command = {"luajit"} },
-    lua53 = { command = {"lua5.3"} }
+    lua51  = { command = {"lua5.1"} },
+    lua52  = { command = {"lua5.2"} },
+    lua53  = { command = {"lua5.3"} },
+    lua54  = { command = {"lua5.4"} }
   },
   fennel = {
     love = { command = {"love", "."} }
@@ -373,14 +386,14 @@ iron.core.add_repl_definitions {
     }
   },
   scheme = {
-    chez = { command = {"scheme"} },
+    chez   = { command = {"scheme"} },
     racket = { command = {"racket", "-il", "scheme"} }
   }
 }
 
 require("iron").core.set_config {
   preferred = {
-    lua     = "luajit",
+    lua     = "lua53",
     fennel  = "fennel",
     haskell = "stack",
     python  = "python",

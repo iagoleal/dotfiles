@@ -76,8 +76,14 @@ function has(opt)
   return vim.fn.has(opt) == 1 or vim.fn.has(opt) == true
 end
 
+-- Set highlight group
+-- Accept an additional option 'default' to use 'hi default'
 function highlight(mode, opts)
-  local hi = {"highlight " .. mode}
+  local hi = {"highlight "}
+  if opts.default then
+    table.insert(hi, "default ")
+  end
+  table.insert(hi, mode)
   for k, v in pairs(opts) do
     table.insert(hi, " " .. k .. "=" .. v)
   end
