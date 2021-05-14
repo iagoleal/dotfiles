@@ -13,21 +13,21 @@ local on_attach = function(client, bufnr)
   buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
   -- Mappings.
-  buf_set_keymap('n', 'gD',        '<Cmd>lua vim.lsp.buf.declaration()<CR>')
-  buf_set_keymap('n', 'gd',        '<Cmd>lua vim.lsp.buf.definition()<CR>')
-  buf_set_keymap('n', 'K',         '<Cmd>lua vim.lsp.buf.hover()<CR>')
-  buf_set_keymap('n', 'gi',        '<cmd>lua vim.lsp.buf.implementation()<CR>')
-  buf_set_keymap('n', '<C-k>',     '<cmd>lua vim.lsp.buf.signature_help()<CR>')
+  buf_set_keymap('n', 'gD',         '<Cmd>lua vim.lsp.buf.declaration()<CR>')
+  buf_set_keymap('n', 'gd',         '<Cmd>lua vim.lsp.buf.definition()<CR>')
+  buf_set_keymap('n', 'K',          '<Cmd>lua vim.lsp.buf.hover()<CR>')
+  buf_set_keymap('n', 'gi',         '<cmd>lua vim.lsp.buf.implementation()<CR>')
+  buf_set_keymap('n', '<C-k>',      '<cmd>lua vim.lsp.buf.signature_help()<CR>')
   buf_set_keymap('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>')
   buf_set_keymap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>')
   buf_set_keymap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>')
   buf_set_keymap('n', '<leader>D',  '<cmd>lua vim.lsp.buf.type_definition()<CR>')
   buf_set_keymap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>')
-  buf_set_keymap('n', 'gr',        '<cmd>lua vim.lsp.buf.references()<CR>')
-  buf_set_keymap('n', '<space>e',  '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>')
-  buf_set_keymap('n', '[d',        '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>')
-  buf_set_keymap('n', ']d',        '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>')
-  buf_set_keymap('n', '<space>q',  '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>')
+  buf_set_keymap('n', 'gr',         '<cmd>lua vim.lsp.buf.references()<CR>')
+  buf_set_keymap('n', '<space>e',   '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>')
+  buf_set_keymap('n', '[d',         '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>')
+  buf_set_keymap('n', ']d',         '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>')
+  buf_set_keymap('n', '<space>q',   '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>')
 
   -- Set some keybinds conditional on server capabilities
   if client.resolved_capabilities.document_formatting then
@@ -72,7 +72,7 @@ do
           path = path
         },
         diagnostics = {
-          -- Get the language server to recognize the `vim` global
+          -- Get the language server to recognize `vim` and `love` globals
           globals = {'vim', 'love'},
           disable = {'lowercase-global'}
         },
