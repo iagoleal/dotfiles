@@ -27,9 +27,11 @@ XTerm.vt100.backarrowKey: false
 XTerm.ttyModes: erase ^?
 
 ! special
-*.foreground:   #e9e0d3
-*.background:   #1a221a
+/* *.foreground:   #e9e0d3 */
+/* *.background:   #1a221a */
 *.cursorColor:  #e9e0d3
+*.foreground:   #c0caf5
+*.background:   #24283b
 ! black
 *.color0:       #0d0c0c
 *.color8:       #3c4142
