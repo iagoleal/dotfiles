@@ -1,12 +1,22 @@
--- TODO: change color when RO or modified
 require "utils"
+
+--  Get/Set option value for the buffer where the statusline is being drawn
+local sl_buf = {}
+setmetatable(sl_buf,
+  { __index =  function(table, option)
+      return vim.api.nvim_buf_get_option(vim.fn.winbufnr(vim.g.statusline_winid), option)
+    end
+  , __newindex = function(table, option, value)
+      vim.api.nvim_buf_set_option(vim.fn.winbufnr(vim.g.statusline_winid), option, value)
+    end
+  })
 
 -- Test whether the current buffer is the focused one
 local function is_buffer_active()
   return vim.g.statusline_winid == vim.fn.win_getid()
 end
 
-local function cursor_mode()
+local function cursormode()
     local mode_name = {
         ['n']  = 'Normal',
         ['v']  = 'Visual',
@@ -29,16 +39,22 @@ local function cursor_mode()
     end
 end
 
-function filetype()
-  local color = vim.bo.modified and "%#StatusModified#" or "%#StatusLang#"
-  local ft = vim.bo.filetype
-  return table.concat{color, " ", ft, " "}
+local function filetype()
+  local ft = sl_buf.filetype
+  local color
+  if not sl_buf.modifiable then
+    color = "%#StatusUnmodifiable#"
+  elseif sl_buf.modified then
+    color = "%#StatusModified#"
+  else
+    color = "%#StatusLang#"
+  end
+  return string.format('%s %s ', color, ft)
 end
 
 -- Get number of diagnostics for each type
 -- from https://github.com/nvim-lua/lsp-status.nvim/blob/master/lua/lsp-status/diagnostics.lua
 local function get_lsp_diagnostics(bufnr)
-  bufnr = bufnr or 0
   local result = {}
   local levels = { errors   = "Error"
                  , warnings = "Warning"
@@ -51,50 +67,51 @@ local function get_lsp_diagnostics(bufnr)
   return result
 end
 
-local function diagnostics()
-  if #vim.lsp.buf_get_clients() == 0 then
+local function diagnostics(bufnr)
+  bufnr = bufnr or vim.fn.winbufnr(vim.g.statusline_winid)
+  if #vim.lsp.buf_get_clients(bufnr) == 0 then
     return ""
   end
-  local num = get_lsp_diagnostics()
+  local num = get_lsp_diagnostics(bufnr)
   return table.concat({"%21("
-    , "%#StatusLspDiagnosticsError#"        , " E:" , num.errors   , " %#StatusLine#"
-    , "%#StatusLspDiagnosticsWarning#"      , " W:" , num.warnings , " %#StatusLine#"
-    , "%#StatusLspDiagnosticsInformation#"  , " I:" , num.info     , " %#StatusLine#"
-    , "%#StatusLspDiagnosticsHint#"         , " H:" , num.hints    , " %#StatusLine#"
-    , " %)"})
+    , "%#StatusLspDiagnosticsError#"        , " E:" , num.errors   , " "
+    , "%#StatusLspDiagnosticsWarning#"      , " W:" , num.warnings , " "
+    , "%#StatusLspDiagnosticsInformation#"  , " I:" , num.info     , " "
+    , "%#StatusLspDiagnosticsHint#"         , " H:" , num.hints    , " "
+    , "%)"})
 end
 
 function statusline()
   local sl = table.concat(
-    { cursor_mode()
-    , "%#StatusLine#"
-    , " %-t %-m %-r"
+    { cursormode()
+    , sl_buf.readonly and "%#StatusReadonly#" or "%#StatusLine#"
+    , " %-t"
     , "%="
     , diagnostics()
-    , "%2(%c%), %2(%l%):%L "
+    , "%#StatusLine#"
+    , " %2(%c%), %2(%l%):%L "
     , filetype()
     })
   return sl
 end
 
-highlight("StatusLspDiagnosticsError",       {gui = "bold", guifg = "Black", guibg = "#CC2A1F"})
-highlight("StatusLspDiagnosticsWarning",     {gui = "bold", guifg = "Black", guibg = "#EF981C"})
-highlight("StatusLspDiagnosticsInformation", {gui = "bold", guifg = "Black", guibg = "#93DCF4"})
-highlight("StatusLspDiagnosticsHint",        {gui = "bold", guifg = "Black", guibg = "#E2E5E6"})
-
 
 -- Generate the statusline
-highlight("StatusMode",     {gui = "bold", guifg = "Black", guibg = "White"})
-highlight("StatusLang",     {gui = "bold", guifg = "Black", guibg = "#81A3FA"})
-highlight("StatusModified", {gui = "bold", guifg = "Black", guibg = "#FF6B6B"})
-highlight("StatusMixed",    {gui = "bold", guifg = "Black", guibg = "#A36BF0"})
+do
+  highlight("StatusMode",                      { gui = "bold", guifg = "Black", guibg = "White"   })
+  highlight("StatusLang",                      { gui = "bold", guifg = "Black", guibg = "#81A3FA" })
+  highlight("StatusModified",                  { gui = "bold", guifg = "Black", guibg = "#FF6B6B" })
+  highlight("StatusUnmodifiable",              { gui = "bold", guifg = "Black", guibg = "#C4CBCF" })
+  vim.cmd [[highlight! default link StatusReadonly StatusUnmodifiable]]
+  highlight("StatusMixed",                     { gui = "bold", guifg = "Black", guibg = "#A36BF0" })
+  highlight("StatusLspDiagnosticsError",       { gui = "bold", guifg = "Black", guibg = "#CC2A1F" })
+  highlight("StatusLspDiagnosticsWarning",     { gui = "bold", guifg = "Black", guibg = "#EF981C" })
+  highlight("StatusLspDiagnosticsInformation", { gui = "bold", guifg = "Black", guibg = "#93DCF4" })
+  highlight("StatusLspDiagnosticsHint",        { gui = "bold", guifg = "Black", guibg = "#E2E5E6" })
 
+  vim.o.laststatus = 2
+  vim.o.showmode   = false
+  vim.o.statusline = "%!v:lua.statusline()"
+end
 
-vim.o.laststatus = 2
-vim.o.showmode   = false
-vim.o.statusline = "%!v:lua.statusline()"
--- Guarantee that correct buffer is used
-augroup('StatusLine',
-        { {'WinEnter,BufEnter', '*', 'set statusline<'}
-        , {'WinLeave,BufLeave', '*', 'lua vim.wo.statusline=statusline()'}
-        })
+return statusline
