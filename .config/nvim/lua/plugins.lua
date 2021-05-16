@@ -3,8 +3,21 @@ do
   local packer_repo = "https://github.com/wbthomason/packer.nvim"
   local packer_path = vim.fn.stdpath('data') .. "/site/pack/packer/start/packer.nvim"
   if vim.fn.empty(vim.fn.glob(packer_path)) > 0 then
+    local answer = vim.fn.input("Packer not found, do you want to load it? [Y/n]")
+    answer = string.lower(answer)
+    if answer == "n" or answer == "no" then
+      vim.cmd [[echohl WarningMsg]]
+      vim.cmd [[redraw]]
+      print("\nCloning aborted!")
+      vim.cmd [[echohl None]]
+      return nil
+    end
+    vim.cmd [[redraw]]
+    print "\nCloning Packer as a start plugin"
     vim.fn.system({'git', 'clone', packer_repo, packer_path})
     vim.api.nvim_command 'packadd packer.nvim'
+    vim.cmd [[redraw]]
+    print "\nSucceded at cloning Packer"
   end
 end
 
