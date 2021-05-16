@@ -3,20 +3,20 @@ require "utils"
 --  Get/Set option value for the buffer where the statusline is being drawn
 local sl_buf = {}
 setmetatable(sl_buf,
-  { __index =  function(table, option)
+  { __index =  function(_, option)
       return vim.api.nvim_buf_get_option(vim.fn.winbufnr(vim.g.statusline_winid), option)
     end
-  , __newindex = function(table, option, value)
+  , __newindex = function(_, option, value)
       vim.api.nvim_buf_set_option(vim.fn.winbufnr(vim.g.statusline_winid), option, value)
     end
   })
 local sl_win = {}
 -- Get/Set option value for the window where the statusline is being drawn
 setmetatable(sl_win,
-  { __index =  function(table, option)
+  { __index =  function(_, option)
       return vim.api.nvim_win_get_option(vim.g.statusline_winid, option)
     end
-  , __newindex = function(table, option, value)
+  , __newindex = function(_, option, value)
       vim.api.nvim_win_set_option(vim.g.statusline_winid, option, value)
     end
   })
@@ -26,27 +26,46 @@ local function is_buffer_active()
   return vim.g.statusline_winid == vim.fn.win_getid()
 end
 
+local function mode_info(mode)
+  local mode_name = {
+      ['n']  = 'Normal',
+      ['v']  = 'Visual',
+      ['V']  = 'V-Line',
+      [''] = 'V-Block',
+      ['s']  = 'Select',
+      ['S']  = 'S-Line',
+      [''] = 'S-Block',
+      ['i']  = 'Insert',
+      ['R']  = 'Replace',
+      ['c']  = 'Command',
+      ['r']  = 'Prompt',
+      ['!']  = "Shell",
+      ['t']  = 'Terminal',
+  }
+  local mode_color = {
+      ['n']  = '%#StatusModeNormal#',
+      ['v']  = '%#StatusModeVisual#',
+      ['V']  = '%#StatusModeVisual#',
+      [''] = '%#StatusModeVisual#',
+      ['s']  = '%#StatusModeSelect#',
+      ['S']  = '%#StatusModeSelect#',
+      [''] = '%#StatusModeSelect#',
+      ['i']  = '%#StatusModeInsert#',
+      ['R']  = '%#StatusModeReplace#',
+      ['c']  = '%#StatusModeCommand#',
+      ['t']  = '%#StatusModeTerminal#',
+  }
+  mode = string.sub(mode, 1, 1)
+  return (mode_name[mode] or mode), (mode_color[mode] or mode_color['n'])
+end
+
 local function cursormode()
-    local mode_name = {
-        ['n']  = 'Normal',
-        ['v']  = 'Visual',
-        ['V']  = 'V-Line',
-        [''] = 'V-Block',
-        ['i']  = 'Insert',
-        ['R']  = 'Replace',
-        ['Rv'] = 'V-Replace',
-        ['c']  = 'Command',
-        ['s']  = 'Select',
-        ['S']  = 'S-Line',
-        [''] = 'S-Block',
-        ['t']  = 'Terminal',
-    }
-    local mode = vim.fn.mode()
-    if is_buffer_active() then
-      return "%-(%#StatusMode# " .. (mode_name[mode] or mode) .. " %)"
-    else
-      return ""
-    end
+  local mode, hl = mode_info(vim.api.nvim_get_mode().mode)
+  if is_buffer_active() then
+    return table.concat{"%-(",  hl,  " ",  mode,  " %)"}
+  else
+    return ""
+  end
 end
 
 local function filetype()
@@ -108,11 +127,18 @@ end
 
 -- Generate the statusline
 do
-  highlight("StatusMode",                      { gui = "bold", guifg = "Black", guibg = "White"   })
+  highlight("StatusModeNormal",                { gui = "bold", guifg = "Black", guibg = "White"   })
+  highlight("StatusModeVisual",                { gui = "bold", guifg = "Black", guibg = "#81A3FA" })
+  highlight("StatusModeSelect",                { gui = "bold", guifg = "Black", guibg = "#FF6B6B" })
+  highlight("StatusModeInsert",                { gui = "bold", guifg = "Black", guibg = "#7CF682" })
+  highlight("StatusModeReplace",               { gui = "bold", guifg = "Black", guibg = "#FADE3D" })
+  highlight("StatusModeCommand",               { gui = "bold", guifg = "Black", guibg = "#FCC068" })
+  hi_link("StatusModeTerminal", "StatusModeInsert", {default = true})
+
   highlight("StatusLang",                      { gui = "bold", guifg = "Black", guibg = "#81A3FA" })
   highlight("StatusModified",                  { gui = "bold", guifg = "Black", guibg = "#FF6B6B" })
   highlight("StatusUnmodifiable",              { gui = "bold", guifg = "Black", guibg = "#C4CBCF" })
-  vim.cmd [[highlight default link StatusReadonly StatusUnmodifiable]]
+  hi_link("StatusReadonly", "StatusUnmodifiable", {default = true})
   highlight("StatusMixed",                     { gui = "bold", guifg = "Black", guibg = "#A36BF0" })
   highlight("StatusLspDiagnosticsError",       { gui = "bold", guifg = "Black", guibg = "#CC2A1F" })
   highlight("StatusLspDiagnosticsWarning",     { gui = "bold", guifg = "Black", guibg = "#EF981C" })
@@ -120,8 +146,7 @@ do
   highlight("StatusLspDiagnosticsHint",        { gui = "bold", guifg = "Black", guibg = "#E2E5E6" })
 
   vim.o.laststatus = 2
-  vim.o.showmode   = false
+  vim.o.showmode   = true
   vim.o.statusline = "%!v:lua.statusline()"
 end
-
 return statusline
