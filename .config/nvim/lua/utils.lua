@@ -57,11 +57,17 @@ end
 
 -- Keymaps
 -- This is 'norecursive' by default, differently from vimscript
+_mapped_functions = {} -- Store lua functions that are mapped to some key
 function map(mode, keys, cmd, opts)
   -- Default options
   opts = opts or {}
   if opts.noremap == nil then
     opts.noremap = true
+  end
+  if type(cmd) == 'function' then
+    table.insert(_mapped_functions, cmd)
+    local idx = #_mapped_functions
+    cmd = string.format(":lua _mapped_functions[%d]()<CR>", idx)
   end
   vim.api.nvim_set_keymap(mode, keys, cmd, opts)
 end
@@ -97,6 +103,25 @@ function option(opt, value)
     value = table.concat(value, ',')
   end
   set_option(opt, value)
+end
+
+function options(...)
+  local opts = {...}
+  for _, v in ipairs(opts) do
+    if type(v) == "string" then
+      option(v, true)
+    end
+    if type(v) == "table" then
+      local len = #v
+      if len == 1 then
+        option(v[1], true)
+      elseif len == 2 then
+        option(v[1], v[2])
+      else
+        error(string.format("Options can only have one value, but option '%s' got %d", v[1], len-1))
+      end
+    end
+  end
 end
 
 ------------------------
