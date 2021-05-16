@@ -21,9 +21,9 @@ require "async_grep"
 -----------------------
 -- Theme and colors
 -----------------------
-if vim.fn.has("termguicolors") == 1 then
-  vim.o.termguicolors = true
-  vim.o.background = "dark"
+if has("termguicolors") then
+  option "termguicolors"
+  option("background", "dark")
   vim.g.ayucolor = 'mirage'
   colorscheme "tokyonight"
 end
@@ -170,7 +170,9 @@ map('n', "<leader>il",       "<Plug>(iron-clear)",         {noremap = false})
 map('n', "<leader>ip",       "<Plug>(iron-send-motion)ip", {noremap = false})
 map('n', "<leader>is",       ":IronRepl<CR>")
 map('n', "<leader>ir",       ":IronRestart<CR>")
-map('n', "<leader>if",       "<Cmd>lua require('iron').core.send(vim.api.nvim_buf_get_option(0,'ft'), vim.api.nvim_buf_get_lines(0, 0, -1, false))<Cr>")
+map('n', "<leader>if",       function()
+  require('iron').core.send(vim.bo.filetype, vim.api.nvim_buf_get_lines(0, 0, -1, false))
+end)
 
 -- FZF
 map('n', "<leader>fe", ":FZFFiles<cr>")
@@ -217,7 +219,7 @@ require'nvim-treesitter.configs'.setup {
     enable = true,
   },
   matchup = {
-    enable = true
+    enable = false
     -- disable = { },  -- optional, list of language that will be disabled
   },
 }
@@ -249,7 +251,7 @@ iron.core.add_repl_definitions {
   }
 }
 
-require("iron").core.set_config {
+iron.core.set_config {
   preferred = {
     lua     = "lua53",
     fennel  = "fennel",
@@ -259,3 +261,19 @@ require("iron").core.set_config {
   },
   repl_open_cmd = "rightbelow 66 vsplit"
 }
+
+function iron_setrepl(repl)
+  local ft = vim.bo.ft
+  if repl == nil then
+    local repls = vim.tbl_map(function(v) return v[1] end,
+                              iron.core.list_definitions_for_ft(ft))
+    table.sort(repls)
+    local prompts = {}
+    for k, v in ipairs(repls) do
+      prompts[k] = string.format("%d. %s", k, v)
+    end
+    local choice = vim.fn.inputlist(prompts)
+    repl = repls[choice]
+  end
+  iron.core.set_config {preferred = {[ft] = repl}}
+end
