@@ -3,20 +3,6 @@ local M = {_G = _G, vim = vim}
 setmetatable(M, {__index = _G})
 setfenv(1, M)
 
--- Return the metaacessor for a given option
-local function option_scope(opt)
-  local info = vim.api.nvim_get_option_info(opt)
-  local stbl
-  if info.scope == "buf" then
-    stbl = "bo"
-  elseif info.scope == "win" then
-    stbl = "wo"
-  else
-    stbl = "o"
-  end
-  return stbl
-end
-
 -- Set options using same scope rules as vimscript's ":set"
 local function set_option(opt, value)
   local info = vim.api.nvim_get_option_info(opt)
@@ -54,7 +40,6 @@ function augroup(name, autocmds)
   vim.cmd('augroup END')
 end
 
-
 -- Keymaps
 -- This is 'norecursive' by default, differently from vimscript
 _mapped_functions = {} -- Store lua functions that are mapped to some key
@@ -67,7 +52,7 @@ function map(mode, keys, cmd, opts)
   if type(cmd) == 'function' then
     table.insert(_mapped_functions, cmd)
     local idx = #_mapped_functions
-    cmd = string.format(":lua _mapped_functions[%d]()<CR>", idx)
+    cmd = string.format("<cmd>lua _mapped_functions[%d]()<CR>", idx)
   end
   vim.api.nvim_set_keymap(mode, keys, cmd, opts)
 end
@@ -85,17 +70,30 @@ end
 -- Set highlight group
 -- Accept an additional option 'default' to use 'hi default'
 function highlight(mode, opts)
-  local hi = {"highlight "}
+  local hi = {"highlight"}
   if opts.default then
-    table.insert(hi, "default ")
+    table.insert(hi, "default")
+    opts.default = nil
   end
   table.insert(hi, mode)
   for k, v in pairs(opts) do
-    table.insert(hi, " " .. k .. "=" .. v)
+    table.insert(hi, k .. "=" .. v)
   end
-  vim.cmd(table.concat(hi))
+  vim.cmd(table.concat(hi, ' '))
 end
 
+function hi_link(from, to, opts)
+  local hi = {
+    opts.bang and "highlight!" or "highlight",
+    opts.default and "default" or "",
+    "link",
+    from,
+    to
+  }
+  vim.cmd(table.concat(hi, ' '))
+end
+
+-- Set an option following vimscript style and scope
 function option(opt, value)
   if value == nil then
     value = true
@@ -105,6 +103,7 @@ function option(opt, value)
   set_option(opt, value)
 end
 
+-- Set several options at the same time
 function options(...)
   local opts = {...}
   for _, v in ipairs(opts) do
@@ -127,6 +126,12 @@ end
 ------------------------
 -- Global utilities
 ------------------------
+
+-- Execute a string of vimscript
+function vimscript(s)
+  return vim.api.nvim_exec(s, true)
+end
+viml = vimscript
 
 -- Pretty print information about lua objects
 function dump(...)
