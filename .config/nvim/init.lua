@@ -24,7 +24,7 @@ require "async_grep"
 if vim.fn.has("termguicolors") == 1 then
   vim.o.termguicolors = true
   vim.o.background = "dark"
-  vim.cmd 'let ayucolor="mirage"'
+  vim.g.ayucolor = 'mirage'
   colorscheme "tokyonight"
 end
 
@@ -35,17 +35,17 @@ require "tabline"
 option("synmaxcol", 180)
 option("wrap", false)
 
-option("showcmd", true)
-option("ruler", true)
+option "showcmd"
+option "ruler"
 option("conceallevel", 0)
 
-option("list", true)                  -- Show trailing {spaces, tabs}
+option "list"                  -- Show trailing {spaces, tabs}
 option("listchars", {"tab:├─", "trail:۰", "nbsp:☻", "extends:⟩", "precedes:⟨"})
 
-option("number", true)                -- show line numbers)
-option("relativenumber", true)        -- Show line numbers relative to current line
-option("numberwidth", 2)              -- set minimum width of numbers bar
-option("showmatch", true)             -- highlight matching parentheses (useful as hell)
+option "number"                -- show line numbers)
+option "relativenumber"        -- Show line numbers relative to current line
+option("numberwidth", 2)       -- set minimum width of numbers bar
+option "showmatch"             -- highlight matching parentheses (useful as hell)
 
 
 augroup('Ident',
@@ -63,7 +63,7 @@ highlight("Folded",     {ctermbg="Black",   guibg="Black"})
 -- Trailing spaces
 highlight("Whitespace", {ctermfg="Magenta", guifg="Magenta"})
 -- Matching Parentheses
-highlight("MatchParen", {guibg="none", guifg="Magenta", ctermfg="Magenta", gui="Bold,Underline", cterm="underline"})
+highlight("MatchParen", {ctermfg="Magenta",cterm="underline", guibg="none", guifg="Magenta",  gui="Bold,Underline" })
 -- Spell checker colors
 highlight("SpellBad",   {ctermfg="Red",    cterm="Underline",  guifg="LightRed",   gui="Underline", guisp="LightRed"})
 highlight("SpellCap",   {ctermfg="Blue",   cterm="Underline",  guifg="LightBlue",  gui="Underline", guisp="Blue"})
@@ -76,39 +76,39 @@ highlight("SpellRare",  {ctermfg="Yellow", cterm="underline",  guifg="Orange",  
 -------------------------
 
 -- Search
-option("incsearch", true)              -- search as characters are entered
-option("hlsearch", true)               -- highlight matches
-option("ignorecase", true)             -- case-insensitive searchs / substitutions
-option("smartcase", true)              -- If terms are all lowercase, ignore case. Consider case otherwise.
+option "incsearch"              -- search as characters are entered
+option "hlsearch"               -- highlight matches
+option "ignorecase"             -- case-insensitive searchs / substitutions
+option "smartcase"              -- If terms are all lowercase, ignore case. Consider case otherwise.
 
 -- Find files on subfolders
 vim.o.path = vim.o.path .. '**'
 
-option("wildmenu", true)               -- visual menu for command autocompletion
+option "wildmenu"               -- visual menu for command autocompletion
 option("wildmode",{"full", "list", "full"})   -- first autocomplete the word, afterwards run across the list
 
-option("splitright", true)             -- Vertical split to the right (default is left)
+option "splitright"             -- Vertical split to the right (default is left)
 
 -- Spaces and Tabs, settling the war
 option("tabstop",     2)       -- n spaces per tab visually
 option("softtabstop", 2)       -- n spaces per tab when editing
 option("shiftwidth",  2)       -- n spaces for autoindent
-option("expandtab",   true)    -- If active, tabs are converted to spaces
+option "expandtab"             -- If active, tabs are converted to spaces
 option("smarttab",    false)
 
 -- Indentation
-option("autoindent", true)
+option "autoindent"
 
 -- Set backup files
-option("backup", true)
+option "backup"
 option("backupdir",  {"~/.vim/tmp", "~/.tmp", "~/tmp", "/var/tmp", "/tmp", "."})
 option("backupskip", {"/tmp/*", "/private/tmp/*"})
 option("directory",  {"~/.vim/tmp", "~/.tmp", "~/tmp", "/var/tmp", "/tmp"})
-option("writebackup", true)
+option "writebackup"
 
 -- Set undo
 option("undodir", {"~/.tmp", "~/tmp", "/var/tmp", "/tmp", "$XDG_DATA_HOME/nvim/undo", "."})
-option("undofile", true)
+option "undofile"
 
 -- Set Thesaurus file
 vim.o.thesaurus = vim.o.thesaurus .. "~/.config/nvim/thesaurus/mthesaur.txt"
@@ -164,7 +164,7 @@ map('n', "<leader>i.",       "<Plug>(iron-repeat-cmd)",    {noremap = false})
 map('n', "<leader>i<Space>", "<Plug>(iron-send-line)",     {noremap = false})
 map('n', "<leader>ii",       "<Plug>(iron-send-line)",     {noremap = false})
 map('n', "<leader>i<CR>",    "<Plug>(iron-cr)",            {noremap = false})
-map('n', "<leader>ic",       "<plug>(iron-interrupt)",     {noremap = false})
+map('n', "<leader>ic",       "<Plug>(iron-interrupt)",     {noremap = false})
 map('n', "<leader>iq",       "<Plug>(iron-exit)",          {noremap = false})
 map('n', "<leader>il",       "<Plug>(iron-clear)",         {noremap = false})
 map('n', "<leader>ip",       "<Plug>(iron-send-motion)ip", {noremap = false})
@@ -203,10 +203,10 @@ require'nvim-treesitter.configs'.setup {
   incremental_selection = {
     enable = true,
     keymaps = {
-      init_selection = "gnn",
-      node_incremental = "grn",
+      init_selection    = "gnn",
+      node_incremental  = "grn",
       scope_incremental = "grc",
-      node_decremental = "grm",
+      node_decremental  = "grm",
     },
   },
   indent = {

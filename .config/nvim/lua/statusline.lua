@@ -10,6 +10,16 @@ setmetatable(sl_buf,
       vim.api.nvim_buf_set_option(vim.fn.winbufnr(vim.g.statusline_winid), option, value)
     end
   })
+local sl_win = {}
+-- Get/Set option value for the window where the statusline is being drawn
+setmetatable(sl_win,
+  { __index =  function(table, option)
+      return vim.api.nvim_win_get_option(vim.g.statusline_winid, option)
+    end
+  , __newindex = function(table, option, value)
+      vim.api.nvim_win_set_option(vim.g.statusline_winid, option, value)
+    end
+  })
 
 -- Test whether the current buffer is the focused one
 local function is_buffer_active()
@@ -102,7 +112,7 @@ do
   highlight("StatusLang",                      { gui = "bold", guifg = "Black", guibg = "#81A3FA" })
   highlight("StatusModified",                  { gui = "bold", guifg = "Black", guibg = "#FF6B6B" })
   highlight("StatusUnmodifiable",              { gui = "bold", guifg = "Black", guibg = "#C4CBCF" })
-  vim.cmd [[highlight! default link StatusReadonly StatusUnmodifiable]]
+  vim.cmd [[highlight default link StatusReadonly StatusUnmodifiable]]
   highlight("StatusMixed",                     { gui = "bold", guifg = "Black", guibg = "#A36BF0" })
   highlight("StatusLspDiagnosticsError",       { gui = "bold", guifg = "Black", guibg = "#CC2A1F" })
   highlight("StatusLspDiagnosticsWarning",     { gui = "bold", guifg = "Black", guibg = "#EF981C" })
