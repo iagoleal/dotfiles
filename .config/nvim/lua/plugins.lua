@@ -78,8 +78,16 @@ return packer.startup(function()
   -- use 'tpope/vim-dispatch'     -- Async make      (vimscript)
   use {'junegunn/vim-easy-align', -- Alignment utils (vimscript)
        config = function()
-         map('n', "<leader>a", "<Plug>(EasyAlign)", {noremap = false})
-         map('x', "<leader>a", "<Plug>(EasyAlign)", {noremap = false})
+         vim.g.easy_align_delimiters = {
+           ['>'] = {
+             pattern         = [[=>\|->\|>\|→]],
+             delimiter_align = 'r',
+           },
+           ['<'] = {
+             pattern         = [[<-\|<=\|<\|←]],
+             delimiter_align = 'l',
+           }
+         }
        end
       }
   use {'norcalli/nvim-colorizer.lua',

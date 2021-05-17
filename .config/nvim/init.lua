@@ -178,6 +178,10 @@ end)
 map('n', "<leader>fe", ":FZFFiles<cr>")
 map('n', "<leader>fb", ":FZFBuffers<cr>")
 
+-- Easy Align
+map('n', "<leader>a", "<Plug>(EasyAlign)", {noremap = false})
+map('x', "<leader>a", "<Plug>(EasyAlign)", {noremap = false})
+
 -----------------------
 -- Filetype Specific
 -----------------------
