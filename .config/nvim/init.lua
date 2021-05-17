@@ -6,7 +6,7 @@ vim.cmd 'syntax enable'
 require "utils"
 
 -- Plugin management
-require "plugins"
+-- require "plugins"
 
 -- Auto reload plugins on startup
 local plugins_path = vim.fn.stdpath('config') .. '/lua/plugins.lua'

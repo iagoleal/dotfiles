@@ -1,5 +1,9 @@
 local nvim_lsp = require('lspconfig')
 
+local function iscapable(client, capability)
+  return client.resolved_capabilities[capability]
+end
+
 local on_attach = function(client, bufnr)
   print("bump LSP")
   local opts = { noremap=true, silent=true }
@@ -30,25 +34,11 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space>q',   '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>')
 
   -- Set some keybinds conditional on server capabilities
-  if client.resolved_capabilities.document_formatting then
-    buf_set_keymap("n", "<space>=", "<cmd>lua vim.lsp.buf.formatting()<CR>")
-  elseif client.resolved_capabilities.document_range_formatting then
+  if     iscapable(client, "document_range_formatting") then
     buf_set_keymap("n", "<space>=", "<cmd>lua vim.lsp.buf.range_formatting()<CR>")
+  elseif iscapable(client, "document_formatting") then
+    buf_set_keymap("n", "<space>=", "<cmd>lua vim.lsp.buf.formatting()<CR>")
   end
-
-  -- Set autocommands conditional on server_capabilities
-  --[[ if client.resolved_capabilities.document_highlight then
-    vim.api.nvim_exec([=[
-      hi LspReferenceRead cterm=bold ctermbg=red guibg=LightYellow
-      hi LspReferenceText cterm=bold ctermbg=red guibg=LightYellow
-      hi LspReferenceWrite cterm=bold ctermbg=red guibg=LightYellow
-      augroup lsp_document_highlight
-        autocmd! * <buffer>
-        autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
-        autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
-      augroup END
-    ]=], false)
-  end ]]
 end
 
 -- Lua

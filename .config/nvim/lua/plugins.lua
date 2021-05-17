@@ -99,8 +99,8 @@ return packer.startup(function()
   -- Colorize parentheses
   use {'luochen1990/rainbow',
        disable = true,
-       cmd    = {'RainbowToggle', 'RainbowToggleOn'},
-       config = function()
+       cmd     = {'RainbowToggle', 'RainbowToggleOn'},
+       config  = function()
          vim.g.rainbow_active = 0
        end
       }
