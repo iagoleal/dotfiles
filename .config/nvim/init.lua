@@ -6,8 +6,6 @@ vim.cmd 'syntax enable'
 require "utils"
 
 -- Plugin management
--- require "plugins"
-
 -- Auto reload plugins on startup
 local plugins_path = vim.fn.stdpath('config') .. '/lua/plugins.lua'
 augroup('PluginManager',
@@ -42,9 +40,11 @@ option("conceallevel", 0)
 option "list"                  -- Show trailing {spaces, tabs}
 option("listchars", {"tab:├─", "trail:۰", "nbsp:☻", "extends:⟩", "precedes:⟨"})
 
-option "number"                -- show line numbers)
+option "number"                -- show line numbers
 option "relativenumber"        -- Show line numbers relative to current line
 option("numberwidth", 2)       -- set minimum width of numbers bar
+option("signcolumn", "number") -- show (lsp) signs over number bar
+
 option "showmatch"             -- highlight matching parentheses (useful as hell)
 
 

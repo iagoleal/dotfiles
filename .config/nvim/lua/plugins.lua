@@ -1,7 +1,7 @@
 -- Ensure packer is installed
 do
   local packer_repo = "https://github.com/wbthomason/packer.nvim"
-  local packer_path = vim.fn.stdpath('data') .. "/site/pack/packer/start/packer.nvim"
+  local packer_path = vim.fn.stdpath('data') .. "/site/pack/packer/opt/packer.nvim"
   if vim.fn.empty(vim.fn.glob(packer_path)) > 0 then
     local answer = vim.fn.input("Packer not found, do you want to load it? [Y/n]")
     answer = string.lower(answer)
@@ -13,7 +13,7 @@ do
       return nil
     end
     vim.cmd [[redraw]]
-    print "\nCloning Packer as a start plugin"
+    print "\nCloning Packer as an opt plugin"
     vim.fn.system({'git', 'clone', packer_repo, packer_path})
     vim.api.nvim_command 'packadd packer.nvim'
     vim.cmd [[redraw]]
@@ -22,12 +22,13 @@ do
 end
 
 -- Plugin management
+vim.api.nvim_command 'packadd packer.nvim'
 local packer = require('packer')
 local use = packer.use
 
 return packer.startup(function()
   -- The plugin manager itself
-  use 'wbthomason/packer.nvim'
+  use {'wbthomason/packer.nvim', opt = true}
   -- Treesitter
   use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'}
   use {'p00f/nvim-ts-rainbow',
@@ -161,7 +162,7 @@ return packer.startup(function()
          vim.g.haskell_indent_guard            = 2
        end
       }
-  -- use {'JuliaEditorSupport/julia-vim', opt=false}
+  use {'JuliaEditorSupport/julia-vim', opt=false}
   use {'bakpakin/fennel.vim',    ft = 'fennel'}
   use {'wlangstroth/vim-racket', ft = 'racket'}
   use {'tikhomirov/vim-glsl',    ft = 'glsl'}
