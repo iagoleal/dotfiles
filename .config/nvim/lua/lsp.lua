@@ -4,42 +4,56 @@ local function iscapable(client, capability)
   return client.resolved_capabilities[capability]
 end
 
+-- Only map keybinds after attaching LSP
 local on_attach = function(client, bufnr)
-  print("bump LSP")
-  local opts = { noremap=true, silent=true }
-  local function buf_set_keymap(mode, keys, cmd)
+  local opts = {noremap = true, silent = true}
+  local function bmap(mode, keys, cmd)
     vim.api.nvim_buf_set_keymap(bufnr, mode, keys, cmd, opts)
   end
-  local function buf_set_option(...)
-    vim.api.nvim_buf_set_option(bufnr, ...)
-  end
 
-  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+  -- Use lsp omnifunc for completion
+  vim.bo[bufnr].omnifunc ='v:lua.vim.lsp.omnifunc'
 
   -- Mappings.
-  buf_set_keymap('n', 'gD',         '<Cmd>lua vim.lsp.buf.declaration()<CR>')
-  buf_set_keymap('n', 'gd',         '<Cmd>lua vim.lsp.buf.definition()<CR>')
-  buf_set_keymap('n', 'K',          '<Cmd>lua vim.lsp.buf.hover()<CR>')
-  buf_set_keymap('n', 'gi',         '<cmd>lua vim.lsp.buf.implementation()<CR>')
-  buf_set_keymap('n', '<C-k>',      '<cmd>lua vim.lsp.buf.signature_help()<CR>')
-  buf_set_keymap('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>')
-  buf_set_keymap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>')
-  buf_set_keymap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>')
-  buf_set_keymap('n', '<leader>D',  '<cmd>lua vim.lsp.buf.type_definition()<CR>')
-  buf_set_keymap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>')
-  buf_set_keymap('n', 'gr',         '<cmd>lua vim.lsp.buf.references()<CR>')
-  buf_set_keymap('n', '<space>e',   '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>')
-  buf_set_keymap('n', '[d',         '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>')
-  buf_set_keymap('n', ']d',         '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>')
-  buf_set_keymap('n', '<space>q',   '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>')
-
+  bmap('n', 'gD',         '<cmd>lua vim.lsp.buf.declaration()<CR>')
+  bmap('n', 'gd',         '<cmd>lua vim.lsp.buf.definition()<CR>')
+  bmap('n', 'K',          '<cmd>lua vim.lsp.buf.hover()<CR>')
+  bmap('n', 'gi',         '<cmd>lua vim.lsp.buf.implementation()<CR>')
+  bmap('n', '<C-k>',      '<cmd>lua vim.lsp.buf.signature_help()<CR>')
+  bmap('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>')
+  bmap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>')
+  bmap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>')
+  if iscapable(client, 'type_definition') then
+    bmap('n', '<leader>D',  '<cmd>lua vim.lsp.buf.type_definition()<CR>')
+  end
+  bmap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>')
+  bmap('n', 'gr',         '<cmd>lua vim.lsp.buf.references()<CR>')
+  bmap('n', '<space>e',   '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>')
+  bmap('n', '[d',         '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>')
+  bmap('n', ']d',         '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>')
+  bmap('n', '<space>q',   '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>')
   -- Set some keybinds conditional on server capabilities
   if     iscapable(client, "document_range_formatting") then
-    buf_set_keymap("n", "<space>=", "<cmd>lua vim.lsp.buf.range_formatting()<CR>")
+    bmap("n", "<space>=", "<cmd>lua vim.lsp.buf.range_formatting()<CR>")
   elseif iscapable(client, "document_formatting") then
-    buf_set_keymap("n", "<space>=", "<cmd>lua vim.lsp.buf.formatting()<CR>")
+    bmap("n", "<space>=", "<cmd>lua vim.lsp.buf.formatting()<CR>")
   end
+  print("LSP attached")
 end
+
+-- Configure diagnostics (for all servers)
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+ vim.lsp.diagnostic.on_publish_diagnostics, {
+   underline        = true,
+   virtual_text     = false,
+   update_in_insert = false,
+   severity_sort    = true,
+ }
+)
+
+--------------------------
+-- Server specific setups
+--------------------------
 
 -- Lua
 -- set the path to the sumneko installation; if you previously installed via the now deprecated :LspInstall, use
@@ -56,9 +70,8 @@ do
     settings = {
       Lua = {
         runtime = {
-          -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
           version = 'LuaJIT',
-          -- Setup your lua path
+          -- Setup lua path
           path = path
         },
         diagnostics = {
@@ -73,8 +86,8 @@ do
             [vim.fn.stdpath('config')] = true,
             [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
           },
-          [vim.fn.expand'~/.luarocks/share/lua/5.4'] = true,
-          ['/usr/share/lua/5.4'] = true
+          [vim.fn.expand'~/.luarocks/share/lua/5.1'] = true,
+          ['/usr/share/lua/5.1'] = true
         },
         -- Do not send telemetry data containing a randomized but unique identifier
         telemetry = {
@@ -119,4 +132,6 @@ nvim_lsp.julials.setup{
 }
 
 -- Python
-require'lspconfig'.pyright.setup{}
+nvim_lsp.pyright.setup {
+    on_attach = on_attach
+}
