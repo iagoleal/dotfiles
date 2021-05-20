@@ -1,5 +1,6 @@
 -- Typical module boilerplate
-local M = {_G = _G, vim = vim}
+local M = {_G = _G}
+local vim = vim
 setmetatable(M, {__index = _G})
 setfenv(1, M)
 
@@ -65,6 +66,11 @@ end
 -- Check whether this version of nvim has a certain option
 function has(opt)
   return vim.fn.has(opt) == 1 or vim.fn.has(opt) == true
+end
+
+-- Check whether an executable exists on the PATH
+function has_executable(expr)
+  return vim.fn.executable(expr) == 1
 end
 
 -- Set highlight group
@@ -143,8 +149,26 @@ function dump(...)
   print(unpack(output))
 end
 
--- Pollute global environment
-for k, v in pairs(M) do
-  _G[k] = v
+function force_require(pkg)
+  package.loaded[pkg] = nil
+  return require(pkg)
 end
+
+-- Require a package and pollute the global environment with it
+-- If the argument is a table, add its elements to the global environment.
+-- If the argument is a string, require the module and add its elements to the global environment.
+function using(pkgname)
+  local pkg
+  if type(pkgname) == "string" then
+    pkg = require(pkgname)
+  elseif type(pkgname) == "table" then
+    pkg = pkgname
+  end
+  local env = getfenv(0)
+  for k, v in pairs(pkg) do
+    env[k] = v
+  end
+  return pkg
+end
+
 return M

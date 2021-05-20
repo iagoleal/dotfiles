@@ -3,13 +3,14 @@ vim.cmd 'filetype plugin indent on'
 vim.cmd 'syntax enable'
 
 -- Import utilities
-require "utils"
+local utils = require "utils"
+utils.using(utils)
 
 -- Plugin management
 -- Auto reload plugins on startup
 local plugins_path = vim.fn.stdpath('config') .. '/lua/plugins.lua'
 augroup('PluginManager',
-  {{'BufWritePost', plugins_path, "lua package.loaded.plugins = nil; require('plugins').compile()"}})
+  {{'BufWritePost', plugins_path, "lua force_require('plugins').compile()"}})
 
 
 -- Async tools
@@ -90,10 +91,10 @@ option("wildmode",{"full", "list", "full"})   -- first autocomplete the word, af
 option "splitright"             -- Vertical split to the right (default is left)
 
 -- Spaces and Tabs, settling the war
-option("tabstop",     2)       -- n spaces per tab visually
-option("softtabstop", 2)       -- n spaces per tab when editing
-option("shiftwidth",  2)       -- n spaces for autoindent
-option "expandtab"             -- If active, tabs are converted to spaces
+option("tabstop",     2)        -- n spaces per tab visually
+option("softtabstop", 2)        -- n spaces per tab when editing
+option("shiftwidth",  2)        -- n spaces for autoindent
+option "expandtab"              -- If active, tabs are converted to spaces
 option("smarttab",    false)
 
 -- Indentation
@@ -127,26 +128,28 @@ map('t', "<Esc>", [[<C-\><C-n>]])
 map('t', [[<C-\><C-n>]], "<Esc>")
 
 -- Disable search highlighting (until next search)
-map('n', "<leader><Space>", ":nohlsearch<CR>")
+map('n', "<leader><Space>", "<cmd>nohlsearch<CR>")
 
 -- Highlight cross around cursor
-map('n', "<leader>cl", ":set cursorline! cursorcolumn!<CR>")
+map('n', "<leader>cl", "<cmd>set cursorline! cursorcolumn!<CR>")
 
 -- Spell checks previous mistake and corrects to first suggestion
 map('i', "<C-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u")
 
 ---- Navigation
--- Quickfix
-map('n', "]q", ":cnext<cr>zz")
-map('n', "[q", ":cprev<cr>zz")
-map('n', "]l", ":lnext<cr>zz")
-map('n', "[l", ":lprev<cr>zz")
--- Buffers
-map('n', "]b", ":bnext<cr>")
-map('n', "[b", ":bprev<cr>")
--- Tabs
-map('n', "]t", ":tabnext<cr>")
-map('n', "[t", ":tabprevious<cr>")
+local unimpaired = function(key, cmd)
+  cmd = cmd or key
+  local fmt = string.format
+  map('n', "[" .. key:lower(), fmt(":<C-U>exe v:count1 '%sprevious'<CR>", cmd))
+  map('n', "]" .. key:lower(), fmt(":<C-U>exe v:count1 '%snext'<CR>",     cmd))
+  map('n', "[" .. key:upper(), fmt(":<C-U>exe v:count1 '%sfirst'<CR>",    cmd))
+  map('n', "]" .. key:upper(), fmt(":<C-U>exe v:count1 '%slast'<CR>",     cmd))
+end
+
+unimpaired('q', 'c') -- Quickfix
+unimpaired('l', 'l') -- Location list
+unimpaired('b', 'b') -- Buffers
+unimpaired('t', 't') -- Tabs
 
 ---- Building keymaps
 map('n', "<leader>m", ":Make<CR>")
