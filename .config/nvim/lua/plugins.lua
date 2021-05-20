@@ -1,3 +1,12 @@
+-- Print a message with an optional highlight group
+local function echohl(text, hl)
+  hl = hl or ""
+  -- local emsg = vim.fn.escape(text, '"')
+  vim.cmd('echohl ' .. hl .. ' | redraw')
+  print(text)
+  vim.cmd('echohl NONE')
+end
+
 -- Ensure packer is installed
 do
   local packer_repo = "https://github.com/wbthomason/packer.nvim"
@@ -6,18 +15,13 @@ do
     local answer = vim.fn.input("Packer not found, do you want to load it? [Y/n]")
     answer = string.lower(answer)
     if answer == "n" or answer == "no" then
-      vim.cmd [[echohl WarningMsg]]
-      vim.cmd [[redraw]]
-      print("\nCloning aborted!")
-      vim.cmd [[echohl None]]
+      echohl("\nCloning aborted!", "WarningMsg")
       return nil
     end
-    vim.cmd [[redraw]]
-    print "\nCloning Packer as an opt plugin"
+    echohl "\nCloning Packer as an opt plugin"
     vim.fn.system({'git', 'clone', packer_repo, packer_path})
     vim.api.nvim_command 'packadd packer.nvim'
-    vim.cmd [[redraw]]
-    print "\nSucceded at cloning Packer"
+    echohl "\nSucceded at cloning Packer"
   end
 end
 
@@ -30,7 +34,9 @@ return packer.startup(function()
   -- The plugin manager itself
   use {'wbthomason/packer.nvim', opt = true}
   -- Treesitter
-  use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'}
+  use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate',
+       config = function() require("treesitter") end
+      }
   use {'p00f/nvim-ts-rainbow',
        requires = 'nvim-treesitter/nvim-treesitter'
       }
