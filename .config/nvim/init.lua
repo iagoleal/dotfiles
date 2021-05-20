@@ -114,6 +114,12 @@ option "undofile"
 -- Set Thesaurus file
 vim.o.thesaurus = vim.o.thesaurus .. "~/.config/nvim/thesaurus/mthesaur.txt"
 
+-- Use ripgrep for :grep if possible
+if has_executable("rg") then
+    option('grepprg',    [[rg --vimgrep --no-heading]])
+    option('grepformat', [[%f:%l:%c:%m,%f:%l:%m]])
+end
+
 ----------------------
 -- Keymaps
 ---------------------
