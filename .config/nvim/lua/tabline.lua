@@ -42,6 +42,12 @@ local function tabline_cell(tabnr)
   local buflist = vim.fn.tabpagebuflist(tabnr)
   local bufnr = buflist[winnr]
   local num_bufs = vim.fn.tabpagewinnr(tabnr, '$')
+  local hasvar, title = pcall(vim.api.nvim_tabpage_get_var, tabnr, 'title')
+  if hasvar then
+    title = string.format(" %s ", title)
+  else
+    title = buffername(bufnr)
+  end
 
   tline = { '%' .. tabnr .. 'T'
           -- Color cell if selected
@@ -49,7 +55,7 @@ local function tabline_cell(tabnr)
           , " " .. tabnr
           -- Show how many buffers in tab
           , num_bufs > 1 and (":" .. num_bufs) or ""
-          , buffername(bufnr)
+          , title
           , "%T%#TabLineFill#"
           }
   return table.concat(tline)
@@ -64,6 +70,19 @@ function tabline()
   return table.concat(tabs, "|")
 end
 
+-- Allow user to give each tab a custom name
+-- First argument is the tab number. Use 0 for current tab.
+-- If the second argument is nil, it deletes the current name
+-- and uses the focused buffer in its place.
+function tabname(tabnr, name)
+  if name == nil then
+    vim.api.nvim_tabpage_del_var(tabnr, 'title')
+  else
+    vim.api.nvim_tabpage_set_var(tabnr, 'title', name)
+  end
+  vim.cmd("redrawtabline")
+end
+
 -- Use same colors as statusline
 hi_link("TabLine",         "StatusLine",     { default = true })
 hi_link("TabLineFill",     "StatusLine",     { default = true })
@@ -71,6 +90,7 @@ hi_link("TabLineSel",      "StatusLang",     { default = true })
 hi_link("TabLineMixed",    "StatusMixed",    { default = true })
 hi_link("TabLineModified", "StatusModified", { default = true })
 
+vim.api.nvim_command [[command! -nargs=? -count=0 -addr=tabs TabName :call v:lua.tabname(<count>, <f-args>)]]
 vim.g.showtabline = 1
 vim.o.tabline = "%!v:lua.tabline()"
 
