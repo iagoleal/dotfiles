@@ -7,10 +7,18 @@ local utils = require "utils"
 utils.using(utils)
 
 -- Plugin management
+viml [[
+  command! PackerInstall packadd packer.nvim | lua force_require('plugins').install()
+  command! PackerUpdate packadd packer.nvim | lua force_require('plugins').update()
+  command! PackerSync packadd packer.nvim | lua force_require('plugins').sync()
+  command! PackerClean packadd packer.nvim | lua force_require('plugins').clean()
+  command! PackerCompile packadd packer.nvim | lua force_require('plugins').compile('~/.config/nvim/plugin/packer_load.vim')
+  command! -nargs=+ -complete=customlist,v:lua.require'packer'.loader_complete PackerLoad | lua require('packer').loader(<q-args>)
+]]
 -- Auto reload plugins on startup
 local plugins_path = vim.fn.stdpath('config') .. '/lua/plugins.lua'
 augroup('PluginManager',
-  {{'BufWritePost', plugins_path, "lua force_require('plugins').compile()"}})
+  {{'BufWritePost', plugins_path, ":PackerCompile"}})
 
 
 -- Async tools
@@ -250,8 +258,8 @@ iron.core.set_config {
   repl_open_cmd = "rightbelow 66 vsplit"
 }
 
-function iron_setrepl(repl)
-  local ft = vim.bo.ft
+function iron_set_preferred(repl)
+  local ft = vim.bo.filetype
   if repl == nil then
     local repls = vim.tbl_map(function(v) return v[1] end,
                               iron.core.list_definitions_for_ft(ft))
@@ -265,3 +273,5 @@ function iron_setrepl(repl)
   end
   iron.core.set_config {preferred = {[ft] = repl}}
 end
+
+viml [[command -nargs=? IronSetPreferred :lua iron_set_preferred(<f-args>)]]
