@@ -142,6 +142,10 @@ map('n', "<leader>cl", "<cmd>set cursorline! cursorcolumn!<CR>")
 -- Spell checks previous mistake and corrects to first suggestion
 map('i', "<C-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u")
 
+-- Search in visual mode
+map('v', '*', [[y/\V<C-R>=escape(@",'/\')<CR><CR>]])
+
+
 ---- Navigation
 local unimpaired = function(key, cmd)
   cmd = cmd or key
@@ -157,9 +161,10 @@ unimpaired('l', 'l') -- Location list
 unimpaired('b', 'b') -- Buffers
 unimpaired('t', 't') -- Tabs
 
+-- Plugin related
+
 ---- Building keymaps
 map('n', "<leader>m", ":Make<CR>")
--- nnoremap <leader>M :w<CR>:Dispatch!<CR>
 
 -- Toggle Color Highlight
 map('n', "<leader>cc", ":ColorizerToggle<CR>")
