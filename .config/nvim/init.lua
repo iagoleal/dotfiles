@@ -1,5 +1,4 @@
 -- Welcome to the XXI century
-vim.cmd 'filetype plugin indent on'
 vim.cmd 'syntax enable'
 
 -- Import utilities
