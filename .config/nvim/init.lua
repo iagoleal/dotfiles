@@ -170,6 +170,10 @@ unimpaired('t', 't') -- Tabs
 
 -- Plugin related
 
+-- Open links with gx (netrw current version is bugged)
+-- vim.g.loaded_netrwPlugin = 1
+map('n', 'gx', [[<cmd>call netrw#BrowseX(expand((exists("g:netrw_gx")? g:netrw_gx : '<cfile>')),netrw#CheckIfRemote())<cr>]])
+
 ---- Building keymaps
 map('n', "<leader>m", ":Make<CR>")
 
