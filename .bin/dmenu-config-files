@@ -1,0 +1,21 @@
+#!/bin/sh
+
+term() {
+  xterm -e "$1"
+}
+
+# List of avaiable options
+cfgs="Neovim\nHerbstluftwm\nPulseaudio"
+
+choose="$( echo -e "$cfgs" | dmenu -r -i -c -l 4 -p '% ' )"
+
+case "${choose}" in
+  Neovim)
+    term 'cd ~/.config/nvim && nvim init.lua'
+    ;;
+  Herbstluftwm)
+    term 'cd ~/.config/herbstluftwm && nvim -O autostart keybindings.sh'
+    ;;
+ Pulseaudio)
+    pavucontrol
+esac

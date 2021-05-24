@@ -53,6 +53,7 @@ herbstclient keybind XF86AudioMicMute     spawn "$HOME/.bin/volctl" "micmute"
 herbstclient keybind XF86MonBrightnessUp    spawn xbacklight -inc 5
 herbstclient keybind XF86MonBrightnessDown  spawn xbacklight -dec 5
 herbstclient keybind XF86Display            spawn arandr
+herbstclient keybind XF86Tools              spawn "$HOME/.bin/dmenu-config-files"
 
 # fn+4 == XF84Sleep
 
