@@ -5,19 +5,20 @@ vim.cmd 'syntax enable'
 local utils = require "utils"
 utils.using(utils)
 
--- Plugin management
-viml [[
-  command! PackerInstall packadd packer.nvim | lua force_require('plugins').install()
-  command! PackerUpdate packadd packer.nvim | lua force_require('plugins').update()
-  command! PackerSync packadd packer.nvim | lua force_require('plugins').sync()
-  command! PackerClean packadd packer.nvim | lua force_require('plugins').clean()
-  command! PackerCompile packadd packer.nvim | lua force_require('plugins').compile('~/.config/nvim/plugin/packer_load.vim')
-  command! -nargs=+ -complete=customlist,v:lua.require'packer'.loader_complete PackerLoad | lua require('packer').loader(<q-args>)
+viml [[command! PackerInstall  lua require('plugins').install()
+       command! PackerUpdate   lua require('plugins').update()
+       command! PackerSync     lua require('plugins').sync()
+       command! PackerClean    lua require('plugins').clean()
+       command! -nargs=* PackerCompile  lua force_require('plugins').compile(<q-args>)
+       command! PackerStatus   lua require('plugins').status()
+       command! PackerProfile  lua require('plugins').profile_output()
+       command! -nargs=+ -complete=customlist,v:lua.require'packer'.loader_complete PackerLoad lua require('plugins').loader(<q-args>)
 ]]
+
 -- Auto reload plugins on startup
 local plugins_path = vim.fn.stdpath('config') .. '/lua/plugins.lua'
 augroup('PluginManager',
-  {{'BufWritePost', plugins_path, ":PackerCompile"}})
+  {{'BufWritePost', plugins_path, ":PackerCompile profile=true"}})
 
 
 -- Async tools

@@ -30,7 +30,17 @@ vim.api.nvim_command 'packadd packer.nvim'
 local packer = require('packer')
 local use = packer.use
 
-return packer.startup(function()
+-- Packer configuration table
+local config = {
+  disable_commands = true,
+  compile_on_sync = true,
+  profile = {
+    enable = true
+  }
+}
+
+-- Add and manage packages
+local startup = function()
   -- The plugin manager itself
   use {'wbthomason/packer.nvim', opt = true}
   -- Treesitter
@@ -177,4 +187,10 @@ return packer.startup(function()
   ---- Themes
   use 'ayu-theme/ayu-vim'
   use 'folke/tokyonight.nvim'
-end)
+end
+
+packer.init(config)
+packer.reset()
+startup()
+
+return packer
