@@ -92,7 +92,7 @@ local startup = function()
           }
        end
       }
-  -- use 'tpope/vim-dispatch'     -- Async make      (vimscript)
+  use 'tpope/vim-dispatch'        -- Async make      (vimscript)
   use {'junegunn/vim-easy-align', -- Alignment utils (vimscript)
        config = function()
          vim.g.easy_align_delimiters = {
@@ -180,12 +180,17 @@ local startup = function()
       }
   use {'JuliaEditorSupport/julia-vim', opt=false}
   use {'bakpakin/fennel.vim',    ft = 'fennel'}
-  use {'wlangstroth/vim-racket', ft = 'racket'}
+  use {'wlangstroth/vim-racket'}
   use {'tikhomirov/vim-glsl',    ft = 'glsl'}
+  -- Lovel framework
+  use {'davisdude/vim-love-docs', branch = "build",
+       ft = {"lua", "fennel"}
+      }
   -- use 'derekelkins/agda-vim'
 
   ---- Themes
-  use 'ayu-theme/ayu-vim'
+  -- use 'ayu-theme/ayu-vim'
+  use 'Shatur95/neovim-ayu'
   use 'folke/tokyonight.nvim'
 end
 

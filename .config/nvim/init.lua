@@ -21,9 +21,6 @@ augroup('PluginManager',
   {{'BufWritePost', plugins_path, ":PackerCompile profile=true"}})
 
 
--- Async tools
-require "async_make"
-require "async_grep"
 
 -----------------------
 -- Theme and colors
@@ -47,7 +44,12 @@ option "ruler"
 option("conceallevel", 0)
 
 option "list"                  -- Show trailing {spaces, tabs}
-option("listchars", {"tab:├─", "trail:۰", "nbsp:☻", "extends:⟩", "precedes:⟨"})
+option("listchars", {tab       = "├─"
+                    , trail    = "۰"
+                    , nbsp     = "☻"
+                    , extends  = "⟩"
+                    , precedes = "⟨"
+                    })
 
 option "number"                -- show line numbers
 option "relativenumber"        -- Show line numbers relative to current line
@@ -64,15 +66,14 @@ augroup('Ident',
 augroup('Terminal',
   {{'TermOpen', '*', "setlocal nonumber norelativenumber nocursorline nocursorcolumn"}})
 
-
 -- Special Highlights
 -- TODO: turn this into a theme setting
 -- Head of a Fold
-highlight("Folded",     {ctermbg="Black",   guibg="Black"})
+-- highlight("Folded",     {ctermbg="Black",   guibg="Black"})
 -- Trailing spaces
 highlight("Whitespace", {ctermfg="Magenta", guifg="Magenta"})
 -- Matching Parentheses
-highlight("MatchParen", {ctermfg="Magenta",cterm="underline", guibg="none", guifg="Magenta",  gui="Bold,Underline" })
+-- highlight("MatchParen", {ctermfg="Magenta",cterm="underline", guibg="none", guifg="Magenta",  gui="Bold,Underline" })
 -- Spell checker colors
 highlight("SpellBad",   {ctermfg="Red",    cterm="Underline",  guifg="LightRed",   gui="Underline", guisp="LightRed"})
 highlight("SpellCap",   {ctermfg="Blue",   cterm="Underline",  guifg="LightBlue",  gui="Underline", guisp="Blue"})
@@ -94,7 +95,7 @@ option "smartcase"              -- If terms are all lowercase, ignore case. Cons
 vim.o.path = vim.o.path .. '**'
 
 option "wildmenu"               -- visual menu for command autocompletion
-option("wildmode",{"full", "list", "full"})   -- first autocomplete the word, afterwards run across the list
+option("wildmode", "full,list,full")   -- first autocomplete the word, afterwards run across the list
 
 option "splitright"             -- Vertical split to the right (default is left)
 
@@ -135,6 +136,7 @@ end
 -- <leader> key is Space
 map('', '<Space>', '<Nop>', {noremap = true, silent = true})
 vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
 
 -- Exit terminal with ESC
 map('t', "<Esc>", [[<C-\><C-n>]])
@@ -176,7 +178,8 @@ unimpaired('t', 't') -- Tabs
 map('n', 'gx', [[<cmd>call netrw#BrowseX(expand((exists("g:netrw_gx")? g:netrw_gx : '<cfile>')),netrw#CheckIfRemote())<cr>]])
 
 ---- Building keymaps
-map('n', "<leader>m", ":Make<CR>")
+map('n', "<leader>m", ":Dispatch<CR>")
+map('n', "<leader>M", ":Dispatch!<CR>")
 
 -- Toggle Color Highlight
 map('n', "<leader>cc", ":ColorizerToggle<CR>")
@@ -213,11 +216,11 @@ map('x', "<leader>a", "<Plug>(EasyAlign)", {noremap = false})
 -----------------------
 
 augroup('Langs', {
-    {"FileType", "scheme",   "setlocal softtabstop=2   shiftwidth=2 lisp autoindent"},
-    {"FileType", "haskell",  "nnoremap <buffer> <space>hh :Hoogle <C-r><C-w><CR>"},
-    {"FileType", "markdown", "setlocal spell"},
-    {"FileType", "latex",    "setlocal spell"},
-    {"FileType", "make",     "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=0"}
+    {"FileType", "scheme,racket,fennel",
+      "setlocal softtabstop=2 shiftwidth=2 lisp autoindent"},
+    {"FileType", "haskell",        "nnoremap <buffer> <space>hh :Hoogle <C-r><C-w><CR>"},
+    {"FileType", "markdown,latex", "setlocal spell"},
+    {"FileType", "make",           "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=0"}
 })
 
 ----------------------
@@ -233,7 +236,8 @@ iron.core.add_repl_definitions {
     lua51  = { command = {"lua5.1"} },
     lua52  = { command = {"lua5.2"} },
     lua53  = { command = {"lua5.3"} },
-    lua54  = { command = {"lua5.4"} }
+    lua54  = { command = {"lua5.4"} },
+    love   = { command = {"love", "."} }
   },
   fennel = {
     love = { command = {"love", "."} }

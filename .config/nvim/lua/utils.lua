@@ -103,10 +103,8 @@ end
 function option(opt, value)
   if value == nil then
     value = true
-  elseif type(value) == "table" then
-    value = table.concat(value, ',')
   end
-  set_option(opt, value)
+  vim.opt[opt] = value
 end
 
 -- Set several options at the same time
