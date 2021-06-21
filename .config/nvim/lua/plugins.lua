@@ -103,6 +103,10 @@ local startup = function()
            ['<'] = {
              pattern         = [[<-\|<=\|<\|←]],
              delimiter_align = 'l',
+           },
+           ['r'] = {
+             pattern         = [[{\|}\|,]],
+             delimiter_align = 'r',
            }
          }
        end
