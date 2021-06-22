@@ -127,6 +127,15 @@ function options(...)
   end
 end
 
+-- Print a message with an optional highlight group
+function echohl(text, hl)
+  hl = hl or ""
+  -- local emsg = vim.fn.escape(text, '"')
+  vim.cmd('echohl ' .. hl .. ' | redraw')
+  print(text)
+  vim.cmd('echohl NONE')
+end
+
 ------------------------
 -- Global utilities
 ------------------------

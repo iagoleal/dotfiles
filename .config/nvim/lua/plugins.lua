@@ -1,29 +1,28 @@
--- Print a message with an optional highlight group
-local function echohl(text, hl)
-  hl = hl or ""
-  -- local emsg = vim.fn.escape(text, '"')
-  vim.cmd('echohl ' .. hl .. ' | redraw')
-  print(text)
-  vim.cmd('echohl NONE')
-end
+local utils = require "utils"
+local echohl = utils.echohl
 
--- Ensure packer is installed
-do
-  local packer_repo = "https://github.com/wbthomason/packer.nvim"
-  local packer_path = vim.fn.stdpath('data') .. "/site/pack/packer/opt/packer.nvim"
-  if vim.fn.empty(vim.fn.glob(packer_path)) > 0 then
-    local answer = vim.fn.input("Packer not found, do you want to load it? [Y/n]")
+local function bootstrap(name, repo, opt)
+  if opt == nil then
+    opt = true
+  end
+  local pack_type = opt and 'opt' or 'start'
+  local pack_path = vim.fn.stdpath('data') .. "/site/pack/packer/" .. pack_type .. "/" .. name
+  if vim.fn.empty(vim.fn.glob(pack_path)) > 0 then
+    local answer = vim.fn.input("Package " .. name .. " not found, do you want to load it? [Y/n]")
     answer = string.lower(answer)
     if answer == "n" or answer == "no" then
       echohl("\nCloning aborted!", "WarningMsg")
       return nil
     end
     echohl "\nCloning Packer as an opt plugin"
-    vim.fn.system({'git', 'clone', packer_repo, packer_path})
-    vim.api.nvim_command 'packadd packer.nvim'
-    echohl "\nSucceded at cloning Packer"
+    vim.fn.system({'git', 'clone', repo, pack_path})
+    vim.api.nvim_command('packadd ' .. name)
+    echohl('\nSucceded at cloning package ' .. name)
   end
 end
+
+-- Ensure packer is installed
+bootstrap("packer.nvim", "https://github.com/wbthomason/packer.nvim")
 
 -- Plugin management
 vim.api.nvim_command 'packadd packer.nvim'
