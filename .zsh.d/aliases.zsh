@@ -9,6 +9,7 @@ alias hc=herbstclient
 
 # Git command to manage dotfiles
 alias dotfiles='git --git-dir=$HOME/.dotfiles-gitdir/ --work-tree=$HOME'
+alias dtf=dotfiles
 
 # For Haskell
 alias ghc='stack ghc'

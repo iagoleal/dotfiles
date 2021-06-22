@@ -28,7 +28,12 @@ function _prompt {
     # Show different symbols for normal user or root
     local user_symbol='%(?.%F{118}.%F{160})%B❯%b%f'
     local prompt_symbol="%(!.%F{red}#%f.$user_symbol) "
-    echo -n $error_code$prompt_symbol
+    if [[ -z $SSH_CLIENT ]]; then
+      echo -n $error_code$prompt_symbol
+    else
+
+      echo -n $error_code"%n@%m"$prompt_symbol
+    fi
 }
 
 function _rprompt {
