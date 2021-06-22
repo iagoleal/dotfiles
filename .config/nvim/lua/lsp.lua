@@ -28,15 +28,15 @@ local on_attach = function(client, bufnr)
   end
   bmap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>')
   bmap('n', 'gr',         '<cmd>lua vim.lsp.buf.references()<CR>')
-  bmap('n', '<space>e',   '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>')
+  bmap('n', '<leader>e',  '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>')
   bmap('n', '[d',         '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>')
   bmap('n', ']d',         '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>')
-  bmap('n', '<space>q',   '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>')
+  bmap('n', '<leader>dq',  '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>')
   -- Set some keybinds conditional on server capabilities
   if     iscapable(client, "document_range_formatting") then
-    bmap("n", "<space>=", "<cmd>lua vim.lsp.buf.range_formatting()<CR>")
+    bmap("n", "<leader>=", "<cmd>lua vim.lsp.buf.range_formatting()<CR>")
   elseif iscapable(client, "document_formatting") then
-    bmap("n", "<space>=", "<cmd>lua vim.lsp.buf.formatting()<CR>")
+    bmap("n", "<leader>=", "<cmd>lua vim.lsp.buf.formatting()<CR>")
   end
   print("LSP attached")
 end

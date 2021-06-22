@@ -149,6 +149,11 @@ map('n', "<leader><Space>", "<cmd>nohlsearch<CR>")
 -- Highlight cross around cursor
 map('n', "<leader>cl", "<cmd>set cursorline! cursorcolumn!<CR>")
 
+-- Zoom window at new tab
+map('n', "<leader>tz", "<cmd>tab split<CR>")
+-- Close tab
+map('n', "<leader>tc", "<cmd>tabclose<CR>")
+
 -- Spell checks previous mistake and corrects to first suggestion
 map('i', "<C-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u")
 
@@ -220,7 +225,8 @@ augroup('Langs', {
       "setlocal softtabstop=2 shiftwidth=2 lisp autoindent"},
     {"FileType", "haskell",        "nnoremap <buffer> <space>hh :Hoogle <C-r><C-w><CR>"},
     {"FileType", "markdown,latex", "setlocal spell"},
-    {"FileType", "make",           "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=0"}
+    {"FileType", "make",           "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=0"},
+    {"FileType", "lua,fennel",     "nnoremap <buffer> <F12> :w<cr>:!love . &<cr>"}
 })
 
 ----------------------

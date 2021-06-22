@@ -104,7 +104,7 @@ local startup = function()
              pattern         = [[<-\|<=\|<\|←]],
              delimiter_align = 'l',
            },
-           ['r'] = {
+           ['r'] = { -- Lua / Haskell style Records
              pattern         = [[{\|}\|,]],
              delimiter_align = 'r',
            }
@@ -131,7 +131,8 @@ local startup = function()
   use {'KabbAmine/vCoolor.vim',
        config = function()
          vim.g.vcoolor_disable_mappings = 1
-         map('n', '<leader>ce', ':VCoolor<cr>')
+         local map = require("utils").map
+         map('n', '<leader>ce', '<cmd>VCoolor<cr>')
         end
       }
 
