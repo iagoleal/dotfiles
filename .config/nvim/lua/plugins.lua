@@ -44,7 +44,9 @@ local startup = function()
   use {'wbthomason/packer.nvim', opt = true}
   -- Treesitter
   use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate',
-       config = function() require("treesitter") end
+       config = function()
+         require "plugins.treesitter"
+       end
       }
   use {'p00f/nvim-ts-rainbow',
        requires = 'nvim-treesitter/nvim-treesitter'
@@ -52,7 +54,7 @@ local startup = function()
   -- LSP
   use {'neovim/nvim-lspconfig',
        config = function()
-        require "lsp"
+         require "lsp"
        end
       }
   -- REPL
@@ -60,6 +62,7 @@ local startup = function()
        config = function()
          vim.g.iron_map_defaults = 0
          vim.g.iron_map_extended = 1
+         require "plugins.iron"
        end
       }
   -- Fuzzy Search
