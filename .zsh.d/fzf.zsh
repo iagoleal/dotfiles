@@ -1,6 +1,13 @@
 # Load the installed packages
-source /usr/share/fzf/key-bindings.zsh
-source /usr/share/fzf/completion.zsh
+fzf_key_bindings=$(find /usr/share -path '**/fzf/**/key-bindings.zsh')
+fzf_completion=$(find /usr/share -path '**/fzf/**/completion.zsh')
+
+if [[ -f "$fzf_key_bindings" ]]; then
+  source "$fzf_key_bindings"
+fi
+if [[ -f "$fzf_completion" ]]; then
+  source "$fzf_completion"
+fi
 
 # Directly accept on C-r
 fzf-history-widget-accept() {

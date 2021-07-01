@@ -56,8 +56,11 @@ export BROWSER="firefox"
 # Append ~/.bin folder to PATH variable
 path+=("$HOME/.local/bin")
 path+=("$HOME/.bin")
+path+=("$HOME/bin")
 export PATH
-eval $(luarocks path --bin)
+if command -v luarocks &> /dev/null; then
+  eval $(luarocks path --bin)
+fi
 
 
 #----------------------------
@@ -76,4 +79,3 @@ source $HOME/.zsh.d/prompt.zsh
 source $HOME/.zsh.d/fzf.zsh
 # Enable syntax highlighting
 source $HOME/.zsh.d/syntax-highlighting.zsh
-
