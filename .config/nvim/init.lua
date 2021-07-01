@@ -191,23 +191,6 @@ map('n', "<leader>cc", ":ColorizerToggle<CR>")
 -- Toggle Rainbow Parentheses
 map('n', "<leader>cr", ":RainbowToggle<CR>")
 
--- REPL
-map('n', "<leader>it",       "<Plug>(iron-send-motion)",   {noremap = false})
-map('v', "<leader>i<Space>", "<Plug>(iron-visual-send)",   {noremap = false})
-map('n', "<leader>i.",       "<Plug>(iron-repeat-cmd)",    {noremap = false})
-map('n', "<leader>i<Space>", "<Plug>(iron-send-line)",     {noremap = false})
-map('n', "<leader>ii",       "<Plug>(iron-send-line)",     {noremap = false})
-map('n', "<leader>i<CR>",    "<Plug>(iron-cr)",            {noremap = false})
-map('n', "<leader>ic",       "<Plug>(iron-interrupt)",     {noremap = false})
-map('n', "<leader>iq",       "<Plug>(iron-exit)",          {noremap = false})
-map('n', "<leader>il",       "<Plug>(iron-clear)",         {noremap = false})
-map('n', "<leader>ip",       "<Plug>(iron-send-motion)ip", {noremap = false})
-map('n', "<leader>is",       ":IronRepl<CR>")
-map('n', "<leader>ir",       ":IronRestart<CR>")
-map('n', "<leader>if",       function()
-  require('iron').core.send(vim.bo.filetype, vim.api.nvim_buf_get_lines(0, 0, -1, false))
-end)
-
 -- FZF
 map('n', "<leader>fe", ":FZFFiles<cr>")
 map('n', "<leader>fb", ":FZFBuffers<cr>")
