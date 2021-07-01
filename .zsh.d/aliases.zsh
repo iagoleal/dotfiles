@@ -36,50 +36,55 @@ zstyle ":completion:*:*:zth:*" file-patterns "*.{pdf,djvu,epub,ps,xps}"
 function trash { mv -i $@ ~/.trash }
 
 function doi2bib {
-    curl -LH "Accept: text/bibliography; style=bibtex" "http://dx.doi.org/$@" | sed -r -e '1s/, /,\n  /' -e 's/}, /},\n  /g' -e '$s/}}/}\n}/' -e '1s/^[[:space:]]*//'
+  curl -LH "Accept: text/bibliography; style=bibtex" "http://dx.doi.org/$@" | sed -r -e '1s/, /,\n  /' -e 's/}, /},\n  /g' -e '$s/}}/}\n}/' -e '1s/^[[:space:]]*//'
 }
 
+function rpg {
+  rpg-cli cd "$@"
+  cd "$(rpg-cli pwd)"
+  rpg-cli stat
+}
 
 extract() {
-    if [ -f $1 ] ; then
-        case $1 in
-            *.tar.bz2)   tar xjvf $1 ;;
-            *.tar.gz)    tar xzvf $1 ;;
-            *.tar.xz)    tar xJvf $1 ;;
-            *.bz2)       bunzip2 $1 ;;
-            *.rar)       unrar xv $1 ;;
-            *.gz)        gunzip $1 ;;
-            *.tar)       tar xvf $1 ;;
-            *.tbz2)      tar xjvf $1 ;;
-            *.tgz)       tar xzvf $1 ;;
-            *.zip)       unzip $1 ;;
-            *.7z)        7z $1 ;;
-            *.xz)        xz -vd $1 ;;
-            *)           echo "'$1' cannot be extracted via extract()" ;;
-        esac
-    else
-        echo "'$1' is not a valid file"
-    fi
+  if [ -f $1 ] ; then
+    case $1 in
+      *.tar.bz2) tar xjvf $1 ;;
+      *.tar.gz)  tar xzvf $1 ;;
+      *.tar.xz)  tar xJvf $1 ;;
+      *.bz2)     bunzip2 $1 ;;
+      *.rar)     unrar xv $1 ;;
+      *.gz)      gunzip $1 ;;
+      *.tar)     tar xvf $1 ;;
+      *.tbz2)    tar xjvf $1 ;;
+      *.tgz)     tar xzvf $1 ;;
+      *.zip)     unzip $1 ;;
+      *.7z)      7z $1 ;;
+      *.xz)      xz -vd $1 ;;
+      *)         echo "'$1' cannot be extracted via extract()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
 }
 zstyle ":completion:*:*:extract:*" file-patterns "*.{tar.bz2,tar.gz,tar.xz,bz2,rar,gz,tar,tbz2,tgz,zip,7z,xz}"
 
 countdown(){
-    date1=$((`date +%s` + $1));
-    while [ "$date1" -ge `date +%s` ]; do
+  local date1=$((`date +%s` + $1));
+  while [ "$date1" -ge `date +%s` ]; do
     ## Is this more than 24h away?
     days=$(($(($(( $date1 - $(date +%s))) * 1 ))/86400))
     echo -ne "$days day(s) and $(date -u --date @$(($date1 - `date +%s`)) +%H:%M:%S)\r";
     sleep 0.1
-    done
+  done
 }
 
 stopwatch(){
-    date1=`date +%s`;
-    while true; do
+  local date1=`date +%s`;
+  while true; do
     days=$(( $(($(date +%s) - date1)) / 86400 ))
     echo -ne "$days day(s) and $(date -u --date @$((`date +%s` - $date1)) +%H:%M:%S)\r";
     sleep 0.1
-    done
+  done
 }
 
 # Open different file formats by extension

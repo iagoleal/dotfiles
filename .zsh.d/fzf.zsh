@@ -1,13 +1,19 @@
 # Load the installed packages
-fzf_key_bindings=$(find /usr/share -path '**/fzf/**/key-bindings.zsh')
-fzf_completion=$(find /usr/share -path '**/fzf/**/completion.zsh')
+function check_and_source {
+  for fname in "$@"; do
+    if [[ -f "$fname" ]]; then
+      source "$fname"
+      break
+    fi
+  done
+}
 
-if [[ -f "$fzf_key_bindings" ]]; then
-  source "$fzf_key_bindings"
-fi
-if [[ -f "$fzf_completion" ]]; then
-  source "$fzf_completion"
-fi
+# Source key-bindings
+check_and_source '/usr/share/fzf/key-bindings.zsh' \
+                 '/usr/share/doc/fzf/examples/key-bindings.zsh'
+# Source completion
+check_and_source '/usr/share/fzf/completion.zsh' \
+                 '/usr/share/doc/fzf/examples/completion.zsh'
 
 # Directly accept on C-r
 fzf-history-widget-accept() {
@@ -24,6 +30,6 @@ export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 export FZF_DEFAULT_OPTS='-m'
 
 # Use rg as grep tool
-if type rg &> /dev/null; then
+if command -v rg &> /dev/null; then
   export FZF_DEFAULT_COMMAND='rg --files'
 fi
