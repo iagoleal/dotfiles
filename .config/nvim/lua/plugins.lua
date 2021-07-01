@@ -68,6 +68,15 @@ local startup = function()
          require "plugins.iron"
        end
       }
+  use {'Olical/conjure',
+       -- disable = true,
+       -- tag = 'v4.19.0',
+       config = function()
+         vim.g["conjure#client#scheme#stdio#command"] = 'racket -il scheme'
+         vim.g["conjure#client#scheme#stdio#prompt_pattern"] = '\n?[\"%w%-./_]*> '
+         vim.g["conjure#filetype#fennel"] = 'conjure.client.fennel.stdio'
+       end
+      }
   -- Fuzzy Search
   use {'junegunn/fzf.vim',
        config = function()
@@ -116,11 +125,25 @@ local startup = function()
          }
        end
       }
+
+  -- Color related plugins
   use {'norcalli/nvim-colorizer.lua',
        cmd    = {'ColorizerToggle', 'ColorizerReloadAllBuffers', 'ColorizerAttachToBuffer'},
        config = function()
          require("colorizer").setup()
        end
+      }
+  -- Color picker
+  -- NOTE: Can I remake this in lua with floating windows?
+  use {'KabbAmine/vCoolor.vim',
+       config = function()
+         vim.g.vcoolor_disable_mappings = 1
+         local map = require("utils").map
+         map('n', '<leader>ce', '<cmd>VCoolor<cr>')
+        end
+      }
+  use {'amadeus/vim-convert-color-to',
+       cmd = 'ConvertColorTo'
       }
   -- Colorize parentheses
   use {'luochen1990/rainbow',
@@ -131,15 +154,6 @@ local startup = function()
        end
       }
 
-  -- Color picker
-  -- Can I remake this in lua with floating windows?
-  use {'KabbAmine/vCoolor.vim',
-       config = function()
-         vim.g.vcoolor_disable_mappings = 1
-         local map = require("utils").map
-         map('n', '<leader>ce', '<cmd>VCoolor<cr>')
-        end
-      }
 
   ---- Filetype specific
   use {'lervag/vimtex',
