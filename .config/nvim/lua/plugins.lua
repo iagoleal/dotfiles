@@ -157,16 +157,14 @@ local startup = function()
 
   ---- Filetype specific
   use {'lervag/vimtex',
-       ft = 'tex',
        config = function()
          vim.g.tex_flavor                                 = 'latex'
          vim.g.vimtex_view_method                         = 'zathura'
-         vim.g.vimtex_compiler_progname                   = 'nvr'
-         vim.g.vimtex_quickfix_mode                       = 2
-         vim.g.vimtex_quickfix_autoclose_after_keystrokes = 2
-         vim.g.vimtex_quickfix_open_on_warning            = 1
-         vim.g.vimtex_indent_enabled                      = 0
-         vim.g.vimtex_indent_delims                       = {}
+         -- vim.g.vimtex_quickfix_mode                       = 2
+         -- vim.g.vimtex_quickfix_autoclose_after_keystrokes = 2
+         -- vim.g.vimtex_quickfix_open_on_warning            = 1
+         -- vim.g.vimtex_indent_enabled                      = 0
+         -- vim.g.vimtex_indent_delims                       = {}
        end
       }
   use {'plasticboy/vim-markdown',

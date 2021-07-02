@@ -4,19 +4,18 @@ set selection-clipboard clipboard
 # Only show file name on status bar
 set statusbar-basename true
 
-#Make default bg color white
+# Make default bg color white
 set default-bg "#ededed"
 set default-fg "#dddddd"
 
 # Font
 set font "mononoki normal 14"
 
-#Rebind zoom keys
+# Rebind zoom keys
 map - zoom out
 unmap =
 map = zoom in
 
 # Enable synctex
-
 set synctex true
-set synctex-editor-command "nvr --remote-silent %f -c %l"
+set synctex-editor-command 'nvr --remote +"%line" "%file"'
