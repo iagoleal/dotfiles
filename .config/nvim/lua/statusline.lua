@@ -69,7 +69,9 @@ end
 local function filetype()
   local ft = sl_buf.filetype
   local color
-  if not sl_buf.modifiable then
+  if sl_buf.buftype == 'terminal' then
+    color = '%#StatusModeTerminal#'
+  elseif not sl_buf.modifiable then
     color = "%#StatusUnmodifiable#"
   elseif sl_buf.modified then
     color = "%#StatusModified#"
