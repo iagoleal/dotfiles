@@ -29,7 +29,11 @@ if has("termguicolors") then
   option "termguicolors"
   option("background", "dark")
   vim.g.ayucolor = 'mirage'
-  colorscheme "tokyonight"
+  local colo = 'tokyonight'
+  local status, err = pcall(colorscheme, colo)
+  if not status then
+    print("Error loading colorscheme " .. colo)
+  end
 end
 
 -- Use custom status and tabline
@@ -88,14 +92,16 @@ highlight("SpellRare",  {ctermfg="Yellow", cterm="underline",  guifg="Orange",  
 -- Search
 option "incsearch"              -- search as characters are entered
 option "hlsearch"               -- highlight matches
-option "ignorecase"             -- case-insensitive searchs / substitutions
+option "ignorecase"             -- case-insensitive search / substitution
 option "smartcase"              -- If terms are all lowercase, ignore case. Consider case otherwise.
 
--- Find files on subfolders
-vim.o.path = vim.o.path .. '**'
+option("inccommand", "nosplit") -- Show result of :s incrementally on buffer
 
-option "wildmenu"               -- visual menu for command autocompletion
-option("wildmode", "full,list,full")   -- first autocomplete the word, afterwards run across the list
+-- Find files on subfolders
+vim.opt.path:append '**'
+
+option "wildmenu"                            -- visual menu for command autocompletion
+option("wildmode", {"full", "list", "full"}) -- first autocomplete the word, afterwards run across the list
 
 option "splitright"             -- Vertical split to the right (default is left)
 
@@ -212,3 +218,11 @@ augroup('Langs', {
     {"FileType", "lua,fennel",     "nnoremap <buffer> <F12> :w<cr>:!love . &<cr>"}
 })
 
+-- -- Dim inactive windows bg
+-- viml [[
+--   hi ActiveWindow guibg=#21242b
+--   hi InactiveWindow guibg=#282C34
+--   set winhighlight=Normal:ActiveWindow,NormalNC:InactiveWindow
+-- ]]
+-- -- Highlight on yank
+-- viml [[au TextYankPost * silent! lua vim.highlight.on_yank({higroup=”IncSearch”, timeout=150, on_visual=false})]]

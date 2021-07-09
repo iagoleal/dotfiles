@@ -70,7 +70,7 @@ local startup = function()
       }
   use {'Olical/conjure',
        -- disable = true,
-       -- tag = 'v4.19.0',
+       ft = {"scheme", "racket", "fennel"},
        config = function()
          vim.g["conjure#client#scheme#stdio#command"] = 'racket -il scheme'
          vim.g["conjure#client#scheme#stdio#prompt_pattern"] = '\n?[\"%w%-./_]*> '
@@ -214,6 +214,14 @@ local startup = function()
   -- use 'ayu-theme/ayu-vim'
   use 'Shatur95/neovim-ayu'
   use 'folke/tokyonight.nvim'
+  use 'https://gitlab.com/yorickpeterse/vim-paper.git'
+
+  -- Specific for Ubuntu WSL
+  if vim.env['WSLENV'] then
+    use {'kabouzeid/nvim-lspinstall',
+         requires = 'neovim/nvim-lspconfig'
+        }
+  end
 end
 
 packer.init(config)
