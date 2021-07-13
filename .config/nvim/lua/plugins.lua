@@ -212,7 +212,6 @@ local startup = function()
 
   ---- Themes
   -- use 'ayu-theme/ayu-vim'
-  use 'Shatur95/neovim-ayu'
   use 'folke/tokyonight.nvim'
   use 'https://gitlab.com/yorickpeterse/vim-paper.git'
 

@@ -1,9 +1,9 @@
--- Welcome to the XXI century
-vim.cmd 'syntax enable'
-
 -- Import utilities
 local utils = require "utils"
 utils.using(utils)
+
+-- Welcome to the XXI century
+ex.syntax 'enable'
 
 viml [[command! PackerInstall  lua require('plugins').install()
        command! PackerUpdate   lua require('plugins').update()
@@ -20,25 +20,24 @@ local plugins_path = vim.fn.stdpath('config') .. '/lua/plugins.lua'
 augroup('PluginManager',
   {{'BufWritePost', plugins_path, ":PackerCompile profile=true"}})
 
-
-
 -----------------------
 -- Theme and colors
 -----------------------
-if has("termguicolors") then
+if has "termguicolors" then
   option "termguicolors"
   option("background", "dark")
   vim.g.ayucolor = 'mirage'
   local colo = 'tokyonight'
   local status, err = pcall(colorscheme, colo)
   if not status then
-    print("Error loading colorscheme " .. colo)
+    echoerr(err)
   end
 end
 
 -- Use custom status and tabline
-require "statusline"
-require "tabline"
+require 'statusline'
+require 'tabline'
+
 
 option("synmaxcol", 180)
 option("wrap", false)
@@ -47,13 +46,13 @@ option "showcmd"
 option "ruler"
 option("conceallevel", 0)
 
-option "list"                  -- Show trailing {spaces, tabs}
-option("listchars", {tab       = "├─"
+option "list" -- Show trailing {spaces, tabs}
+option("listchars", { tab      = "├─"
                     , trail    = "۰"
                     , nbsp     = "☻"
                     , extends  = "⟩"
                     , precedes = "⟨"
-                    })
+                    } )
 
 option "number"                -- show line numbers
 option "relativenumber"        -- Show line numbers relative to current line
@@ -62,13 +61,16 @@ option("signcolumn", "number") -- show (lsp) signs over number bar
 
 option "showmatch"             -- highlight matching parentheses (useful as hell)
 
-
 augroup('Ident',
   {{'FileType', '*', "setlocal formatoptions-=c formatoptions-=r formatoptions-=o"}})
 
 -- No need for numbers and cursors on terminal lines
 augroup('Terminal',
   {{'TermOpen', '*', "setlocal nonumber norelativenumber nocursorline nocursorcolumn"}})
+
+-- -- Highlight text on yank
+augroup('Yank',
+  {{'TextYankPost', '*', 'silent! lua vim.highlight.on_yank({higroup=”IncSearch”, timeout=150, on_visual=false})'}})
 
 -- Special Highlights
 -- TODO: turn this into a theme setting
@@ -83,7 +85,6 @@ highlight("SpellBad",   {ctermfg="Red",    cterm="Underline",  guifg="LightRed",
 highlight("SpellCap",   {ctermfg="Blue",   cterm="Underline",  guifg="LightBlue",  gui="Underline", guisp="Blue"})
 highlight("SpellLocal", {ctermfg="Green",  cterm="Underline",  guifg="LightGreen", gui="Underline", guisp="Green"})
 highlight("SpellRare",  {ctermfg="Yellow", cterm="underline",  guifg="Orange",     gui="Underline", guisp="Orange"})
-
 
 -------------------------
 -- MISC options
@@ -103,7 +104,7 @@ vim.opt.path:append '**'
 option "wildmenu"                            -- visual menu for command autocompletion
 option("wildmode", {"full", "list", "full"}) -- first autocomplete the word, afterwards run across the list
 
-option "splitright"             -- Vertical split to the right (default is left)
+option "splitright"  -- Vertical split to the right (default is left)
 
 -- Spaces and Tabs, settling the war
 option("tabstop",     2)        -- n spaces per tab visually
@@ -127,10 +128,10 @@ option("undodir", {"~/.tmp", "~/tmp", "/var/tmp", "/tmp", "$XDG_DATA_HOME/nvim/u
 option "undofile"
 
 -- Set Thesaurus file
-vim.o.thesaurus = vim.o.thesaurus .. "~/.config/nvim/thesaurus/mthesaur.txt"
+vim.opt.thesaurus:append "~/.config/nvim/thesaurus/mthesaur.txt"
 
 -- Use ripgrep for :grep if possible
-if has_executable("rg") then
+if has_executable 'rg' then
     option('grepprg',    [[rg --vimgrep --no-heading]])
     option('grepformat', [[%f:%l:%c:%m,%f:%l:%m]])
 end
@@ -166,6 +167,19 @@ map('i', "<C-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u")
 -- Search in visual mode
 map('v', '*', [[y/\V<C-R>=escape(@",'/\')<CR><CR>]])
 
+-- Toggle quickfix window on the bottom of screen
+toggle_quickfix = function()
+  local windows = vim.fn.getwininfo()
+  for _, win in pairs(windows) do
+    if win.quickfix == 1 then
+      vim.cmd 'cclose'
+      return nil
+    end
+  end
+  vim.cmd 'botright copen'
+end
+
+map('n', '<leader>q', toggle_quickfix)
 
 ---- Navigation
 local unimpaired = function(key, cmd)
@@ -181,6 +195,12 @@ unimpaired('q', 'c') -- Quickfix
 unimpaired('l', 'l') -- Location list
 unimpaired('b', 'b') -- Buffers
 unimpaired('t', 't') -- Tabs
+
+-- Disable arrows
+map('', '<Up>',    '<Nop>')
+map('', '<Down>',  '<Nop>')
+map('', '<Left>',  '<Nop>')
+map('', '<Right>', '<Nop>')
 
 -- Plugin related
 
@@ -215,14 +235,5 @@ augroup('Langs', {
     {"FileType", "haskell",        "nnoremap <buffer> <space>hh :Hoogle <C-r><C-w><CR>"},
     {"FileType", "markdown,latex", "setlocal spell"},
     {"FileType", "make",           "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=0"},
-    {"FileType", "lua,fennel",     "nnoremap <buffer> <F12> :w<cr>:!love . &<cr>"}
+    {"FileType", "lua,fennel",     "nnoremap <buffer> <F12> :wa<cr>:!love . &<cr>"}
 })
-
--- -- Dim inactive windows bg
--- viml [[
---   hi ActiveWindow guibg=#21242b
---   hi InactiveWindow guibg=#282C34
---   set winhighlight=Normal:ActiveWindow,NormalNC:InactiveWindow
--- ]]
--- -- Highlight on yank
--- viml [[au TextYankPost * silent! lua vim.highlight.on_yank({higroup=”IncSearch”, timeout=150, on_visual=false})]]
