@@ -1,25 +1,11 @@
 -- Typical module boilerplate
 local M = {_G = _G}
 local vim = vim
+local string = string
+local fmt = string.format
+
 setmetatable(M, {__index = _G})
 setfenv(1, M)
-
--- Set options using same scope rules as vimscript's ":set"
-local function set_option(opt, value)
-  local info = vim.api.nvim_get_option_info(opt)
-  if info.scope ~= 'win' or info.global_local then
-    vim.api.nvim_set_option(opt, value)
-  end
-  if not info.global_local then
-    if info.scope == 'win' then
-      vim.wo[opt] = value
-    elseif info.scope == 'buf' then
-      vim.bo[opt] = value
-    else
-      vim.api.nvim_set_option(opt, value)
-    end
-  end
-end
 
 local function process_autocmd(aucmd)
   if type(aucmd[1]) == "table" then
@@ -56,11 +42,6 @@ function map(mode, keys, cmd, opts)
     cmd = string.format("<cmd>lua _mapped_functions[%d]()<CR>", idx)
   end
   vim.api.nvim_set_keymap(mode, keys, cmd, opts)
-end
-
--- Change colorscheme
-function colorscheme(name)
-  vim.api.nvim_command("colorscheme " .. name)
 end
 
 -- Check whether this version of nvim has a certain option
@@ -121,7 +102,7 @@ function options(...)
       elseif len == 2 then
         option(v[1], v[2])
       else
-        error(string.format("Options can only have one value, but option '%s' got %d", v[1], len-1))
+        error(fmt("Options can only have one value, but option '%s' got %d", v[1], len-1))
       end
     end
   end
@@ -130,11 +111,42 @@ end
 -- Print a message with an optional highlight group
 function echohl(text, hl)
   hl = hl or ""
-  -- local emsg = vim.fn.escape(text, '"')
-  vim.cmd('echohl ' .. hl .. ' | redraw')
-  print(text)
-  vim.cmd('echohl NONE')
+  local emsg = vim.fn.escape(text, '"')
+  -- vim.cmd(string.format(
+  -- [[ echohl %s | redraw
+  --    echo '%s'
+  --    echohl NONE]], hl, emsg))
+  vim.api.nvim_echo({{emsg, hl}}, false, {})
 end
+
+function echowarn(text)
+  echohl(text, 'WarningMsg')
+end
+
+function echoerr(text)
+  echohl(text, 'ErrorMsg')
+end
+
+-- Run ex commands from lua
+ex = setmetatable({}, {
+  __index = function(_, cmd)
+    return function(str, prev)
+      vim.api.nvim_command(fmt('%s%s %s', prev or "",
+                                          cmd,
+                                          str  or ""))
+    end
+  end,
+  __newindex = function(_, k)
+    error(fmt("Tried to change ex command '%s'", k))
+  end,
+  __call = function(_, cmd)
+    vim.api_nvim_command(cmd)
+  end
+})
+
+-- Some most used (by me) commands
+colorscheme = ex.colorscheme
+source = ex.source
 
 ------------------------
 -- Global utilities
@@ -164,14 +176,14 @@ end
 -- Require a package and pollute the global environment with it
 -- If the argument is a table, add its elements to the global environment.
 -- If the argument is a string, require the module and add its elements to the global environment.
-function using(pkgname)
+function using(pkgname, env)
   local pkg
   if type(pkgname) == "string" then
     pkg = require(pkgname)
   elseif type(pkgname) == "table" then
     pkg = pkgname
   end
-  local env = getfenv(0)
+  env = env or getfenv(0)
   for k, v in pairs(pkg) do
     env[k] = v
   end
