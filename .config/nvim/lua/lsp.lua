@@ -80,11 +80,14 @@ do
           disable = {'lowercase-global'}
         },
         workspace = {
-          -- Make the server aware of Neovim runtime files
+          preloadFileSize = 300,
+          checkThirdParty = false,
           library = {
+            -- Make the server aware of Neovim runtime files
             [vim.fn.expand('$VIMRUNTIME/lua')] = true,
             [vim.fn.stdpath('config')] = true,
             [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
+            ["${3rd}/love2d/library"] = true,
           },
           [vim.fn.expand'~/.luarocks/share/lua/5.1'] = true,
           ['/usr/share/lua/5.1'] = true
