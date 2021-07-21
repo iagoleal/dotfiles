@@ -1,5 +1,5 @@
 #!/bin/sh
-alias locker='slock'
+alias locker='i3lock'
 
 case $1 in
     "lock")
