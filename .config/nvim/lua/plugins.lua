@@ -70,11 +70,12 @@ local startup = function()
       }
   use {'Olical/conjure',
        -- disable = true,
-       ft = {"scheme", "racket", "fennel"},
+       ft = {"scheme", "racket", "fennel", "clojure"},
        config = function()
          vim.g["conjure#client#scheme#stdio#command"] = 'racket -il scheme'
          vim.g["conjure#client#scheme#stdio#prompt_pattern"] = '\n?[\"%w%-./_]*> '
          vim.g["conjure#filetype#fennel"] = 'conjure.client.fennel.stdio'
+         vim.g["conjure#client#fennel#stdio#command"] = 'fennel'
        end
       }
   -- Fuzzy Search
@@ -107,6 +108,11 @@ local startup = function()
        end
       }
   use 'tpope/vim-dispatch'        -- Async make      (vimscript)
+  if has_executable 'sudo' then
+    use {'lambdalisue/suda.vim',    -- Reopen file with sudo
+         cmd = {'SudaRead', 'SudaWrite'}
+        }
+  end
   use {'junegunn/vim-easy-align', -- Alignment utils (vimscript)
        config = function()
          vim.g.easy_align_delimiters = {
@@ -154,9 +160,9 @@ local startup = function()
        end
       }
 
-
   ---- Filetype specific
   use {'lervag/vimtex',
+       ft = 'tex',
        config = function()
          vim.g.tex_flavor                                 = 'latex'
          vim.g.vimtex_view_method                         = 'zathura'
@@ -204,10 +210,6 @@ local startup = function()
   use {'bakpakin/fennel.vim',    ft = 'fennel'}
   use {'wlangstroth/vim-racket'}
   use {'tikhomirov/vim-glsl',    ft = 'glsl'}
-  -- Lovel framework
-  use {'davisdude/vim-love-docs', branch = "build",
-       ft = {"lua", "fennel"}
-      }
   -- use 'derekelkins/agda-vim'
 
   ---- Themes
