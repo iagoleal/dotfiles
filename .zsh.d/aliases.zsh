@@ -24,8 +24,15 @@ function weather { curl wttr.in/"$*"; }
 
 # Update everything
 function update {
+  local PACKER_DUMP='/tmp/packer-sync-result'
+  echo 'Updating Pacman and AUR...'
   yay -Syu --noconfirm
-  nvim --headless +PackerSync +PackerCompile +qall
+  echo 'Updating NeoVim...'
+  nvim \
+    +"autocmd User PackerComplete sleep 100m | write $PACKER_DUMP | quitall" \
+    +PackerSync
+  cat $PACKER_DUMP
+  echo 'Updating Haskell Stack...'
   stack upgrade && stack update
 }
 
