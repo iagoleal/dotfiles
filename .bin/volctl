@@ -1,34 +1,55 @@
 #!/bin/sh
 
 action=$( echo "$1" | tr '[:upper:]' '[:lower:]' )
+DEFAULT_SINK=$(pactl info | grep "Default Sink" | cut -d " " -f3)
+
+getdefaultsinkname() {
+  pacmd stat | awk -F": " '/^Default sink name: /{print $2}'
+}
+
+getdefaultsinkvol() {
+  pacmd list-sinks |
+    awk '/^\s+name: /{indefault = $2 == "<'$(getdefaultsinkname)'>"}
+        /^\s+volume: / && indefault {print $5; exit}'
+
+}
+getdefaultsinkmuted() {
+  pacmd list-sinks |
+    awk '/^\s+name: /{indefault = $2 == "<'$(getdefaultsinkname)'>"}
+        /^\s+muted: / && indefault {print $2; exit}'
+
+}
 
 case "$action" in
-    "raise")
-        amixer set Master 5%+
-        ;;
-    "lower")
-        amixer set Master 5%-
-        ;;
-    "mute")
-        pactl set-sink-mute 0 toggle
-        ;;
-    "micmute")
-        amixer set Capture toggle
-        exit 0
-        ;;
+  "raise")
+    # amixer set Master 5%+
+    pactl set-sink-volume "$DEFAULT_SINK" +5%
+    ;;
+  "lower")
+    # amixer set Master 5%-
+    pactl set-sink-volume "$DEFAULT_SINK" -5%
+    ;;
+  "mute")
+    pactl set-sink-mute "$DEFAULT_SINK" toggle
+    ;;
+  "micmute")
+    amixer set Capture toggle
+    exit 0
+    ;;
 esac
 
-read vol_info vol_ison <<< $(amixer sget Master | awk -F'[][]' 'NF > 1 { print $2, $6 }')
+vol_info=$(getdefaultsinkvol)
+vol_ismuted=$(getdefaultsinkmuted)
 # Check if volume is muted
-if [[ "$vol_ison" = 'on' ]]
-    then
-        vol_symb=🔊
-        vol_color='default'
-        vol="$vol_symb $vol_info"
-    else
-        vol_symb=🔇
-        vol_color='grey'
-        vol="<span color='$vol_color'>$vol_symb $vol_info</span>"
+if [[ "$vol_ismuted" = 'no' ]]
+  then
+    vol_symb=🔊
+    vol_color='default'
+    vol="$vol_symb $vol_info"
+  else
+    vol_symb=🔇
+    vol_color='grey'
+    vol="<span color='$vol_color'>$vol_symb $vol_info</span>"
 fi
 
 # Trigger a notification with sound info
