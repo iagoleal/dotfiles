@@ -25,8 +25,12 @@ augroup('PluginManager',
 -----------------------
 if has "termguicolors" then
   option "termguicolors"
-  option("background", "dark")
-  vim.g.ayucolor = 'mirage'
+  local hour = tonumber(vim.fn.strftime("%H"))
+  if hour > 8 and hour < 16 then
+    option("background", "light")
+  else
+    option("background", "dark")
+  end
   local colo = 'tokyonight'
   local status, err = pcall(colorscheme, colo)
   if not status then
