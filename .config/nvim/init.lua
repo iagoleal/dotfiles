@@ -237,7 +237,7 @@ augroup('Langs', {
     {"FileType", "scheme,racket,fennel",
       "setlocal softtabstop=2 shiftwidth=2 lisp autoindent"},
     {"FileType", "haskell",        "nnoremap <buffer> <space>hh :Hoogle <C-r><C-w><CR>"},
-    {"FileType", "markdown,latex", "setlocal spell"},
+    {"FileType", "markdown,latex,gitcommit", "setlocal spell"},
     {"FileType", "make",           "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=0"},
     {"FileType", "lua,fennel",     "nnoremap <buffer> <F12> :wa<cr>:!love . &<cr>"}
 })
