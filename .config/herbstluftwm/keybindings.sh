@@ -125,7 +125,7 @@ herbstclient keybind $Super-period  use_index +1 --skip-visible
 herbstclient keybind $Super-comma   use_index -1 --skip-visible
 
 # layouting
-herbstclient keybind $Super-Shift-f floating toggle
+herbstclient keybind $Super-Shift-f set_attr clients.focus.floating toggle
 herbstclient keybind $Super-f       fullscreen toggle
 herbstclient keybind $Super-o       pseudotile toggle
 # The following cycles through the available layouts within a frame, but skips
