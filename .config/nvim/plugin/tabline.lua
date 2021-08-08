@@ -1,4 +1,5 @@
-require "statusline" -- Needed for highlight groups
+-- require "statusline" -- Needed for highlight groups
+local utils = require 'utils'
 
 -- Buffer name or default
 local function buffername(bufnr)
@@ -67,7 +68,7 @@ function tabline()
   for tabnr = 1, vim.fn.tabpagenr('$') do
     tabs[tabnr] = tabline_cell(tabnr)
   end
-  return table.concat(tabs, "|")
+  return table.concat(tabs)
 end
 
 -- Allow user to give each tab a custom name
@@ -84,11 +85,11 @@ function tabname(tabnr, name)
 end
 
 -- Use same colors as statusline
-hi_link("TabLine",         "StatusLine",     { default = true })
-hi_link("TabLineFill",     "StatusLine",     { default = true })
-hi_link("TabLineSel",      "StatusLang",     { default = true })
-hi_link("TabLineMixed",    "StatusMixed",    { default = true })
-hi_link("TabLineModified", "StatusModified", { default = true })
+utils.hi_link("TabLine",         "StatusLine",     { default = true })
+utils.hi_link("TabLineFill",     "StatusLine",     { default = true })
+utils.hi_link("TabLineSel",      "StatusLang",     { default = true })
+utils.hi_link("TabLineMixed",    "StatusMixed",    { default = true })
+utils.hi_link("TabLineModified", "StatusModified", { default = true })
 
 vim.api.nvim_command [[command! -nargs=? -count=0 -addr=tabs TabName :call v:lua.tabname(<count>, <f-args>)]]
 vim.g.showtabline = 1

@@ -119,6 +119,7 @@ function statusline()
     , diagnostics()
     , "%#StatusLine#"
     , " %2(%c%), %2(%l%):%L "
+    , "%#StatusModeTerminal# %{winnr()} "
     , filetype()
     })
   return sl
@@ -127,6 +128,8 @@ end
 
 -- Generate the statusline
 do
+  vim.cmd [[
+  ]]
   utils.highlight("StatusModeNormal",                { gui = "bold", guifg = "Black", guibg = "White"   })
   utils.highlight("StatusModeVisual",                { gui = "bold", guifg = "Black", guibg = "#81A3FA" })
   utils.highlight("StatusModeSelect",                { gui = "bold", guifg = "Black", guibg = "#FF6B6B" })
