@@ -1,18 +1,20 @@
 -- Import utilities
+local vim = vim
 local utils = require "utils"
 utils.using(utils)
 
 -- Welcome to the XXI century
 ex.syntax 'enable'
 
-viml [[command! PackerInstall  lua require('plugins').install()
-       command! PackerUpdate   lua require('plugins').update()
-       command! PackerSync     lua require('plugins').sync()
-       command! PackerClean    lua require('plugins').clean()
-       command! -nargs=* PackerCompile  lua force_require('plugins').compile(<q-args>)
-       command! PackerStatus   lua require('plugins').status()
-       command! PackerProfile  lua require('plugins').profile_output()
-       command! -nargs=+ -complete=customlist,v:lua.require'packer'.loader_complete PackerLoad lua require('plugins').loader(<q-args>)
+viml [[
+  command! PackerInstall  lua require('plugins').install()
+  command! PackerUpdate   lua require('plugins').update()
+  command! PackerSync     lua require('plugins').sync()
+  command! PackerClean    lua require('plugins').clean()
+  command! -nargs=* PackerCompile  lua force_require('plugins').compile(<q-args>)
+  command! PackerStatus   lua require('plugins').status()
+  command! PackerProfile  lua require('plugins').profile_output()
+  command! -nargs=+ -complete=customlist,v:lua.require'packer'.loader_complete PackerLoad lua require('plugins').loader(<q-args>)
 ]]
 
 -- Auto reload plugins on startup
@@ -23,25 +25,37 @@ augroup('PluginManager',
 -----------------------
 -- Theme and colors
 -----------------------
+
+-- Special Highlights
+function personal_highlights()
+  -- Trailing spaces
+  highlight("Whitespace", {ctermfg="Magenta", guifg="Magenta"})
+  -- Spell checker colors
+  highlight("SpellBad",   {ctermfg="Red",    cterm="Underline",  guifg="LightRed",   gui="Underline", guisp="LightRed"})
+  highlight("SpellCap",   {ctermfg="Blue",   cterm="Underline",  guifg="LightBlue",  gui="Underline", guisp="Blue"})
+  highlight("SpellLocal", {ctermfg="Green",  cterm="Underline",  guifg="LightGreen", gui="Underline", guisp="Green"})
+  highlight("SpellRare",  {ctermfg="Yellow", cterm="underline",  guifg="Orange",     gui="Underline", guisp="Orange"})
+
+  ex["runtime!"] "plugin/statusline.lua"
+  ex["runtime!"] "plugin/tabline.lua"
+end
+
+-- Apply personal highlights when changing colorscheme
+vim.cmd [[
+augroup Highlights
+  autocmd!
+  autocmd ColorScheme * lua personal_highlights()
+augroup END ]]
+
 if has "termguicolors" then
   option "termguicolors"
-  local hour = tonumber(vim.fn.strftime("%H"))
-  if hour > 8 and hour < 16 then
-    option("background", "light")
-  else
-    option("background", "dark")
-  end
+  option("background", "dark")
   local colo = 'tokyonight'
   local status, err = pcall(colorscheme, colo)
   if not status then
     echoerr(err)
   end
 end
-
--- Use custom status and tabline
-require 'statusline'
-require 'tabline'
-
 
 option("synmaxcol", 180)
 option("wrap", false)
@@ -65,8 +79,8 @@ option("signcolumn", "number") -- show (lsp) signs over number bar
 
 option "showmatch"             -- highlight matching parentheses (useful as hell)
 
-augroup('Ident',
-  {{'FileType', '*', "setlocal formatoptions-=c formatoptions-=r formatoptions-=o"}})
+--TODO
+vim.opt.formatoptions:remove {'o', 'c', 'r'}
 
 -- No need for numbers and cursors on terminal lines
 augroup('Terminal',
@@ -76,23 +90,11 @@ augroup('Terminal',
 augroup('Yank',
   {{'TextYankPost', '*', 'silent! lua vim.highlight.on_yank({higroup=”IncSearch”, timeout=150, on_visual=false})'}})
 
--- Special Highlights
--- TODO: turn this into a theme setting
--- Head of a Fold
--- highlight("Folded",     {ctermbg="Black",   guibg="Black"})
--- Trailing spaces
-highlight("Whitespace", {ctermfg="Magenta", guifg="Magenta"})
--- Matching Parentheses
--- highlight("MatchParen", {ctermfg="Magenta",cterm="underline", guibg="none", guifg="Magenta",  gui="Bold,Underline" })
--- Spell checker colors
-highlight("SpellBad",   {ctermfg="Red",    cterm="Underline",  guifg="LightRed",   gui="Underline", guisp="LightRed"})
-highlight("SpellCap",   {ctermfg="Blue",   cterm="Underline",  guifg="LightBlue",  gui="Underline", guisp="Blue"})
-highlight("SpellLocal", {ctermfg="Green",  cterm="Underline",  guifg="LightGreen", gui="Underline", guisp="Green"})
-highlight("SpellRare",  {ctermfg="Yellow", cterm="underline",  guifg="Orange",     gui="Underline", guisp="Orange"})
-
 -------------------------
 -- MISC options
 -------------------------
+
+option "lazyredraw"             -- Don't redraw screen during macros or register operations
 
 -- Search
 option "incsearch"              -- search as characters are entered
@@ -136,11 +138,11 @@ vim.opt.thesaurus:append "~/.config/nvim/thesaurus/mthesaur.txt"
 
 -- Use ripgrep for :grep if possible
 if has_executable 'rg' then
-    option('grepprg',    [[rg --vimgrep --no-heading]])
-    option('grepformat', [[%f:%l:%c:%m,%f:%l:%m]])
+    option('grepprg',    "rg --vimgrep --no-heading")
+    option('grepformat', "%f:%l:%c:%m,%f:%l:%m")
 end
 
-----------------------
+---------------------
 -- Keymaps
 ---------------------
 
@@ -155,7 +157,7 @@ map('t', "<Esc>", [[<C-\><C-n>]])
 map('t', [[<C-\><C-n>]], "<Esc>")
 
 -- Disable search highlighting (until next search)
-map('n', "<leader><Space>", "<cmd>nohlsearch<CR>")
+map('n', "<leader><Space>", "<cmd>set hlsearch!<CR>")
 
 -- Highlight cross around cursor
 map('n', "<leader>cl", "<cmd>set cursorline! cursorcolumn!<CR>")
@@ -170,6 +172,10 @@ map('i', "<C-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u")
 
 -- Search in visual mode
 map('v', '*', [[y/\V<C-R>=escape(@",'/\')<CR><CR>]])
+
+-- Enter path to current file on command mode
+map('c', '<A-p>', [[getcmdtype() == ':' ? expand('%:h').'/' : '']], {expr = true})
+
 
 -- Toggle quickfix window on the bottom of screen
 toggle_quickfix = function()
@@ -201,10 +207,10 @@ unimpaired('b', 'b') -- Buffers
 unimpaired('t', 't') -- Tabs
 
 -- Disable arrows
-map('', '<Up>',    '<Nop>')
-map('', '<Down>',  '<Nop>')
-map('', '<Left>',  '<Nop>')
-map('', '<Right>', '<Nop>')
+map('',  '<Up>',    '<Nop>')
+map('',  '<Down>',  '<Nop>')
+map('',  '<Left>',  '<Nop>')
+map('',  '<Right>', '<Nop>')
 
 -- Plugin related
 
@@ -241,3 +247,33 @@ augroup('Langs', {
     {"FileType", "make",           "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=0"},
     {"FileType", "lua,fennel",     "nnoremap <buffer> <F12> :wa<cr>:!love . &<cr>"}
 })
+
+-----------------------------
+-- Disable Built-in plugins
+-----------------------------
+
+local disabled_built_ins = {
+    -- "netrw",
+    -- "netrwPlugin",
+    -- "netrwSettings",
+    -- "netrwFileHandlers",
+    "gzip",
+    "zip",
+    "zipPlugin",
+    "tar",
+    "tarPlugin",
+    "getscript",
+    "getscriptPlugin",
+    "vimball",
+    "vimballPlugin",
+    "2html_plugin",
+    "logipat",
+    "rrhelper",
+    "spellfile_plugin",
+    -- "matchit",
+    -- "matchparen",
+}
+
+for _, plugin in ipairs(disabled_built_ins) do
+    vim.g["loaded_" .. plugin] = 1
+end
