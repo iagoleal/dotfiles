@@ -11,7 +11,7 @@ choose="$( echo -e "$cfgs" | dmenu -r -i -c -l 4 -p '% ' )"
 
 case "${choose}" in
   Neovim)
-    term "cd ~/.config/nvim && nvim init.lua +':rightbelow 40 vsplit lua/' +':exe \"normal \<c-w>1\<c-w>\"'"
+    term "cd ~/.config/nvim && nvim fnl/startup.fnl +':rightbelow 40 vsplit .' +':exe \"normal \<c-w>1\<c-w>\"'"
     ;;
   Herbstluftwm)
     term 'cd ~/.config/herbstluftwm && nvim -O autostart keybindings.sh'
