@@ -4,7 +4,7 @@ require'nvim-treesitter.configs'.setup {
   highlight = {
     enable = true,
     -- https://www.reddit.com/r/neovim/comments/n9aupn/set_spell_that_only_considers_code_comments/
-    additional_vim_regex_highlighting = true
+    additional_vim_regex_highlighting = false
   },
   incremental_selection = {
     enable = true,

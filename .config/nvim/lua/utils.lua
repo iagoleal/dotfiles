@@ -29,7 +29,7 @@ end
 
 -- Keymaps
 -- This is 'norecursive' by default, differently from vimscript
-_mapped_functions = {} -- Store lua functions that are mapped to some key
+_G._mapped_functions = {} -- Store lua functions that are mapped to some key
 function map(mode, keys, cmd, opts)
   -- Default options
   opts = opts or {}
@@ -39,7 +39,7 @@ function map(mode, keys, cmd, opts)
   if type(cmd) == 'function' then
     table.insert(_mapped_functions, cmd)
     local idx = #_mapped_functions
-    cmd = string.format("<cmd>lua _mapped_functions[%d]()<CR>", idx)
+    cmd = fmt("<cmd>lua _mapped_functions[%d]()<CR>", idx)
   end
   vim.api.nvim_set_keymap(mode, keys, cmd, opts)
 end

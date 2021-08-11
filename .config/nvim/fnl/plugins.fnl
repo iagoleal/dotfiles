@@ -1,11 +1,10 @@
 (local utils (require :utils))
 (local echohl utils.echohl)
-(import-macros {:use :packer-use} :macros)
+(import-macros {:packer-use use} :macros)
 
 ;; Plugin management
 (vim.api.nvim_command "packadd packer.nvim")
 (local packer (require :packer))
-(local use packer.use)
 
 ;; Packer configuration table
 (local config {:disable_commands true
@@ -34,6 +33,7 @@
   ;; LSP
   (use "neovim/nvim-lspconfig"
        :config #(require :lsp))
+  (use "weilbith/nvim-lsp-smag")
 
   ;; REPL
   (use "hkupty/iron.nvim"
@@ -86,6 +86,7 @@
                               :delimiter_align :l}
                           "r" {:pattern "{\\|}\\|,"     ; Lua / Haskell style Records
                               :delimiter_align :r}})))
+  (use "mbbill/undotree")
 
   ;; Color related plugins
   (use "norcalli/nvim-colorizer.lua"
@@ -153,7 +154,7 @@
   ; use 'derekelkins/agda-vim'
 
   ;; Themes
-  (use :folke/tokyonight.nvim)
+  (use "folke/tokyonight.nvim")
 
 
   ;; Specific for Ubuntu WSL

@@ -1,4 +1,4 @@
-local nvim_lsp = require('lspconfig')
+local lspconfig = require 'lspconfig'
 
 local function iscapable(client, capability)
   return client.resolved_capabilities[capability]
@@ -18,7 +18,7 @@ local on_attach = function(client, bufnr)
   bmap('n', 'gD',         '<cmd>lua vim.lsp.buf.declaration()<CR>')
   bmap('n', 'gd',         '<cmd>lua vim.lsp.buf.definition()<CR>')
   bmap('n', 'K',          '<cmd>lua vim.lsp.buf.hover()<CR>')
-  bmap('n', 'gi',         '<cmd>lua vim.lsp.buf.implementation()<CR>')
+  bmap('n', 'g<C-d>',     '<cmd>lua vim.lsp.buf.implementation()<CR>')
   bmap('n', '<C-k>',      '<cmd>lua vim.lsp.buf.signature_help()<CR>')
   bmap('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>')
   bmap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>')
@@ -64,7 +64,7 @@ do
   table.insert(path, "lua/?.lua")
   table.insert(path, "lua/?/init.lua")
 
-  nvim_lsp.sumneko_lua.setup {
+  lspconfig.sumneko_lua.setup {
     on_attach = on_attach,
     cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"};
     settings = {
@@ -102,12 +102,21 @@ do
 end
 
 -- Haskell
-nvim_lsp.hls.setup{
-  on_attach = on_attach
+lspconfig.hls.setup{
+  on_attach = on_attach,
+  root_dir  = function(fname)
+    local util = lspconfig.util
+    local x = util.root_pattern("hadrian")(fname)
+    if x then
+        return x
+    end
+
+    return util.root_pattern("*.cabal", "stack.yaml", "cabal.project", "package.yaml", "hie.yaml")(fname)
+  end
 }
 
 -- Julia
-nvim_lsp.julials.setup{
+lspconfig.julials.setup{
     on_attach = on_attach,
     autostart = true,
     on_new_config = function(new_config, new_root_dir)
@@ -135,6 +144,6 @@ nvim_lsp.julials.setup{
 }
 
 -- Python
-nvim_lsp.pyright.setup {
+lspconfig.pyright.setup {
     on_attach = on_attach
 }

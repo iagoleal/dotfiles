@@ -25,7 +25,7 @@
       (normal-option (tostring name) cmd-or-val)))
 
 ;;; Keymaps
-(fn M.map [...]
+(fn M.keymap [...]
   "Register a new nvim keymap."
   `((. (require "utils") :map) ,... ))
 
@@ -86,14 +86,14 @@
 ;; Package manager
 
 ;;; Rewrite packer.use with a more fennelish syntax
-(fn use [pkg ...]
+  (fn M.packer-use [pkg ...]
   (local cfg [...])
   (local out {1 pkg})
   (assert (= 0 (math.fmod (length cfg) 2))
             "expected even number of keywords/values pairs")
   (for [i 1 (length cfg) 2]
     (tset out (. cfg i) (. cfg (+ i 1))))
-  `(packer.use ,out))
+  `((. (require :packer) :use) ,out))
 
 
 ;; export

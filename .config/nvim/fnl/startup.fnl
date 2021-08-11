@@ -6,7 +6,7 @@
 (import-macros {: option
                 : ex
                 : viml
-                : map
+                : keymap
                 : augroup
                 : autocmd
                 : vlua-fmt
@@ -28,8 +28,8 @@
     command! -nargs=+ -complete=customlist,v:lua.require'packer'.loader_complete PackerLoad lua require('plugins').loader(<q-args>)")
 
 ; Auto reload plugins on startup
- (local plugins-path (.. (vim.fn.stdpath :config) "/fnl/plugins.lua"))
- (augroup PluginManager
+ (local plugins-path (.. (vim.fn.stdpath :config) "/fnl/plugins.fnl"))
+ (augroup :PluginManager
    (autocmd :BufWritePost plugins-path ":PackerCompile profile=true"))
 
  ;-----------------------
@@ -69,7 +69,7 @@
   (ex runtime! :plugin/statusline.lua)
   (ex runtime! :plugin/tabline.lua)))
 
-(augroup Highlights
+(augroup :Highlights
   (autocmd :Colorscheme "*" (vlua-fmt "call %s" personal-highlights)))
 
 (when (ut.has :termguicolors)
@@ -108,7 +108,7 @@
 (option formatoptions remove [:o :c :r])  ; Don't auto insert comments
 
 ; No need for numbers and cursors on terminal lines
-(augroup Terminal
+(augroup :Terminal
   (autocmd :TermOpen "*" "setlocal nonumber norelativenumber nocursorline nocursorcolumn"))
 
 ; Highlight text on yank
@@ -175,36 +175,40 @@
 ;---------------------
 
 ;; Set Thesaurus file
-(map "" :<Space> :<Nop> {:noremap true :silent true})
+(keymap "" "<Space>" "<Nop>" {:noremap true :silent true})
 (set vim.g.mapleader " ")
 ; (set vim.g.maplocalleader "\\")
 
 ;; Terminal mappins
 ; Exit terminal with ESC
-(map :t :<Esc> "<C-\\><C-n>")
+(keymap :t "<Esc>" "<C-\\><C-n>")
 ; And use the default keybind to send ESC (This must be norecursive!!!)
-(map :t "<C-\\><C-n>" :<Esc>)
+(keymap :t "<C-\\><C-n>" "<Esc>")
 
 ; Disable search highlighting (until next search)
-(map :n :<leader>/ "<cmd>set hlsearch!<CR>")
+(keymap :n "<leader>/" "<cmd>set hlsearch!<CR>")
 
 ; Highlight cross around cursor
-(map :n :<leader>cl "<cmd>set cursorline! cursorcolumn!<CR>")
+(keymap :n "<leader>cl" "<cmd>set cursorline! cursorcolumn!<CR>")
 
 ; Zoom window at new tab
-(map :n :<leader>tz "<cmd>tab split<CR>")
+(keymap :n "<leader>tz" "<cmd>tab split<CR>")
 
 ; Close tab
-(map :n :<leader>tc :<cmd>tabclose<CR>)
+(keymap :n "<leader>tc" "<cmd>tabclose<CR>")
 
 ; Spell checks previous mistake and corrects to first suggestion
-(map :i :<C-l> "<c-g>u<Esc>[s1z=`]a<c-g>u")
+(keymap :i "<C-l>" "<c-g>u<Esc>[s1z=`]a<c-g>u")
 
 ; Search in visual mode
-(map :v "*" "y/\\V<C-R>=escape(@\",'/\\')<CR><CR>")
+(keymap :v "*" "y/\\V<C-R>=escape(@\",'/\\')<CR><CR>")
+
+; While indenting/dedenting, stay on visual mode
+(keymap :x "<" "<gv")
+(keymap :x ">" ">gv")
 
 ; Enter path to current file on command mode
-(map :c :<A-p> "getcmdtype() == ':' ? expand('%:h').'/' : ''" {:expr true})
+(keymap :c "<A-p>" "getcmdtype() == ':' ? expand('%:h').'/' : ''" {:expr true})
 
 
 ;;; Toggle quickfix window on the bottom of screen
@@ -216,15 +220,15 @@
         (lua "return nil")))
     (vim.cmd "botright copen"))))
 
-(map :n :<leader>q toggle-quickfix)
+(keymap :n "<leader>q" toggle-quickfix)
 
 ;;;; Navigation
 (fn unimpaired [key cmd]
   (set-forcibly! cmd (or cmd key))
-  (map :n (.. "[" (key:lower)) (fmt ":<C-U>exe v:count1 '%sprevious'<CR>" cmd))
-  (map :n (.. "]" (key:lower)) (fmt ":<C-U>exe v:count1 '%snext'<CR>"     cmd))
-  (map :n (.. "[" (key:upper)) (fmt ":<C-U>exe v:count1 '%sfirst'<CR>"    cmd))
-  (map :n (.. "]" (key:upper)) (fmt ":<C-U>exe v:count1 '%slast'<CR>"     cmd)))
+  (keymap :n (.. "[" (key:lower)) (fmt ":<C-U>exe v:count1 '%sprevious'<CR>" cmd))
+  (keymap :n (.. "]" (key:lower)) (fmt ":<C-U>exe v:count1 '%snext'<CR>"     cmd))
+  (keymap :n (.. "[" (key:upper)) (fmt ":<C-U>exe v:count1 '%sfirst'<CR>"    cmd))
+  (keymap :n (.. "]" (key:upper)) (fmt ":<C-U>exe v:count1 '%slast'<CR>"     cmd)))
 
 (unimpaired :q :c) ; Quickfix
 (unimpaired :l :l) ; Location list
@@ -232,55 +236,58 @@
 (unimpaired :t :t) ; Tabs
 
 
-;; Toggle quickfix window on the bottom of screen
-(map "" :<Up>    :<Nop>)
-(map "" :<Down>  :<Nop>)
-(map "" :<Left>  :<Nop>)
-(map "" :<Right> :<Nop>)
+;; Disable arrows
+(keymap "" "<Up>"    "<Nop>")
+(keymap "" "<Down>"  "<Nop>")
+(keymap "" "<Left>"  "<Nop>")
+(keymap "" "<Right>" "<Nop>")
 
 
 ;; Plugin related
 
 ; Toggle quickfix window on the bottom of screen
-(map :n :gx "<cmd>call netrw#BrowseX(expand((exists(\"g:netrw_gx\")? g:netrw_gx : '<cfile>')),netrw#CheckIfRemote())<cr>")
+(keymap :n "gx" "<cmd>call netrw#BrowseX(expand((exists(\"g:netrw_gx\")? g:netrw_gx : '<cfile>')),netrw#CheckIfRemote())<cr>")
 
 ;; Building keymaps
-(map :n :<leader>m ":Dispatch<CR>")
-(map :n :<leader>M ":Dispatch!<CR>")
+(keymap :n "<leader>m" ":Dispatch<CR>")
+(keymap :n "<leader>M" ":Dispatch!<CR>")
 
 ; Toggle Color Highlight
-(map :n :<leader>cc ":ColorizerToggle<CR>")
+(keymap :n "<leader>cc" ":ColorizerToggle<CR>")
 ; Toggle Rainbow Parentheses
-(map :n :<leader>cr ":RainbowToggle<CR>")
+(keymap :n "<leader>cr" ":RainbowToggle<CR>")
 
 ; FZF
-(map :n :<leader>fe ":FZFFiles<cr>")
-(map :n :<leader>fb ":FZFBuffers<cr>")
+(keymap :n "<leader>fe" ":FZFFiles<cr>")
+(keymap :n "<leader>fb" ":FZFBuffers<cr>")
 
 ; Easy Align
-(map :n :<leader>a "<Plug>(EasyAlign)" {:noremap false})
-(map :x :<leader>a "<Plug>(EasyAlign)" {:noremap false})
+(keymap :n "<leader>a" "<Plug>(EasyAlign)" {:noremap false})
+(keymap :x "<leader>a" "<Plug>(EasyAlign)" {:noremap false})
+
+; UndoTree
+(keymap :n "<leader>tu" "<cmd>UndotreeToggle<CR>")
 
 ;-----------------------
 ;-- Filetype Specific
 ;-----------------------
 
-(augroup Langs
+(augroup :Langs
   (autocmd :FileType
-    "scheme,racket,fennel"
-    "setlocal softtabstop=2 shiftwidth=2 lisp autoindent")
+           "scheme,racket,fennel"
+           "setlocal softtabstop=2 shiftwidth=2 lisp autoindent")
   (autocmd :FileType
-    :haskell
-    "nnoremap <buffer> <space>hh :Hoogle <C-r><C-w><CR>")
+           :haskell
+           "nnoremap <buffer> <space>hh :Hoogle <C-r><C-w><CR>")
   (autocmd :FileType
-    "markdown,latex,gitcommit"
-    "setlocal spell")
+           "markdown,latex,gitcommit"
+           "setlocal spell")
   (autocmd :FileType
-    :make
-    "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=0")
+           :make
+           "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=0")
   (autocmd :FileType
-    "lua,fennel"
-    "nnoremap <buffer> <F12> :wa<cr>:!love . &<cr>"))
+           "lua,fennel"
+           "nnoremap <buffer> <F12> :wa<cr>:!love . &<cr>"))
 
 ;-----------------------------
 ;-- Disable Built-in plugins
