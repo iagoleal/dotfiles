@@ -6,28 +6,37 @@
 
 (local iron       (require :iron))
 (local visibility (require :iron.visibility))
-(local utis       (require :utils))
 
 (iron.core.add_repl_definitions
   {:lua
-     {:luajit {:command ["luajit"]}
-      :lua51  {:command ["lua5.1"]}
-      :lua52  {:command ["lua5.2"]}
-      :lua53  {:command ["lua5.3"]}
-      :lua54  {:command ["lua5.4"]}
-      :love   {:command ["love" "--console" "."]}}
+     {:luajit
+        {:command ["luajit"]}
+      :lua51
+        {:command ["lua5.1"]}
+      :lua52
+        {:command ["lua5.2"]}
+      :lua53
+        {:command ["lua5.3"]}
+      :lua54
+        {:command ["lua5.4"]}
+      :love
+        {:command ["love" "--console" "."]}}
    :fennel
-     {:love   {:command ["love" "--console" "."]}}
+     {:love
+        {:command ["love" "--console" "."]}}
    :haskell
-     {:stack {:command ["stack" "ghci"]
-              :open    ":{"
-              :close   [":}" ""]}}
+     {:stack
+        {:command ["stack" "ghci"]
+         :open    ":{"
+         :close   [":}" ""]}}
    :scheme
-     {:chez   {:command ["scheme"]}
-      :racket {:command ["racket" "-il" "scheme"]}}})
+     {:chez
+        {:command ["scheme"]}
+      :racket
+        {:command ["racket" "-il" "scheme"]}}})
 
 (iron.core.set_config
-   {:preferred {:lua "lua53"
+   {:preferred {:lua     "lua53"
                 :fennel  "fennel"
                 :haskell "stack"
                 :python  "python"
@@ -39,6 +48,7 @@
 ;; Utility Functions
 ;----------------------
 
+;;; Set preferred repl to current buffers filetype
 (global iron-set-preferred (fn [repl]
   (let [ft vim.bo.filetype]
     (when (= repl nil)
@@ -113,6 +123,6 @@
 (keymap :n :<leader>iV #(iron-split-open "belowright 66 vsplit"))
 
 ; Send entire file
-(keymap :n :<leader>if #(let [sender (. (require :iron) :core :send)]
-                       (sender vim.bo.filetype
-                               (vim.api.nvim_buf_get_lines 0 0 -1 false))))
+(keymap :n :<leader>if #(let [send (. (require :iron) :core :send)]
+                          (send vim.bo.filetype
+                                (vim.api.nvim_buf_get_lines 0 0 -1 false))))

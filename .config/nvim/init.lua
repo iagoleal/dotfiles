@@ -16,10 +16,10 @@ local function bootstrap(name, repo, opt)
       echohl("\nCloning aborted!", "WarningMsg")
       return nil
     end
-    echohl(string.format("\nCloning Packer as an %s plugin", pack_type))
+    echohl(string.format("\nCloning package %s as an %s plugin", name, pack_type))
     vim.fn.system {'git', 'clone', repo, pack_path}
     vim.api.nvim_command('packadd ' .. name)
-    echohl('\nSucceded at cloning package ' .. name)
+    echohl(string.format('\nSucceded at cloning package %s.', name))
   end
 end
 

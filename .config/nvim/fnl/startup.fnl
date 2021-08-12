@@ -319,3 +319,9 @@
 
 ; Netrw defaults to tree view
 (set vim.g.netrw_liststyle 3)
+(viml
+  "if exists('$TMUX')
+    let g:fzf_layout = { 'tmux': '-p90%,60%' }
+  else
+    let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+  endif")

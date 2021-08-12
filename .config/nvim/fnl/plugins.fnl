@@ -1,6 +1,6 @@
 (local utils (require :utils))
 (local echohl utils.echohl)
-(import-macros {:packer-use use} :macros)
+(import-macros {:packer-use use : keymap} :macros)
 
 ;; Plugin management
 (vim.api.nvim_command "packadd packer.nvim")
@@ -25,14 +25,15 @@
   (use "nvim-treesitter/nvim-treesitter"
         :run ":TSUpdate"
         :config #(require :plugins.treesitter))
+  ; Semantically based text objects (such as functions, classes etc.)
   (use "nvim-treesitter/nvim-treesitter-textobjects"
-       :requires "nvim-treesitter/nvim-treesitter")
-  (use "p00f/nvim-ts-rainbow"
        :requires "nvim-treesitter/nvim-treesitter")
 
   ;; LSP
   (use "neovim/nvim-lspconfig"
        :config #(require :lsp))
+  ; Query LSP for tag files.
+  ; It Allows me to use built-in tag commands with LSP.
   (use "weilbith/nvim-lsp-smag")
 
   ;; REPL
@@ -48,19 +49,23 @@
                  (tset vim.g "conjure#client#scheme#stdio#prompt_pattern" "\n?[\"%w%-./_]*> ")))
                  ; vim.g["conjure#filetype#fennel"] = 'conjure.client.fennel.stdio'
                  ; vim.g["conjure#client#fennel#stdio#command"] = 'fennel'
-  ; Fuzzy Search
+
+  ;; Fuzzy Search
   (use "junegunn/fzf.vim"
        :config (fn []
                  (set vim.g.fzf_command_prefix "FZF")))
+  ; Integrate with fzf plugin to search Hoogle database
   (use "monkoose/fzf-hoogle.vim"
        :ft :haskell)
 
-
   ;; Major utilities
+  ; Add commands to (un)comment text objects
   (use "terrortylor/nvim-comment"
        :config #((. (require :nvim_comment) :setup) {:comment_empty false}))
-  (use "tpope/vim-surround")     ; Edit surrounding objects (vimscript)
-  (use "andymass/vim-matchup"  ; Improved matchparen and matchit
+  ; Edit surrounding objects (vimscript)
+  (use "tpope/vim-surround")
+  ; Improved matchparen and matchit
+  (use "andymass/vim-matchup"
        :config (fn []
                  (set vim.g.loaded_matchit 1)
                  (set vim.g.matchup_matchparen_offscreen {:method :popup})
@@ -69,11 +74,11 @@
                  (set vim.g.matchup_override_vimtex 0)
                  (set vim.g.matchup_matchpref {:html
                                                 {:tagnameonly 1}})))
-  ; Async make      (vimscrip)
+  ; Async make      (vimscript)
   (use "tpope/vim-dispatch"
        :cmd [:Make :Dispatch])
   ; Reopen file with sudo
-  (when (utils.has_executable :sudo)
+  (when (utils.has_executable "sudo")
     (use "lambdalisue/suda.vim"
          :cmd [:SudaRead :SudaWrite]))
   ; Alignment utils (vimscript)
@@ -86,9 +91,10 @@
                               :delimiter_align :l}
                           "r" {:pattern "{\\|}\\|,"     ; Lua / Haskell style Records
                               :delimiter_align :r}})))
+  ; Tree view buffer for undo history
   (use "mbbill/undotree")
 
-  ;; Color related plugins
+  ;; Colors
   (use "norcalli/nvim-colorizer.lua"
         :cmd [:ColorizerToggle :ColorizerReloadAllBuffers :ColorizerAttachToBuffer]
         :config #((. (require :colorizer) :setup)))
@@ -97,14 +103,16 @@
   (use "KabbAmine/vCoolor.vim"
         :config (fn []
                   (set vim.g.vcoolor_disable_mappings 1)
-                  (local map (. (require :utils) :map))
-                  (map :n "<leader>ce" "<cmd>VCoolor<cr>")))
+                  (keymap :n "<leader>ce" "<cmd>VCoolor<cr>")))
   (use "amadeus/vim-convert-color-to"
        :cmd :ConvertColorTo)
-  ; Colorize parentheses
+  ;; Let those paretheses ~~**shine**~~
+  (use "p00f/nvim-ts-rainbow"
+       :requires "nvim-treesitter/nvim-treesitter")
+  ; TODO: Ditch this for treesitter one
   (use "luochen1990/rainbow"
        :disable true
-       :cmd [:RainbowToggle :RainbowToggleOn]
+       :cmd     [:RainbowToggle :RainbowToggleOn]
        :config (fn []
                  (set vim.g.rainbow_active 0)))
 
@@ -117,12 +125,12 @@
   (use "plasticboy/vim-markdown"
        :ft :markdown
        :config (fn []
-                 (set vim.g.vim_markdown_folding_disabled 1)
-                 (set vim.g.vim_markdown_conceal 0)
+                 (set vim.g.vim_markdown_folding_disabled     1)
+                 (set vim.g.vim_markdown_conceal              0)
                  (set vim.g.vim_markdown_fenced_languages
-                      [:c++=cpp :viml=vim :bash=sh :ini=dosini])
-                 (set vim.g.vim_markdown_math 1)
-                 (set vim.g.vim_markdown_frontmatter 1)
+                      ["c++=cpp" "viml=vim" "bash=sh" "ini=dosini"])
+                 (set vim.g.vim_markdown_math                 1)
+                 (set vim.g.vim_markdown_frontmatter          1)
                  (set vim.g.vim_markdown_new_list_item_indent 4)))
   (use "neovimhaskell/haskell-vim"
         :ft :haskell
