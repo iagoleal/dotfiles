@@ -29,7 +29,7 @@ end
 
 -- Keymaps
 -- This is 'norecursive' by default, differently from vimscript
-_G._mapped_functions = {} -- Store lua functions that are mapped to some key
+_G._mapped_functions = _G._mapped_functions or {} -- Store lua functions that are mapped to some key
 function map(mode, keys, cmd, opts)
   -- Default options
   opts = opts or {}
@@ -52,6 +52,17 @@ end
 -- Check whether an executable exists on the PATH
 function has_executable(expr)
   return vim.fn.executable(expr) == 1
+end
+
+function iscallable(f)
+  if type(f) == 'function' then
+    return true
+  elseif type(f) == 'table' then
+    local mt = getmetatable(f)
+    return mt and mt.__call
+  else
+    return false
+  end
 end
 
 -- Set highlight group

@@ -1,9 +1,9 @@
-(local utils (require :utils))
-(local echohl utils.echohl)
-(import-macros {:packer-use use : keymap} :macros)
+; Macros and utilities
+(import-macros {:packer-use use : keymap : augroup} :macros)
+(local {: autocmd &as ut} (require :futils))
 
 ;; Plugin management
-(vim.api.nvim_command "packadd packer.nvim")
+(vim.cmd "packadd packer.nvim")
 (local packer (require :packer))
 
 ;; Packer configuration table
@@ -43,10 +43,10 @@
                  (set vim.g.iron_map_extended 1)
                  (require :plugins.iron)))
   (use "Olical/conjure"
-       :ft [:scheme :racket :fennel :clojure]
+       :ft [:scheme :racket :clojure]
        :config (fn []
-                 (tset vim.g "conjure#client#scheme#stdio#command" "racket -il scheme")
-                 (tset vim.g "conjure#client#scheme#stdio#prompt_pattern" "\n?[\"%w%-./_]*> ")))
+                 (tset vim.g :conjure#client#scheme#stdio#command        "racket -il scheme")
+                 (tset vim.g :conjure#client#scheme#stdio#prompt_pattern "\n?[\"%w%-./_]*> ")))
                  ; vim.g["conjure#filetype#fennel"] = 'conjure.client.fennel.stdio'
                  ; vim.g["conjure#client#fennel#stdio#command"] = 'fennel'
 
@@ -78,7 +78,7 @@
   (use "tpope/vim-dispatch"
        :cmd [:Make :Dispatch])
   ; Reopen file with sudo
-  (when (utils.has_executable "sudo")
+  (when (ut.executable-exists? "sudo")
     (use "lambdalisue/suda.vim"
          :cmd [:SudaRead :SudaWrite]))
   ; Alignment utils (vimscript)
@@ -166,7 +166,7 @@
 
 
   ;; Specific for Ubuntu WSL
-  (when (. vim.env :WSLENV)
+  (when vim.env.WSLENV
     (use "kabouzeid/nvim-lspinstall"
          :requires "neovim/nvim-lspconfig"))
 )
@@ -175,4 +175,5 @@
 (packer.init config)
 (packer.reset)
 (startup)
+;; Return packer itself to allow chaining commands
 packer

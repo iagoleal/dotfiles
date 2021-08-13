@@ -7,27 +7,54 @@
                       ,default
                       ,variable)))
 
+;; Return the type of the literal given
+(fn get-literal-type [x]
+  (if (sym? x)       :symbol
+      (list? x)      :list
+      (sequence? x)  :sequence
+      (table? x)     :table
+      (varg? x)      :vararg
+      (multi-sym? x) :multi-sym
+      (type x)))
+
+
+;-----------------------------
 ;;; Setting options
-(fn normal-option [name value]
+;-----------------------------
+
+(fn set-normal-option [name value]
   (default-value value true)
   `(tset vim.opt ,name ,value))
 
-(fn method-option [cmd name value]
+(fn set-method-option [cmd name value]
   (default-value value true)
   (let [opt-obj `(. vim.opt ,name)]
     `(: ,opt-obj ,cmd ,value)))
 
 ;;; Set a nvim option
-(fn M.option [name cmd-or-val ...]
+(fn M.option [name cmd-or-val ?setting-value]
 "Set a nvim option. Equivalent to viml 'set'."
   (if (sym? cmd-or-val)
-      (method-option (tostring cmd-or-val) (tostring name) ...)
-      (normal-option (tostring name) cmd-or-val)))
+      (set-method-option (tostring cmd-or-val) name ?setting-value)
+      (set-normal-option name cmd-or-val)))
 
 ;;; Keymaps
 (fn M.keymap [...]
-  "Register a new nvim keymap."
-  `((. (require "utils") :map) ,... ))
+"Register a new nvim keymap."
+  `((. (require "futils") :keymap) ,... ))
+
+;;; Autocommands
+(fn M.augroup [name ...]
+  (local cmds `(do
+                (vim.cmd (.. "augroup " ,name))
+                (vim.cmd "autocmd!")
+                ,...))
+  (table.insert cmds '(vim.cmd "augroup END"))
+  cmds)
+
+(fn M.autocmd [...]
+  `((. (require "futils") :autocmd) ,... ))
+
 
 ;;; Vimscript
 (fn M.ex [command args]
@@ -40,20 +67,9 @@
 (fn M.viml [str]
   `(vim.api.nvim_exec ,str true))
 
-;;; Autocommands
-(fn M.augroup [name ...]
-  (let [name (tostring name)]
-    `(do
-       (vim.api.nvim_command (.. "augroup " ,name))
-       (vim.api.nvim_command "autocmd!")
-       ,...
-       (vim.api.nvim_command "augroup END"))))
-
-(fn M.autocmd [event pat cmd]
- `(vim.cmd (string.format "autocmd %s %s %s" ,event ,pat ,cmd)))
-
-
+;-----------------------------------
 ;;; Access lua functions from viml
+;-----------------------------------
 
 ;; Put Unique Global
 ;;
@@ -76,24 +92,26 @@
      (tset _G._mapped_functions ,name ,val)
      (.. "_mapped_functions." ,name)))
 
-;; Wrap given in v:lua x pug call
+;;; Wrap given value in v:lua x pug call
 (fn M.vlua [what prefix?]
   `(.. "v:lua." ,(M.pug what prefix?) "()"))
 
 (fn M.vlua-fmt [str f]
   `(string.format ,str ,(M.vlua f)))
 
+;-------------------
 ;; Package manager
+;-------------------
 
 ;;; Rewrite packer.use with a more fennelish syntax
-  (fn M.packer-use [pkg ...]
-  (local cfg [...])
-  (local out {1 pkg})
-  (assert (= 0 (math.fmod (length cfg) 2))
-            "expected even number of keywords/values pairs")
-  (for [i 1 (length cfg) 2]
-    (tset out (. cfg i) (. cfg (+ i 1))))
-  `((. (require :packer) :use) ,out))
+(fn M.packer-use [pkg ...]
+  (let [cfg [...]
+        out [pkg]]
+    (assert (= 0 (math.fmod (length cfg) 2))
+            "Expected even number of keywords/values pairs.")
+    (for [i 1 (length cfg) 2]
+      (tset out (. cfg i) (. cfg (+ i 1))))
+    `((. (require :packer) :use) ,out)))
 
 
 ;; export

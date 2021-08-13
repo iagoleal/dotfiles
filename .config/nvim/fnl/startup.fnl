@@ -1,17 +1,26 @@
 ;; Import utilities
 (local vim vim)
-(local ut (require :utils))
 (local fmt string.format)
+
+(local {: autocmd
+        : colorscheme
+        : echoerror
+        : executable-exists?
+        : has?
+        : highlight
+        : keymap
+        &as ut} (require :futils))
 
 (import-macros {: option
                 : ex
                 : viml
-                : keymap
                 : augroup
-                : autocmd
-                : vlua-fmt
-                : vlua}
+                : vlua-fmt}
                :macros)
+
+(global dump ut.dump)
+(tset _G :force_require ut.force-require)
+
 
 ;; Welcome to the XXI century
 (ex syntax :enable)
@@ -22,7 +31,7 @@
     command! PackerUpdate   lua require('plugins').update()
     command! PackerSync     lua require('plugins').sync()
     command! PackerClean    lua require('plugins').clean()
-    command! -nargs=* PackerCompile  lua require('plugins').compile(<q-args>)
+    command! -nargs=* PackerCompile  lua force_require('plugins').compile(<q-args>)
     command! PackerStatus   lua require('plugins').status()
     command! PackerProfile  lua require('plugins').profile_output()
     command! -nargs=+ -complete=customlist,v:lua.require'packer'.loader_complete PackerLoad lua require('plugins').loader(<q-args>)")
@@ -39,73 +48,76 @@
  ;;; Special Highlights
 (global personal-highlights (fn []
   ; Trailing spaces
-  (ut.highlight :Whitespace {:ctermfg "Magenta" :guifg "Magenta"})
+  (highlight :Whitespace
+             :ctermfg "Magenta"
+             :guifg   "Magenta")
   ;; Spell checker colors
-  (ut.highlight :SpellBad
-                {:ctermfg "Red"
-                 :cterm   "Underline"
-                 :guifg   "LightRed"
-                 :gui     "Underline"
-                 :guisp   "LightRed"})
-  (ut.highlight :SpellCap
-                {:ctermfg "Blue"
-                 :cterm   "Underline"
-                 :guifg   "LightBlue"
-                 :gui     "Underline"
-                 :guisp   "Blue"})
-  (ut.highlight :SpellLocal
-                {:ctermfg "Green"
-                 :cterm   "Underline"
-                 :guifg   "LightGreen"
-                 :gui     "Underline"
-                 :guisp   "Green"})
-  (ut.highlight :SpellRare
-                {:ctermfg "Yellow"
-                 :cterm   "underline"
-                 :guifg   "Orange"
-                 :gui     "Underline"
-                 :guisp   "Orange"})
+  (highlight :SpellBad
+             :ctermfg "Red"
+             :cterm   "Underline"
+             :guifg   "LightRed"
+             :gui     "Underline"
+             :guisp   "LightRed")
+  (highlight :SpellCap
+             :ctermfg "Blue"
+             :cterm   "Underline"
+             :guifg   "LightBlue"
+             :gui     "Underline"
+             :guisp   "Blue")
+  (highlight :SpellLocal
+             :ctermfg "Green"
+             :cterm   "Underline"
+             :guifg   "LightGreen"
+             :gui     "Underline"
+             :guisp   "Green")
+  (highlight :SpellRare
+             :ctermfg "Yellow"
+             :cterm   "underline"
+             :guifg   "Orange"
+             :gui     "Underline"
+             :guisp   "Orange")
   ;; Reload color dependent files
-  (ex runtime! :plugin/statusline.lua)
-  (ex runtime! :plugin/tabline.lua)))
+  (ex runtime! "plugin/statusline.lua")
+  (ex runtime! "plugin/tabline.lua")))
 
 (augroup :Highlights
   (autocmd :Colorscheme "*" (vlua-fmt "call %s" personal-highlights)))
 
-(when (ut.has :termguicolors)
-  (option termguicolors)
-  (option background :dark)
+;; Set colorscheme
+(when (has? :termguicolors)
+  (option :termguicolors)
+  (option :background :dark)
   (local colo :tokyonight)
-  (local (status err) (pcall ut.colorscheme colo))
+  (local (status err) (pcall colorscheme colo))
   (when (not status)
-    (ut.echoerr err)))
+    (echoerror err)))
 
 ;------------------------
 ; Theme Options
 ;------------------------
 
-(option synmaxcol 179)
-(option wrap false)
+(option :synmaxcol 179)
+(option :wrap false)
 
-(option showcmd)
-(option ruler)
-(option conceallevel 0)
+(option :showcmd)
+(option :ruler)
+(option :conceallevel 0)
 
-(option list) ; Show trailing {spaces, tabs}
-(option listchars {:tab      "├─"
-                   :trail    "۰"
-                   :nbsp     "☻"
-                   :extends  "⟩"
-                   :precedes "⟨"})
+(option :list) ; Show trailing {spaces, tabs}
+(option :listchars {:tab      "├─"
+                    :trail    "۰"
+                    :nbsp     "☻"
+                    :extends  "⟩"
+                    :precedes "⟨"})
+ 
+(option :number)             ; show line numbers
+(option :relativenumber)     ; Show line numbers relative to current line
+(option :numberwidth 2)      ; set minimum width of numbers bar
+(option :signcolumn :number) ; show (lsp) signs over number bar
 
-(option number)             ; show line numbers
-(option relativenumber)     ; Show line numbers relative to current line
-(option numberwidth 2)      ; set minimum width of numbers bar
-(option signcolumn :number) ; show (lsp) signs over number bar
+(option :showmatch)          ; highlight matching parentheses (useful as hell)
 
-(option showmatch)          ; highlight matching parentheses (useful as hell)
-
-(option formatoptions remove [:o :c :r])  ; Don't auto insert comments
+(option :formatoptions remove [:o :c :r])  ; Don't auto insert comments
 
 ; No need for numbers and cursors on terminal lines
 (augroup :Terminal
@@ -119,55 +131,55 @@
 ;-- MISC options
 ;-------------------------
 
-(option lazyredraw)             ; Don't redraw screen during macros or register operations
+(option :lazyredraw)             ; Don't redraw screen during macros or register operations
 
 ;; Search
-(option incsearch)              ; search as characters are entered
-(option hlsearch)               ; highlight matches
-(option ignorecase)             ; case-insensitive search / substitution
-(option smartcase)              ; If terms are all lowercase, ignore case. Consider case otherwise.
+(option :incsearch)              ; search as characters are entered
+(option :hlsearch)               ; highlight matches
+(option :ignorecase)             ; case-insensitive search / substitution
+(option :smartcase)              ; If terms are all lowercase, ignore case. Consider case otherwise.
 
-(option inccommand :nosplit)    ; Show result of :s incrementally on buffer
+(option :inccommand "nosplit")    ; Show result of :s incrementally on buffer
 
 ;; Find files on subfolders
-(option path append "**")
+(option :path append "**")
 
-(option wildmenu)                       ; visual menu for command autocompletion
-(option wildmode [:full :list :full])   ; first autocomplete the word, afterwards run across the list
+(option :wildmenu)                       ; visual menu for command autocompletion
+(option :wildmode [:full :list :full])   ; first autocomplete the word, afterwards run across the list
 
 ;; Vertical split to the right (default is left
-(option splitright)
+(option :splitright)
 
 ;; Spaces and Tabs, settling the war
-(option tabstop     2)
-(option softtabstop 2)
-(option shiftwidth  2)
-(option expandtab)
-(option smarttab false)
+(option :tabstop     2)
+(option :softtabstop 2)
+(option :shiftwidth  2)
+(option :expandtab)
+(option :smarttab false)
 
 ;; Indentation
-(option autoindent)
+(option :autoindent)
 
 ;; Indentation
-(option backup)
-(option backupdir  ["~/.vim/tmp" "~/.tmp" "~/tmp" "/var/tmp" "/tmp" "."])
-(option backupskip ["/tmp/*" "/private/tmp/*"])
-(option directory  ["~/.vim/tmp" "~/.tmp" "~/tmp" "/var/tmp" "tmp"])
-(option writebackup)
+(option :backup)
+(option :backupdir  ["~/.vim/tmp" "~/.tmp" "~/tmp" "/var/tmp" "/tmp" "."])
+(option :backupskip ["/tmp/*" "/private/tmp/*"])
+(option :directory  ["~/.vim/tmp" "~/.tmp" "~/tmp" "/var/tmp" "tmp"])
+(option :writebackup)
 
 
 ;; Set undo
-(option undodir ["~/.tmp" "~/tmp" "/var/tmp" "/tmp" "$XDG_DATA_HOME/nvim/undo" "."])
-(option undofile)
+(option :undodir ["~/.tmp" "~/tmp" "/var/tmp" "/tmp" "$XDG_DATA_HOME/nvim/undo" "."])
+(option :undofile)
 
 ;; Set backup files
-(option thesaurus append "~/.config/nvim/thesaurus/mthesaur.txt")
+(option :thesaurus append "~/.config/nvim/thesaurus/mthesaur.txt")
 
 
 ;; Use ripgrep for :grep if possible
-(when (ut.has_executable "rg")
-  (option grepprg    "rg --vimgrep --no-heading")
-  (option grepformat "%f:%l:%c:%m,%f:%l:%m"))
+(when (executable-exists? "rg")
+  (option :grepprg    "rg --vimgrep --no-heading")
+  (option :grepformat "%f:%l:%c:%m,%f:%l:%m"))
 
 
 ;---------------------
@@ -175,7 +187,8 @@
 ;---------------------
 
 ;; Set Thesaurus file
-(keymap "" "<Space>" "<Nop>" {:noremap true :silent true})
+(keymap "" "<Space>" "<Nop>"
+        :silent true)
 (set vim.g.mapleader " ")
 ; (set vim.g.maplocalleader "\\")
 
@@ -186,7 +199,7 @@
 (keymap :t "<C-\\><C-n>" "<Esc>")
 
 ; Disable search highlighting (until next search)
-(keymap :n "<leader>/" "<cmd>set hlsearch!<CR>")
+(keymap :n "<leader>/" "<cmd>nohlsearch<CR>")
 
 ; Highlight cross around cursor
 (keymap :n "<leader>cl" "<cmd>set cursorline! cursorcolumn!<CR>")
@@ -208,7 +221,8 @@
 (keymap :x ">" ">gv")
 
 ; Enter path to current file on command mode
-(keymap :c "<A-p>" "getcmdtype() == ':' ? expand('%:h').'/' : ''" {:expr true})
+(keymap :c "<A-p>" "getcmdtype() == ':' ? expand('%:h').'/' : ''"
+        :expr true)
 
 
 ;;; Toggle quickfix window on the bottom of screen
@@ -224,7 +238,6 @@
 
 ;;;; Navigation
 (fn unimpaired [key cmd]
-  (set-forcibly! cmd (or cmd key))
   (keymap :n (.. "[" (key:lower)) (fmt ":<C-U>exe v:count1 '%sprevious'<CR>" cmd))
   (keymap :n (.. "]" (key:lower)) (fmt ":<C-U>exe v:count1 '%snext'<CR>"     cmd))
   (keymap :n (.. "[" (key:upper)) (fmt ":<C-U>exe v:count1 '%sfirst'<CR>"    cmd))
@@ -237,10 +250,10 @@
 
 
 ;; Disable arrows
-(keymap "" "<Up>"    "<Nop>")
-(keymap "" "<Down>"  "<Nop>")
-(keymap "" "<Left>"  "<Nop>")
-(keymap "" "<Right>" "<Nop>")
+(keymap "" "<Up>"    "")
+(keymap "" "<Down>"  "")
+(keymap "" "<Left>"  "")
+(keymap "" "<Right>" "")
 
 
 ;; Plugin related
@@ -262,8 +275,10 @@
 (keymap :n "<leader>fb" ":FZFBuffers<cr>")
 
 ; Easy Align
-(keymap :n "<leader>a" "<Plug>(EasyAlign)" {:noremap false})
-(keymap :x "<leader>a" "<Plug>(EasyAlign)" {:noremap false})
+(keymap :n "<leader>a" "<Plug>(EasyAlign)"
+        :noremap false)
+(keymap :x "<leader>a" "<Plug>(EasyAlign)"
+        :noremap false)
 
 ; UndoTree
 (keymap :n "<leader>tu" "<cmd>UndotreeToggle<CR>")
@@ -274,19 +289,19 @@
 
 (augroup :Langs
   (autocmd :FileType
-           "scheme,racket,fennel"
+           [:scheme :racket :fennel]
            "setlocal softtabstop=2 shiftwidth=2 lisp autoindent")
   (autocmd :FileType
            :haskell
            "nnoremap <buffer> <space>hh :Hoogle <C-r><C-w><CR>")
   (autocmd :FileType
-           "markdown,latex,gitcommit"
+           [:markdown :latex :gitcommit]
            "setlocal spell")
   (autocmd :FileType
            :make
            "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=0")
   (autocmd :FileType
-           "lua,fennel"
+           [:lua :fennel]
            "nnoremap <buffer> <F12> :wa<cr>:!love . &<cr>"))
 
 ;-----------------------------
@@ -306,8 +321,8 @@
                            :logipat
                            :rrhelper
                            :spellfile_plugin
-                           ; :matchit
-                           ; :matchparen
+                           :matchit
+                           :matchparen
                            ; :netrw
                            ; :netrwPlugin
                            ; :netrwSettings
@@ -319,9 +334,8 @@
 
 ; Netrw defaults to tree view
 (set vim.g.netrw_liststyle 3)
-(viml
-  "if exists('$TMUX')
-    let g:fzf_layout = { 'tmux': '-p90%,60%' }
-  else
-    let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
-  endif")
+
+
+;; Hide sponsor information from Conjure
+(augroup :ConjureRemoveSponsor
+  (autocmd :BufWinEnter "conjure-log-*" "silent s/; Sponsored by @.*//e"))
