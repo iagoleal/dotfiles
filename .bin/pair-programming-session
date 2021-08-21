@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# Read parameters from command line arguments
+# or use the same defaults as this post
+frienduser="${1:-outsider}"
+tmux_file="${2:-/tmp/sharedtmux}"
+tmux_session="${3:-sharedtmux}"
+tmux_group="${4:-tmux}"
+
+# If sshd is inactive, begin by starting it
+systemctl status sshd.service >/dev/null
+if [[ $? -gt 0 ]]; then
+  sudo systemctl start sshd.service
+fi
+
+# Create shared tmux session
+tmux -S "$tmux_file" new-session -s "$tmux_session" -d
+# Assign right permissions to group
+chgrp $tmux_group "$tmux_file"
+chmod g+rw "$tmux_file"
+
+# Start ngrok using the same tmux socket file
+# but in a different session.
+# This ensures the ngrok TUI will run non-blocking.
+tmux -S "$tmux_file" new-session -s ngrok -d
+tmux -S "$tmux_file" send -t ngrok "ngrok tcp 22" ENTER
+# Wait a little while ngrok starts
+sleep 4
+
+# Query ngrok for host and port
+ngrok_url='http://localhost:4040/api/tunnels'
+query_ngrok() {
+  local ngrok_host ngrok_port
+  read ngrok_host ngrok_port <<< $(curl -s $ngrok_url \
+    | sed -nE 's|.*"public_url":"tcp://([^:]*):([0-9]*)".*|\1 \2|p')
+  echo "ssh -t -p $ngrok_port $frienduser@$ngrok_host"
+}
+
+# Echo the proper ssh command to tmux
+tmux -S "$tmux_file" send -t "$tmux_session" "echo $(query_ngrok)" ENTER
+# And also copy it to X clipboard for convenience
+if command -v xclip &> /dev/null; then
+  query_ngrok | xclip
+fi
+
+# Attach to the shared session
+tmux -u -S "$tmux_file" attach -t "$tmux_session"
+
+# After exit, kill the entire server
+tmux -S "$tmux_file" kill-server
