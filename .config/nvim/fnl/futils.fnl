@@ -1,6 +1,7 @@
 (local M {})
 (local utils (require :utils))
 (import-macros {: pug} :macros)
+(local fmt string.format)
 
 (set table.pack (fn [...]
   (let [t [...]]
@@ -62,32 +63,41 @@
 ; Autocommands
 ;----------------------------
 
+(fn save-function-as-global [f]
+  (default-value! _G._mapped_functions {})
+  (let [memo _G._mapped_functions]
+    (table.insert memo f)
+    (let [f-index (length memo)]
+      (string.format "lua _G['_mapped_functions'][%d]()" f-index))))
+
+(fn process-rhs/autocmd [cmd]
+  (match (type cmd)
+    :string cmd
+    (where _ (callable? cmd)) (fmt "%s" (save-function-as-global cmd))
+    _       (error "Only strings, functions or callable table may be mapped.")))
+
 (fn M.autocmd [event pat cmd]
   (let [event (aggregate-strings event)
-        pat   (aggregate-strings pat)]
+        pat   (aggregate-strings pat)
+        cmd   (process-rhs/autocmd cmd)]
     (vim.cmd (string.format "autocmd %s %s %s" event pat cmd))))
 
 ;-------------------
 ; Keymaps
 ;-------------------
 
-(fn save-function-as-global [f]
-  (default-value! _G._mapped_functions {})
-  (let [memo _G._mapped_functions]
-    (table.insert memo f)
-    (let [f-index (length memo)]
-      (string.format "<cmd>lua _G['_mapped_functions'][%d]()<CR>" f-index))))
-
-(fn keymap#process-rhs [cmd]
+(fn process-rhs/keymap [cmd]
   (match (type cmd)
     :string cmd
-    (where _ (callable? cmd)) (save-function-as-global cmd)
+    (where _ (callable? cmd)) (fmt "<cmd>%s<CR>"
+                                   (save-function-as-global cmd))
     _       (error "Only strings, functions or callable table may be mapped.")))
+
 
 (fn M.keymap [mode keys cmd ...]
   "Set a keymap on global scope."
   (let [opts (paired-sequence-to-table [...])
-        cmd  (keymap#process-rhs cmd)]
+        cmd  (process-rhs/keymap cmd)]
     ; Better to be non-recursive by default
     (default-value! opts.noremap true)
     (vim.api.nvim_set_keymap mode keys cmd opts)))
@@ -95,10 +105,10 @@
 (fn M.keymap-buffer [buf mode keys cmd ...]
   "Set a keymap on buffer scope."
   (let [opts (paired-sequence-to-table [...])
-        cmd  (keymap#process-rhs cmd)]
+        cmd  (process-rhs/keymap cmd)]
     ; Better to be non-recursive by default
     (default-value! opts.noremap true)
-    (vim.api.nvim_set_keymap buf mode keys cmd opts)))
+    (vim.api.nvim_buf_set_keymap buf mode keys cmd opts)))
 
 
 ;-------------------

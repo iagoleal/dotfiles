@@ -1,5 +1,4 @@
 ;; Import utilities
-(local vim vim)
 (local fmt string.format)
 
 (local {: autocmd
@@ -16,7 +15,7 @@
                 : viml
                 : augroup
                 : vlua-fmt}
-               :macros)
+               :fnl.macros)
 
 (global dump ut.dump)
 (tset _G :force_require ut.force-require)
@@ -46,7 +45,7 @@
  ;-----------------------
 
  ;;; Special Highlights
-(global personal-highlights (fn []
+(fn personal-highlights []
   ; Trailing spaces
   (highlight :Whitespace
              :ctermfg "Magenta"
@@ -78,10 +77,10 @@
              :guisp   "Orange")
   ;; Reload color dependent files
   (ex runtime! "plugin/statusline.lua")
-  (ex runtime! "plugin/tabline.lua")))
+  (ex runtime! "plugin/tabline.lua"))
 
 (augroup :Highlights
-  (autocmd :Colorscheme "*" (vlua-fmt "call %s" personal-highlights)))
+  (autocmd :Colorscheme "*" personal-highlights))
 
 ;; Set colorscheme
 (when (has? :termguicolors)
@@ -112,6 +111,7 @@
  
 (option :number)             ; show line numbers
 (option :relativenumber)     ; Show line numbers relative to current line
+
 (option :numberwidth 2)      ; set minimum width of numbers bar
 (option :signcolumn :number) ; show (lsp) signs over number bar
 
@@ -125,7 +125,8 @@
 
 ; Highlight text on yank
 (augroup :Yank
-  (autocmd :TextYankPost "*" "silent! lua vim.highlight.on_yank({higroup=”IncSearch”, timeout=150, on_visual=false})"))
+  (autocmd :TextYankPost "*" #(vim.highlight.on_yank {:higroup "IncSearch" :timeout 150 :on_visual false})))
+  ; (autocmd :TextYankPost "*" "silent! lua vim.highlight.on_yank({higroup=”IncSearch”, timeout=150, on_visual=false})"))
 
 ;-------------------------
 ;-- MISC options
@@ -173,7 +174,8 @@
 (option :undofile)
 
 ;; Set backup files
-(option :thesaurus append "~/.config/nvim/thesaurus/mthesaur.txt")
+(option :thesaurus append (.. (vim.fn.stdpath :config)
+                              "/thesaurus/mthesaur.txt"))
 
 
 ;; Use ripgrep for :grep if possible
@@ -191,6 +193,11 @@
         :silent true)
 (set vim.g.mapleader " ")
 ; (set vim.g.maplocalleader "\\")
+
+; Rebind Y on normal mode to copy until end of line
+(keymap :n "Y" "y$")
+; Make CTRL-L also clean highlights
+(keymap :n "<C-l>" "<cmd>nohlsearch<CR><C-l>")
 
 ;; Terminal mappins
 ; Exit terminal with ESC
@@ -249,6 +256,20 @@
 (unimpaired :t :t) ; Tabs
 
 
+;; Open :ptag on a vertical split (Like "<C-w>}")
+(fn ptag-vertical []
+  (let [backup-previewheight vim.o.previewheight        ; The current/default previewheight
+        window-width         (vim.fn.winwidth 0)        ; The current window's width
+        current-word         (vim.fn.expand "<cword>")] ; The word under the cursor
+    ; Divide the current window in half
+    (set vim.o.previewheight (math.floor (/ window-width 2)))
+    ; Open tag on vertical preview window
+    (vim.cmd (fmt "vert ptag %s" current-word))
+    ; Restore option to default
+    (set vim.o.previewheight backup-previewheight)))
+
+(keymap :n "<C-w>{" ptag-vertical)
+
 ;; Disable arrows
 (keymap "" "<Up>"    "")
 (keymap "" "<Down>"  "")
@@ -293,7 +314,7 @@
            "setlocal softtabstop=2 shiftwidth=2 lisp autoindent")
   (autocmd :FileType
            :haskell
-           "nnoremap <buffer> <space>hh :Hoogle <C-r><C-w><CR>")
+           "nnoremap <buffer> <space>hh <cmd>Hoogle <C-r><C-w><CR>")
   (autocmd :FileType
            [:markdown :latex :gitcommit]
            "setlocal spell")
