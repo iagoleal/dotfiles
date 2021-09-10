@@ -1,7 +1,6 @@
 local utils = require "utils"
 local echohl = utils.echohl
 
-
 -- Ensure that a given package is installed and loaded
 local function bootstrap(name, repo, opt)
   if opt == nil then

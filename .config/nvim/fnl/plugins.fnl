@@ -20,6 +20,8 @@
   ;; Fennel support for nvim
   (use "rktjmp/hotpot.nvim"
         :config #(require :hotpot))
+  ;; Session Management
+  (use "rmagatti/auto-session")
 
   ;; Treesitter
   (use "nvim-treesitter/nvim-treesitter"
@@ -163,8 +165,7 @@
 
   ;; Themes
   (use "folke/tokyonight.nvim")
-
-
+  (use "mcchrish/zenbones.nvim")
   ;; Specific for Ubuntu WSL
   (when vim.env.WSLENV
     (use "kabouzeid/nvim-lspinstall"

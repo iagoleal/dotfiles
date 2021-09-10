@@ -15,7 +15,7 @@
                 : viml
                 : augroup
                 : vlua-fmt}
-               :fnl.macros)
+               :macros)
 
 (global dump ut.dump)
 (tset _G :force_require ut.force-require)
@@ -220,8 +220,14 @@
 ; Spell checks previous mistake and corrects to first suggestion
 (keymap :i "<C-l>" "<c-g>u<Esc>[s1z=`]a<c-g>u")
 
-; Search in visual mode
+; Search word under cursor on whole project
+(keymap :n "<M-*>" ":grep '<C-r><C-w>' **/*")
+
+; Search visual selection
 (keymap :v "*" "y/\\V<C-R>=escape(@\",'/\\')<CR><CR>")
+
+; Search visual selection text on whole project
+(keymap :v "<M-*>" "y:grep '<C-R>=escape(@\",'/\\')<CR>' **/*")
 
 ; While indenting/dedenting, stay on visual mode
 (keymap :x "<" "<gv")
@@ -232,16 +238,24 @@
         :expr true)
 
 
-;;; Toggle quickfix window on the bottom of screen
-(global toggle-quickfix (fn []
-  (let [windows (vim.fn.getwininfo)]
-    (each [_ win (pairs windows) ]
-      (when (= win.quickfix 1)
-        (vim.cmd :cclose)
+;;; Helper function for toggling a list
+(fn toggle-*list [win-type cmd-open cmd-close]
+  #(let [windows (vim.fn.getwininfo)]
+    (each [_ win (pairs windows)]
+      (when (= (. win win-type) 1)
+        (vim.cmd cmd-close)
         (lua "return nil")))
-    (vim.cmd "botright copen"))))
+    (vim.cmd cmd-open)))
+
+; Toggle quickfix window on the bottom of screen
+(global toggle-quickfix
+  (toggle-*list :quickfix "botright copen" "cclose"))
+; Toggle locationlist window on the bottom of buffer
+(global toggle-locationlist
+  (toggle-*list :loclist  "lopen" "lclose"))
 
 (keymap :n "<leader>q" toggle-quickfix)
+(keymap :n "<leader>Q" toggle-locationlist)
 
 ;;;; Navigation
 (fn unimpaired [key cmd]
@@ -330,8 +344,8 @@
 ;-----------------------------
 
 (local disabled-built-ins [:gzip
-                           :zip
-                           :zipPlugin
+                           ; :zip
+                           ; :zipPlugin
                            :tar
                            :tarPlugin
                            :getscript
