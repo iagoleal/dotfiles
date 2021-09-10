@@ -1,0 +1,9 @@
+#!/bin/sh
+
+color="$(colorpicker --one-shot --preview)"
+
+# Save to clipboard
+echo "$color" | xclip
+$HOME/.bin/notify "Selected color:\n$color"
+
+
