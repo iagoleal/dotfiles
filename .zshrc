@@ -1,8 +1,8 @@
 #----------------------------
 # Keybindings
 #----------------------------
-bindkey -v # Vim mode for keybinds
-# bindkey -e # Emacs mode for keybinds
+# bindkey -v # Vim mode for keybinds
+bindkey -e # Emacs mode for keybinds
 
 autoload edit-command-line
 zle -N edit-command-line
