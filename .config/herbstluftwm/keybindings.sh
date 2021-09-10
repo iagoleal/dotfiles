@@ -35,6 +35,7 @@ herbstclient keybind $Super-n       spawn sh "${modes_folder}/Notify.sh"
 herbstclient keybind Print              spawn flameshot full -c
 herbstclient keybind $Super-Shift-Print spawn flameshot full -c -p "$HOME/Pictures/Screenshots"
 herbstclient keybind $Super-Print       spawn flameshot gui
+herbstclient keybind Control-Print      spawn "$HOME/.bin/pickcolor"
 
 # Media
 herbstclient keybind $Super-p             spawn sh "$HOME/.bin/musicctl" "toggle"

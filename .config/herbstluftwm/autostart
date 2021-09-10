@@ -65,4 +65,3 @@ fi
 # Little hack from the FAQ
 # Necessary to make vertical splitting the default on tag 1
 herbstclient split vertical 0.5 ; herbstclient remove
-

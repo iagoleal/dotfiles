@@ -11,5 +11,3 @@ herbstclient keybind m chain , spawn "$HOME/.bin/notify" "-e" "$HOME/.bin/getmpd
 herbstclient keybind b chain , spawn "$HOME/.bin/notify" "-e" "fortune dhammapada tao"       , spawn sh "$normalMode"
 
 herbstclient keybind Escape spawn bash "$normalMode"
-
-
