@@ -14,7 +14,7 @@
                 : ex
                 : viml
                 : augroup
-                : vlua-fmt}
+                : pug}
                :macros)
 
 (global dump ut.dump)
@@ -148,15 +148,25 @@
 (option :wildmode [:full :list :full])   ; first autocomplete the word, afterwards run across the list
 (option :wildignorecase)
 
-;; Vertical split to the right (default is left
+;; Vertical split to the right (default is left)
 (option :splitright)
 
 ;; Spaces and Tabs, settling the war
+(global set-spaces-per-tab (fn [n]
+  (set vim.opt.tabstop n)
+  (set vim.opt.softtabstop n)
+  (set vim.opt.shiftwidth n)
+  (set vim.opt.expandtab true)))
+
 (option :tabstop     2)
 (option :softtabstop 2)
 (option :shiftwidth  2)
 (option :expandtab)
 (option :smarttab false)
+
+
+(vim.cmd (string.format "command! -nargs=? SpacesPerTab :lua %s(tonumber(<f-args>))"
+                        (pug set-spaces-per-tab)))
 
 ;; Indentation
 (option :autoindent)
@@ -325,7 +335,7 @@
 (augroup :Langs
   (autocmd :FileType
            [:scheme :racket :fennel]
-           "setlocal softtabstop=2 shiftwidth=2 lisp autoindent")
+           "setlocal tabstop=2 softtabstop=2 shiftwidth=2 lisp autoindent")
   (autocmd :FileType
            :haskell
            "nnoremap <buffer> <space>hh <cmd>Hoogle <C-r><C-w><CR>")
