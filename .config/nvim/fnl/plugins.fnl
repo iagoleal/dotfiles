@@ -53,6 +53,7 @@
                  ; vim.g["conjure#client#fennel#stdio#command"] = 'fennel'
 
   ;; Fuzzy Search
+  (use "gelguy/wilder.nvim")
   (use "junegunn/fzf.vim"
        :config (fn []
                  (set vim.g.fzf_command_prefix "FZF")))

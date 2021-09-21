@@ -20,7 +20,6 @@
 (global dump ut.dump)
 (tset _G :force_require ut.force-require)
 
-
 ;; Welcome to the XXI century
 (ex syntax :enable)
 
@@ -147,6 +146,7 @@
 
 (option :wildmenu)                       ; visual menu for command autocompletion
 (option :wildmode [:full :list :full])   ; first autocomplete the word, afterwards run across the list
+(option :wildignorecase)
 
 ;; Vertical split to the right (default is left
 (option :splitright)
@@ -369,7 +369,6 @@
 
 ; Netrw defaults to tree view
 (set vim.g.netrw_liststyle 3)
-
 
 ;; Hide sponsor information from Conjure
 (augroup :ConjureRemoveSponsor
