@@ -250,8 +250,10 @@
 
 ;;; Helper function for toggling a list
 (fn toggle-*list [win-type cmd-open cmd-close]
-  #(let [windows (vim.fn.getwininfo)]
-    (each [_ win (pairs windows)]
+  #(let [tabnr   (vim.fn.tabpagenr)
+         windows (. (vim.fn.gettabinfo tabnr) 1 :windows)]
+    (each [_ winid (pairs windows)]
+      (local win (. (vim.fn.getwininfo winid) 1))
       (when (= (. win win-type) 1)
         (vim.cmd cmd-close)
         (lua "return nil")))
