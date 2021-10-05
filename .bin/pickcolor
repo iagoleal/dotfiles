@@ -1,9 +1,18 @@
-#!/bin/sh
+#!/usr/bin/env lua
+local fmt = string.format
+local smatch = string.match
 
-color="$(colorpicker --one-shot --preview)"
+-- Access system
+local color_handle = io.popen "colorpicker --one-shot --preview"
+local color_rawinfo = color_handle:read()
+color_handle:close()
 
-# Save to clipboard
-echo "$color" | xclip
-$HOME/.bin/notify "Selected color:\n$color"
+-- Get the color info in different formats
+local hexcolor = smatch(color_rawinfo, '%#%x+$')
+local r, g, b = smatch(color_rawinfo, '^R:%s*(%d+),%s*G:%s*(%d+),%s*B:%s*(%d+)')
 
+local out = fmt("Hex:   %s\nRGB:   (%d, %d, %d)\nFloat: (%.3f, %.3f, %.3f)", hexcolor, r, g, b, r/255, g/255, b/255)
 
+print(out)
+os.execute(fmt("echo '%s' | xclip", out))
+os.execute(fmt("$HOME/.bin/notify '%s'", out))
