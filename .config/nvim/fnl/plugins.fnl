@@ -1,5 +1,5 @@
 ; Macros and utilities
-(import-macros {:packer-use use : keymap : augroup} :macros)
+(import-macros {:packer-use use : keymap : augroup : ex} :macros)
 (local {: autocmd &as ut} (require :futils))
 
 ;; Plugin management
@@ -53,10 +53,16 @@
                  ; vim.g["conjure#client#fennel#stdio#command"] = 'fennel'
 
   ;; Fuzzy Search
-  (use "gelguy/wilder.nvim")
   (use "junegunn/fzf.vim"
        :config (fn []
                  (set vim.g.fzf_command_prefix "FZF")))
+  (use "gelguy/wilder.nvim"
+       ; In case of errors, disable with "call wilder#disable()"
+       :event    [:CursorHold :CmdlineEnter]
+       :rocks    ["luarocks-fetch-gitrec" "pcre2"]
+       :requires ["romgrk/fzy-lua-native"]
+       :config #(ex source (.. (vim.fn.stdpath :config)
+                               "/viml/wilder.vim")))
   ; Integrate with fzf plugin to search Hoogle database
   (use "monkoose/fzf-hoogle.vim"
        :ft :haskell)
