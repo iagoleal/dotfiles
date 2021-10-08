@@ -157,11 +157,9 @@
 (def-command SpacesPerTab [n]
   (set-spaces-per-tab (tonumber n)))
 
-
-; By default, use 2 spaces to indent
-(set-spaces-per-tab 2)
+; Default to 4 spaces identation
+(set-spaces-per-tab 4)
 (option :smarttab false)
-
 
 ;; Indentation
 (option :autoindent)

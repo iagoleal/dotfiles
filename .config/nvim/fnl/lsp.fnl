@@ -82,8 +82,8 @@
 
 ;;; Lua
 ;; set the path to the sumneko installation;
-(let [sumneko-root-path "/usr/share/lua-language-server"
-      sumneko-binary    "/bin/lua-language-server"
+(let [sumneko-root-path (.. (vim.fn.stdpath :data) "/lspinstall/lua/sumneko-lua")
+      sumneko-binary    (.. (vim.fn.stdpath :data) "/lspinstall/lua/sumneko-lua-language-server")
       path              (vim.split package.path ";")]
   (table.insert path "lua/?.lua")
   (table.insert path "lua/?/init.lua")

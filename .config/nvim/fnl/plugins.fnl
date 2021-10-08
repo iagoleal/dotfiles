@@ -10,7 +10,7 @@
 ;; Packer configuration table
 (local config {:disable_commands true
                :compile_on_sync  true
-               :max_jobs         9
+               :max_jobs         1
                :profile          {:enable true}})
 
 (macro require-use [pkg ...]
@@ -48,6 +48,10 @@
 
 (use "RRethy/nvim-treesitter-textsubjects"
      :requires "nvim-treesitter/nvim-treesitter")
+; Show context
+(use "romgrk/nvim-treesitter-context"
+     :requires "nvim-treesitter/nvim-treesitter")
+
 
 ;;;
 ;;; Language Server Protocol
