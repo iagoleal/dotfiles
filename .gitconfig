@@ -1,5 +1,6 @@
 [alias]
 	tree = log --graph --all --decorate --pretty=oneline --abbrev-commit
+	undo = reset HEAD^
 [core]
 	editor = nvim
 [diff]
@@ -12,3 +13,7 @@
 	prompt = true
 [mergetool "vimdiff"]
 	cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+[init]
+	defaultBranch = master
+[credential]
+	helper = cache
