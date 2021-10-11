@@ -279,7 +279,6 @@
 (unimpaired :q :c) ; Quickfix
 (unimpaired :l :l) ; Location list
 (unimpaired :b :b) ; Buffers
-(unimpaired :t :t) ; Tabs
 
 
 ;; Open :ptag on a vertical split (Like "<C-w>}")
@@ -349,7 +348,7 @@
            "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=0")
   (autocmd :FileType
            [:lua :fennel]
-           "nnoremap <buffer> <F12> :wa<cr>:!love . &<cr>"))
+           "nnoremap <buffer> <F12> :wa<cr>:!love src &<cr>"))
 
 ;-----------------------------
 ;-- Disable Built-in plugins

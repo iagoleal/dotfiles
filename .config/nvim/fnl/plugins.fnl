@@ -53,9 +53,6 @@
                  ; vim.g["conjure#client#fennel#stdio#command"] = 'fennel'
 
   ;; Fuzzy Search
-  (use "junegunn/fzf.vim"
-       :config (fn []
-                 (set vim.g.fzf_command_prefix "FZF")))
   (use "gelguy/wilder.nvim"
        ; In case of errors, disable with "call wilder#disable()"
        :event    [:CursorHold :CmdlineEnter]
@@ -64,9 +61,12 @@
        :run      [":UpdateRemotePlugins"]
        :config #(ex source (.. (vim.fn.stdpath :config)
                                "/viml/wilder.vim")))
+  ; (use "junegunn/fzf.vim"
+  ;      :config (fn []
+  ;                (set vim.g.fzf_command_prefix "FZF")))
   ; Integrate with fzf plugin to search Hoogle database
-  (use "monkoose/fzf-hoogle.vim"
-       :ft :haskell)
+  ; (use "monkoose/fzf-hoogle.vim"
+  ;      :ft :haskell)
 
   ;; Major utilities
   ; Add commands to (un)comment text objects
@@ -116,15 +116,6 @@
                   (keymap :n "<leader>ce" "<cmd>VCoolor<cr>")))
   (use "amadeus/vim-convert-color-to"
        :cmd :ConvertColorTo)
-  ;; Let those paretheses ~~**shine**~~
-  (use "p00f/nvim-ts-rainbow"
-       :requires "nvim-treesitter/nvim-treesitter")
-  ; TODO: Ditch this for treesitter one
-  (use "luochen1990/rainbow"
-       :disable true
-       :cmd     [:RainbowToggle :RainbowToggleOn]
-       :config (fn []
-                 (set vim.g.rainbow_active 0)))
 
   ;;; Filetype specific
   (use "lervag/vimtex"
@@ -162,14 +153,12 @@
                   (set vim.g.haskell_indent_do               3)
                   (set vim.g.haskell_indent_in               0)
                   (set vim.g.haskell_indent_guard            2)))
-  (use "JuliaEditorSupport/julia-vim"
-       :opt false)
+  (use "JuliaEditorSupport/julia-vim")
   (use "bakpakin/fennel.vim"
        :ft :fennel)
   (use "wlangstroth/vim-racket")
   (use "tikhomirov/vim-glsl"
        :ft :glsl)
-  ; use 'derekelkins/agda-vim'
 
   ;; Themes
   (use "folke/tokyonight.nvim")
