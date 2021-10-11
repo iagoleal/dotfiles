@@ -61,6 +61,7 @@
        :event    [:CursorHold :CmdlineEnter]
        :rocks    ["luarocks-fetch-gitrec" "pcre2"]
        :requires ["romgrk/fzy-lua-native"]
+       :run      [":UpdateRemotePlugins"]
        :config #(ex source (.. (vim.fn.stdpath :config)
                                "/viml/wilder.vim")))
   ; Integrate with fzf plugin to search Hoogle database

@@ -9,18 +9,18 @@ call wilder#set_option('pipeline', [
 \     'dir_command': ['find', '.', '-type', 'd', '-printf', '%P\n'],
 \     'filters': ['fuzzy_filter', 'difflib_sorter'],
 \   }),
-\   wilder#substitute_pipeline(#{
-\     pipeline: wilder#python_search_pipeline(#{
-\       skip_cmdtype_check: 1,
-\       pattern: wilder#python_fuzzy_pattern(#{
-\         start_at_boundary: 0,
+\   wilder#substitute_pipeline({
+\     'pipeline': wilder#python_search_pipeline({
+\       'skip_cmdtype_check': 1,
+\       'pattern': wilder#python_fuzzy_pattern({
+\         'start_at_boundary': 0,
 \       }),
 \     }),
 \   }),
-\   wilder#cmdline_pipeline(#{
-\     fuzzy: 1,
-\     sorter: wilder#python_difflib_sorter(),
-\     fuzzy_filter: wilder#lua_fzy_filter(),
+\   wilder#cmdline_pipeline({
+\     'fuzzy': 1,
+\     'sorter': wilder#python_difflib_sorter(),
+\     'fuzzy_filter': wilder#lua_fzy_filter(),
 \   }),
 \   [
 \     wilder#check({_, x -> empty(x)}),
