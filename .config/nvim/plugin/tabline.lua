@@ -76,10 +76,18 @@ end
 -- If the second argument is nil, it deletes the current name
 -- and uses the focused buffer in its place.
 function tabname(tabnr, name)
-  if name == nil then
-    vim.api.nvim_tabpage_del_var(tabnr, 'title')
+  local tpage
+  if tabnr == 0 then
+    tpage = vim.api.nvim_get_current_tabpage()
   else
-    vim.api.nvim_tabpage_set_var(tabnr, 'title', name)
+    local tabpages = vim.api.nvim_list_tabpages()
+    tpage = tabpages[tabnr]
+  end
+  print(tabnr, tpage)
+  if name == nil then
+    vim.api.nvim_tabpage_del_var(tpage, 'title')
+  else
+    vim.api.nvim_tabpage_set_var(tpage, 'title', name)
   end
   vim.cmd("redrawtabline")
 end

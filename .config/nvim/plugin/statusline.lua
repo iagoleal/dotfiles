@@ -114,7 +114,7 @@ function statusline()
   local sl = table.concat(
     { cursormode()
     , sl_buf.readonly and "%#StatusReadonly#" or "%#StatusLine#"
-    , " %-t"
+    , " %-f"
     , "%="
     , diagnostics()
     , "%#StatusLine#"

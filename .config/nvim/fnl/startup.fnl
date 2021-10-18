@@ -153,10 +153,10 @@
 
 ;; Spaces and Tabs, settling the war
 (global set-spaces-per-tab (fn [n]
-  (set vim.opt.tabstop n)
-  (set vim.opt.softtabstop n)
-  (set vim.opt.shiftwidth n)
-  (set vim.opt.expandtab true)))
+                            (set vim.opt.tabstop n)
+                            (set vim.opt.softtabstop n)
+                            (set vim.opt.shiftwidth n)
+                            (set vim.opt.expandtab true)))
 
 (option :tabstop     2)
 (option :softtabstop 2)
@@ -301,6 +301,12 @@
 (keymap "" "<Left>"  "")
 (keymap "" "<Right>" "")
 
+;; Emacs-like keybindings for cmd  mode
+; back one word
+(keymap :c "<M-b>" "<S-Left>")
+; forward one word
+(keymap :c "<M-f>" "<S-Right>")
+
 
 ;; Plugin related
 
@@ -368,12 +374,12 @@
                            :rrhelper
                            :spellfile_plugin
                            :matchit
-                           :matchparen
+                           :matchparen])
                            ; :netrw
                            ; :netrwPlugin
                            ; :netrwSettings
                            ; :netrwFileHandlers
-                           ])
+
 (each [_ plugin (ipairs disabled-built-ins)]
   (tset vim.g (.. "loaded_" plugin) 1))
 

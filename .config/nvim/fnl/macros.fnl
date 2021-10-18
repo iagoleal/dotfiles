@@ -33,15 +33,15 @@
 
 ;;; Set a nvim option
 (fn M.option [name cmd-or-val ?setting-value]
-"Set a nvim option. Equivalent to viml 'set'."
+ "Set a nvim option. Equivalent to viml 'set'."
   (if (sym? cmd-or-val)
       (set-method-option (tostring cmd-or-val) name ?setting-value)
       (set-normal-option name cmd-or-val)))
 
 ;;; Keymaps
 (fn M.keymap [...]
-"Register a new nvim keymap."
-  `((. (require "futils") :keymap) ,... ))
+ "Register a new nvim keymap."
+  `((. (require "futils") :keymap) ,...))
 
 ;;; Autocommands
 (fn M.augroup [name ...]
@@ -53,7 +53,7 @@
   cmds)
 
 (fn M.autocmd [...]
-  `((. (require "futils") :autocmd) ,... ))
+  `((. (require "futils") :autocmd) ,...))
 
 
 ;;; Vimscript

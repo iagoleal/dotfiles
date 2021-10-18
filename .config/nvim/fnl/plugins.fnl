@@ -45,12 +45,15 @@
                  (set vim.g.iron_map_extended 1)
                  (require :plugins.iron)))
   (use "Olical/conjure"
-       :ft [:scheme :racket :clojure]
+       :ft [:scheme :racket :clojure :fennel]
        :config (fn []
                  (tset vim.g :conjure#client#scheme#stdio#command        "racket -il scheme")
-                 (tset vim.g :conjure#client#scheme#stdio#prompt_pattern "\n?[\"%w%-./_]*> ")))
-                 ; vim.g["conjure#filetype#fennel"] = 'conjure.client.fennel.stdio'
-                 ; vim.g["conjure#client#fennel#stdio#command"] = 'fennel'
+                 (tset vim.g :conjure#client#scheme#stdio#prompt_pattern "\n?[\"%w%-./_]*> ")
+                 (tset vim.g :conjure#filetype#fennel                    "conjure.client.fennel.stdio")))
+
+  ; Auto-layouting for Lisp parentheses
+  (use "gpanders/nvim-parinfer"
+       :branch "undo")
 
   ;; Fuzzy Search
   (use "gelguy/wilder.nvim"
@@ -70,10 +73,15 @@
 
   ;; Major utilities
   ; Add commands to (un)comment text objects
-  (use "terrortylor/nvim-comment"
-       :config #((. (require :nvim_comment) :setup) {:comment_empty false}))
+  ; (use "terrortylor/nvim-comment"
+  ;      :config #((. (require :nvim_comment) :setup) {:comment_empty false}))
+  (use "numToStr/Comment.nvim"
+       :config (fn []
+                 (let [setup (. (require :Comment) :setup)]
+                   (setup {:ignore "^$"}))))
   ; Edit surrounding objects (vimscript)
   (use "tpope/vim-surround")
+  ; (use "machakann/vim-sandwich")
   ; Improved matchparen and matchit
   (use "andymass/vim-matchup"
        :config (fn []
@@ -96,11 +104,11 @@
         :config (fn []
                     (set vim.g.easy_align_delimiters
                          {">" {:pattern "=>\\|->\\|>\\|→"
-                              :delimiter_align :r}
+                               :delimiter_align :r}
                           "<" {:pattern "<-\\|<=\\|<\\|←"
-                              :delimiter_align :l}
+                               :delimiter_align :l}
                           "r" {:pattern "{\\|}\\|,"     ; Lua / Haskell style Records
-                              :delimiter_align :r}})))
+                               :delimiter_align :r}})))
   ; Tree view buffer for undo history
   (use "mbbill/undotree")
 

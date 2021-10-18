@@ -36,7 +36,7 @@
         {:command ["racket" "-il" "scheme"]}}})
 
 (iron.core.set_config
-   {:preferred {:lua     "lua53"
+   {:preferred {:lua     "lua"
                 :fennel  "fennel"
                 :haskell "stack"
                 :python  "python"
@@ -50,18 +50,18 @@
 
 ;;; Set preferred repl to current buffers filetype
 (global iron-set-preferred (fn [repl]
-  (let [ft vim.bo.filetype]
-    (when (= repl nil)
-      (let [repls   (vim.tbl_map #(. $ 1)
-                                 (iron.core.list_definitions_for_ft ft))
-           prompts {}]
-        (table.sort repls) ; Sort repls in alphabetical order
-        ;; Construct the prompt for each repl
-        (each [i name (ipairs repls)]
-          (tset prompts i (string.format "%d. %s" i name)))
-      (local choice (vim.fn.inputlist prompts))
-      (set-forcibly! repl (. repls choice))))
-    (iron.core.set_config {:preferred {ft repl}}))))
+                            (let [ft vim.bo.filetype]
+                              (when (= repl nil)
+                                (let [repls   (vim.tbl_map #(. $ 1)
+                                                           (iron.core.list_definitions_for_ft ft))
+                                      prompts {}]
+                                  (table.sort repls) ; Sort repls in alphabetical order
+                                  ;; Construct the prompt for each repl
+                                  (each [i name (ipairs repls)]
+                                    (tset prompts i (string.format "%d. %s" i name)))
+                                 (local choice (vim.fn.inputlist prompts))
+                                 (set-forcibly! repl (. repls choice))))
+                              (iron.core.set_config {:preferred {ft repl}}))))
 
 (fn hidden [bufid showfn]
   (var was-hidden false)
@@ -81,16 +81,16 @@
       (vim.api.nvim_command (.. window "wincmd p"))))
 
 (global iron-split-open (fn [orientation]
-  (let [old-config iron.config.repl_open_cmd]
-    (if (= old-config orientation)
-      (iron.core.repl_for (vim.api.nvim_buf_get_option 0
-                                                       :filetype))
-      (let [old-visibility iron.config.visibility]
-        (iron.core.set_config {:repl_open_cmd orientation
-                              :visibility visibility.blink})
-        (iron.core.repl_for (vim.api.nvim_buf_get_option 0
-                                                         :filetype))
-        (iron.core.set_config {:visibility old-visibility}))))))
+                         (let [old-config iron.config.repl_open_cmd]
+                           (if (= old-config orientation)
+                             (iron.core.repl_for (vim.api.nvim_buf_get_option 0
+                                                                              :filetype))
+                             (let [old-visibility iron.config.visibility]
+                               (iron.core.set_config {:repl_open_cmd orientation
+                                                      :visibility visibility.blink})
+                               (iron.core.repl_for (vim.api.nvim_buf_get_option 0
+                                                                                :filetype))
+                               (iron.core.set_config {:visibility old-visibility}))))))
 
 ;---------------------
 ;;; Editor Commands
