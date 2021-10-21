@@ -29,7 +29,7 @@ function update {
   yay -Syu --noconfirm
   echo 'Updating NeoVim...'
   nvim \
-    +"autocmd User PackerComplete sleep 100m | write $PACKER_DUMP | quitall" \
+    +"autocmd User PackerComplete UpdateRemotePlugins | sleep 100m | write $PACKER_DUMP | quitall" \
     +PackerSync
   cat $PACKER_DUMP
   echo 'Updating Haskell Stack...'
