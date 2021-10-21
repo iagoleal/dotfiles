@@ -51,6 +51,27 @@ promptinit
 echo -e -n "\x1b[\x33 q"
 
 #----------------------------
+# Formatting
+#----------------------------
+TIMEFMT=$'
+command: %J
+=======================
+    Time Statistics
+=======================
+CPU:    \t%P
+  user  \t%*U s
+  system\t%*S s
+  total \t%*E s
+Memory:
+  avg shared  \t%X KB
+  avg unshared\t%D KB
+  total       \t%K KB
+  max memory  \t%M MB
+Page Faults:
+  disk: \t%F
+  other:\t%R'
+
+#----------------------------
 # Source additional configs
 #----------------------------
 # Custom aliases and functions
