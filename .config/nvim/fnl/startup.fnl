@@ -35,9 +35,11 @@
     command! -nargs=+ -complete=customlist,v:lua.require'packer'.loader_complete PackerLoad lua require('plugins').loader(<q-args>)")
 
 ; Auto reload plugins on startup
- (local plugins-path (.. (vim.fn.stdpath :config) "/fnl/plugins.fnl"))
- (augroup :PluginManager
-   (autocmd :BufWritePost plugins-path ":PackerCompile profile=true"))
+(local plugins-path (.. (vim.fn.stdpath :config) "/fnl/plugins.fnl"))
+(augroup :PluginManager
+  (autocmd :BufWritePost plugins-path ":PackerCompile profile=true")
+  (autocmd :User :PackerComplete ":UpdateRemotePlugins"))
+
 
  ;-----------------------
  ; Theme and colors
@@ -171,7 +173,10 @@
 ;; Indentation
 (option :autoindent)
 
-;; Indentation
+;; Session
+(option :sessionoptions append [:options :tabpages])
+
+;; Backup
 (option :backup)
 (option :backupdir  ["~/.vim/tmp" "~/.tmp" "~/tmp" "/var/tmp" "/tmp" "."])
 (option :backupskip ["/tmp/*" "/private/tmp/*"])

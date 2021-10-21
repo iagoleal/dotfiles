@@ -119,3 +119,6 @@
 
 ;;; Python
 (lspconfig.pyright.setup {:on_attach on-attach})
+
+; Expose local methods
+{: on-attach}
