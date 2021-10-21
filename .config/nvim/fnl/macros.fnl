@@ -19,6 +19,13 @@
 
 
 ;-----------------------------
+;;; General Fennel
+;-----------------------------
+
+(fn M.global-fn [name args body]
+  `(global ,name (fn ,args ,body)))
+
+;-----------------------------
 ;;; Setting options
 ;-----------------------------
 
@@ -51,9 +58,6 @@
                 ,...))
   (table.insert cmds '(vim.cmd "augroup END"))
   cmds)
-
-(fn M.autocmd [...]
-  `((. (require "futils") :autocmd) ,...))
 
 
 ;;; Vimscript
@@ -103,15 +107,20 @@
 ;; Package manager
 ;-------------------
 
-;;; Rewrite packer.use with a more fennelish syntax
-(fn M.packer-use [pkg ...]
+(fn vararg-to-opts [...]
   (let [cfg [...]
-        out [pkg]]
+        out {}]
     (assert (= 0 (math.fmod (length cfg) 2))
             "Expected even number of keywords/values pairs.")
     (for [i 1 (length cfg) 2]
       (tset out (. cfg i) (. cfg (+ i 1))))
-    `((. (require :packer) :use) ,out)))
+    out))
+
+;;; Rewrite packer.use with a more fennelish syntax
+(fn M.packer-use [pkg ...]
+  (let [opts (vararg-to-opts ...)]
+    (tset opts 1 pkg)
+    `((. (require :packer) :use) ,opts)))
 
 
 ;; export
