@@ -3,10 +3,10 @@
 (import-macros {: pug} :macros)
 (local fmt string.format)
 
-(set table.pack (fn [...]
+(fn table.pack [...]
   (let [t [...]]
     (tset t :n (select :# ...))
-    t)))
+    t))
 
 (set table.unpack unpack)
 
@@ -18,7 +18,7 @@
                       ,variable)))
 
 (fn aggregate-strings [data delimiter]
-"Turn a fennel sequence of strings into a comman-separated list."
+  "Turn a fennel sequence of strings into a comman-separated list."
   (match (type data)
     :string data
     :table  (table.concat data (or delimiter ","))
@@ -36,7 +36,7 @@
   out)
 
 (fn callable? [f]
-"Test whether its argument is callable."
+  "Test whether its argument is callable."
   (match (type f)
     :function true
     :table    (let [mt (getmetatable f)]
@@ -68,12 +68,13 @@
   (let [memo _G._mapped_functions]
     (table.insert memo f)
     (let [f-index (length memo)]
-      (string.format "lua _G['_mapped_functions'][%d]()" f-index))))
+      (string.format "_G['_mapped_functions'][%d]" f-index))))
+(tset M :save-function-as-global save-function-as-global)
 
 (fn process-rhs/autocmd [cmd]
   (match (type cmd)
     :string cmd
-    (where _ (callable? cmd)) (fmt "%s" (save-function-as-global cmd))
+    (where _ (callable? cmd)) (fmt "lua %s()" (save-function-as-global cmd))
     _       (error "Only strings, functions or callable table may be mapped.")))
 
 (fn M.autocmd [event pat cmd]
@@ -89,7 +90,7 @@
 (fn process-rhs/keymap [cmd]
   (match (type cmd)
     :string cmd
-    (where _ (callable? cmd)) (fmt "<cmd>%s<CR>"
+    (where _ (callable? cmd)) (fmt "<cmd>lua %s()<CR>"
                                    (save-function-as-global cmd))
     _       (error "Only strings, functions or callable table may be mapped.")))
 
@@ -116,7 +117,7 @@
 ;-------------------
 
 (fn predicate#one-to-true-based [f]
-"Convert an one based predicate (such as vim's) to a boolean based one."
+  "Convert an one based predicate (such as vim's) to a boolean based one."
   #(or (= (f $...) 1)
        (= (f $...) true)))
 
@@ -133,22 +134,22 @@
 ;-------------------
 
 (fn M.echohl [text hl]
-"Echo a message using a given highlight group"
+  "Echo a message using a given highlight group"
   (default-value! hl "")
   (let [emsg (vim.fn.escape text "\"")]
     (vim.api.nvim_echo [[emsg hl]] false [])))
 
 (fn M.echowarn [text]
-"Echo a message with a Warning highlight"
+  "Echo a message with a Warning highlight"
   (M.echohl text :WarningMsg))
 
 (fn M.echoerror [text]
-"Echo a message with an Error highlight.
+  "Echo a message with an Error highlight.
 (to stdout not stderr)"
   (M.echohl text :WarningMsg))
 
 (fn M.dump [...]
-"Pretty print information about lua objects."
+  "Pretty print information about lua objects."
   (let [input  (table.pack ...)
         output []]
     (for [i 1 input.n]
@@ -172,7 +173,7 @@
     (vim.cmd (table.concat hi " "))))
 
 (fn M.colorscheme [c]
-"Set nvim colorscheme."
+  "Set nvim colorscheme."
   (vim.cmd (.. "colorscheme " c)))
 
 (fn M.highlight [name ...]

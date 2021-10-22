@@ -14,25 +14,35 @@
                 : ex
                 : viml
                 : augroup
+                : def-command
                 : pug}
                :macros)
 
 (global dump ut.dump)
 (tset _G :force_require ut.force-require)
 
+(macro require-use [pkg ...]
+  `(. (require ,pkg) ,...))
+
 ;; Welcome to the XXI century
 (ex syntax :enable)
 
- ;;; Lazy load packer on file change
-(viml
-   "command! PackerInstall  lua require('plugins').install()
-    command! PackerUpdate   lua require('plugins').update()
-    command! PackerSync     lua require('plugins').sync()
-    command! PackerClean    lua require('plugins').clean()
-    command! -nargs=* PackerCompile  lua force_require('plugins').compile(<q-args>)
-    command! PackerStatus   lua require('plugins').status()
-    command! PackerProfile  lua require('plugins').profile_output()
-    command! -nargs=+ -complete=customlist,v:lua.require'packer'.loader_complete PackerLoad lua require('plugins').loader(<q-args>)")
+;;; Lazy load packer on file change.
+;; We adapt the built-in packer commands to use my plugin file.
+
+(def-command PackerInstall [] ((require-use :plugins :install)))
+(def-command PackerUpdate  [] ((require-use :plugins :update)))
+(def-command PackerClean   [] ((require-use :plugins :clean)))
+(def-command PackerStatus  [] ((require-use :plugins :status)))
+(def-command PackerProfile [] ((require-use :plugins :profile_output)))
+(def-command PackerSync    [] ((require-use :plugins :sync)))
+
+(def-command PackerCompile [?x]
+  (let [compiler (. (force_require :plugins) :compile)]
+    (compiler ?x)))
+
+(viml "command! -nargs=+ -complete=customlist,v:lua.require'packer'.loader_complete PackerLoad lua require('plugins').loader(<q-args>)")
+
 
 ; Auto reload plugins on startup
 (local plugins-path (.. (vim.fn.stdpath :config) "/fnl/plugins.fnl"))
@@ -167,8 +177,9 @@
 (option :smarttab false)
 
 
-(vim.cmd (string.format "command! -nargs=? SpacesPerTab :lua %s(tonumber(<f-args>))"
-                        (pug set-spaces-per-tab)))
+;; Expose it as a command
+(def-command SpacesPerTab [n]
+  (set-spaces-per-tab (tonumber n)))
 
 ;; Indentation
 (option :autoindent)

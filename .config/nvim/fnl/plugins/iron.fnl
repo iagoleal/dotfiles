@@ -1,4 +1,4 @@
-(import-macros {: viml : keymap : pug : global-fn} :macros)
+(import-macros {: viml : keymap : global-fn : def-command} :macros)
 
 ;--------------------------
 ;;;; Configure Iron REPL
@@ -96,8 +96,8 @@
 ;;; Editor Commands
 ;---------------------
 
-(vim.cmd (string.format "command! -nargs=? IronSetPreferred :lua %s(<f-args>)"
-                        (pug iron-set-preferred)))
+(def-command IronSetPreferred [...]
+  (iron-set-preferred ...))
 ;---------------------
 ;; Mappings
 ;---------------------
