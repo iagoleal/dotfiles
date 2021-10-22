@@ -59,11 +59,12 @@
      :ft [:scheme :racket :clojure :fennel]
      :config (fn []
                (tset vim.g :conjure#highlight#enabled                  true)
-               (test vim.g :conjure#log#hud#border                     "double")
-               ; (tset vim.g :conjure#highlight#enabled                :IncSearch)
+               (tset vim.g :conjure#log#hud#border                     "double")
+               (tset vim.g :conjure#highlight#enabled                  :IncSearch)
                (tset vim.g :conjure#client#scheme#stdio#command        "racket -il scheme")
                (tset vim.g :conjure#client#scheme#stdio#prompt_pattern "\n?[\"%w%-./_]*> ")
-               (tset vim.g :conjure#filetype#fennel                    "conjure.client.fennel.stdio")))
+               (tset vim.g :conjure#filetype#fennel                    "conjure.client.fennel.stdio")
+               (tset vim.g :conjure#client#fennel#stdio#command        "fennel")))
 
 ; Auto-layouting for Lisp parentheses
 (use "gpanders/nvim-parinfer")
