@@ -1,6 +1,5 @@
 (local M {})
 (local utils (require :utils))
-(import-macros {: pug} :macros)
 (local fmt string.format)
 
 (fn table.pack [...]

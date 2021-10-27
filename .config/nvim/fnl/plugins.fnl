@@ -12,6 +12,8 @@
                :max_jobs         9
                :profile          {:enable true}})
 
+(macro require-use [pkg ...]
+  `(. (require ,pkg) ,...))
 
 ;;; Initialize the just defined configuration
 (packer.init config)
@@ -90,8 +92,6 @@
 
 ;; Major utilities
 ; Add commands to (un)comment text objects
-; (use "terrortylor/nvim-comment"
-;      :config #((. (require :nvim_comment) :setup) {:comment_empty false}))
 (use "numToStr/Comment.nvim"
      :config (fn []
                (let [setup (. (require :Comment) :setup)]
@@ -142,7 +142,10 @@
 (use "amadeus/vim-convert-color-to"
      :cmd :ConvertColorTo)
 
+;-------------------------
 ;;; Filetype specific
+;-------------------------
+
 (use "lervag/vimtex"
      :ft :tex
      :config (fn []
@@ -158,6 +161,7 @@
 ;                (set vim.g.vim_markdown_math                 1)
 ;                (set vim.g.vim_markdown_frontmatter          1)
 ;                (set vim.g.vim_markdown_new_list_item_indent 4)))
+
 (use "neovimhaskell/haskell-vim"
       :ft :haskell
       :config (fn []
@@ -178,12 +182,17 @@
                 (set vim.g.haskell_indent_do               3)
                 (set vim.g.haskell_indent_in               0)
                 (set vim.g.haskell_indent_guard            2)))
+
 (use "JuliaEditorSupport/julia-vim")
+
 (use "bakpakin/fennel.vim"
      :ft :fennel)
+
 (use "wlangstroth/vim-racket")
+
 (use "tikhomirov/vim-glsl"
      :ft :glsl)
+
 (use "Julian/lean.nvim"
      :requires ["neovim/nvim-lspconfig"
                 "nvim-lua/plenary.nvim"])

@@ -106,7 +106,7 @@
   (let [fnl-func `(fn ,args ,...) ; Generate a function from macro's body
         nargs    (build-nargs args)
         arg-pass (build-passing-style nargs)
-        command-ex (string.format "command -nargs=%s %s lua %%s(%s)"
+        command-ex (string.format "command! -nargs=%s %s lua %%s(%s)"
                                   nargs
                                   (tostring name)
                                   arg-pass)]

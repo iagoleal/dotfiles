@@ -98,16 +98,20 @@ end
 
 local function diagnostics(bufnr)
   bufnr = bufnr or vim.fn.winbufnr(vim.g.statusline_winid)
-  if #vim.lsp.buf_get_clients(bufnr) == 0 then
+  if is_buffer_active(bufnr) then
+    if #vim.lsp.buf_get_clients(bufnr) == 0 then
+      return ""
+    end
+    local num = get_lsp_diagnostics(bufnr)
+    return table.concat({"%21("
+      , "%#StatusLspDiagnosticsError#"       , " E:" , num.errors   , " "
+      , "%#StatusLspDiagnosticsWarning#"     , " W:" , num.warnings , " "
+      , "%#StatusLspDiagnosticsInformation#" , " I:" , num.info     , " "
+      , "%#StatusLspDiagnosticsHint#"        , " H:" , num.hints    , " "
+      , "%)"})
+  else
     return ""
   end
-  local num = get_lsp_diagnostics(bufnr)
-  return table.concat({"%21("
-    , "%#StatusLspDiagnosticsError#"       , " E:" , num.errors   , " "
-    , "%#StatusLspDiagnosticsWarning#"     , " W:" , num.warnings , " "
-    , "%#StatusLspDiagnosticsInformation#" , " I:" , num.info     , " "
-    , "%#StatusLspDiagnosticsHint#"        , " H:" , num.hints    , " "
-    , "%)"})
 end
 
 function statusline()

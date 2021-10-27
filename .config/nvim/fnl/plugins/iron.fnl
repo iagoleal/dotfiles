@@ -83,14 +83,12 @@
 (global-fn iron-split-open [orientation]
   (let [old-config iron.config.repl_open_cmd]
     (if (= old-config orientation)
-      (iron.core.repl_for (vim.api.nvim_buf_get_option 0
-                                                       :filetype))
-      (let [old-visibility iron.config.visibility]
-        (iron.core.set_config {:repl_open_cmd orientation}
-                              :visibility visibility.blink)
-        (iron.core.repl_for (vim.api.nvim_buf_get_option 0
-                                                         :filetype))
-        (iron.core.set_config {:visibility old-visibility})))))
+        (iron.core.repl_for vim.bo.filetype)
+        (let [old-visibility iron.config.visibility]
+          (iron.core.set_config {:repl_open_cmd orientation}
+                                :visibility visibility.blink)
+          (iron.core.repl_for vim.bo.filetype)
+          (iron.core.set_config {:visibility old-visibility})))))
 
 ;---------------------
 ;;; Editor Commands

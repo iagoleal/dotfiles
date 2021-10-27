@@ -14,8 +14,7 @@
                 : ex
                 : viml
                 : augroup
-                : def-command
-                : pug}
+                : def-command}
                :macros)
 
 (global dump ut.dump)
@@ -44,7 +43,7 @@
 (viml "command! -nargs=+ -complete=customlist,v:lua.require'packer'.loader_complete PackerLoad lua require('plugins').loader(<q-args>)")
 
 
-; Auto reload plugins on startup
+;; Recompile plugins every time the plugin file changes.
 (local plugins-path (.. (vim.fn.stdpath :config) "/fnl/plugins.fnl"))
 (augroup :PluginManager
   (autocmd :BufWritePost plugins-path ":PackerCompile profile=true")
@@ -97,10 +96,7 @@
 (when (has? :termguicolors)
   (option :termguicolors)
   (option :background :dark)
-  (local colo :tokyonight)
-  (local (status err) (pcall colorscheme colo))
-  (when (not status)
-    (echoerror err)))
+  (colorscheme :tokyonight))
 
 ;------------------------
 ; Theme Options
@@ -119,7 +115,7 @@
                     :nbsp     "☻"
                     :extends  "⟩"
                     :precedes "⟨"})
- 
+
 (option :number)             ; show line numbers
 (option :relativenumber)     ; Show line numbers relative to current line
 
@@ -145,6 +141,8 @@
 
 (option :lazyredraw)             ; Don't redraw screen during macros or register operations
 
+(option :joinspaces false)
+
 ;; Search
 (option :incsearch)              ; search as characters are entered
 (option :hlsearch)               ; highlight matches
@@ -164,27 +162,27 @@
 (option :splitright)
 
 ;; Spaces and Tabs, settling the war
-(global set-spaces-per-tab (fn [n]
-                            (set vim.opt.tabstop n)
-                            (set vim.opt.softtabstop n)
-                            (set vim.opt.shiftwidth n)
-                            (set vim.opt.expandtab true)))
-
-(option :tabstop     2)
-(option :softtabstop 2)
-(option :shiftwidth  2)
-(option :expandtab)
-(option :smarttab false)
-
+(fn set-spaces-per-tab [n]
+  (set vim.opt.tabstop n)
+  (set vim.opt.softtabstop n)
+  (set vim.opt.shiftwidth n)
+  (set vim.opt.expandtab true))
 
 ;; Expose it as a command
 (def-command SpacesPerTab [n]
   (set-spaces-per-tab (tonumber n)))
 
+
+; By default, use 2 spaces to indent
+(set-spaces-per-tab 2)
+(option :smarttab false)
+
+
 ;; Indentation
 (option :autoindent)
 
 ;; Session
+; Remember options (local and global) and all tabpages in a single session file
 (option :sessionoptions append [:options :tabpages])
 
 ;; Backup
@@ -203,18 +201,15 @@
 (option :thesaurus append (.. (vim.fn.stdpath :config)
                               "/thesaurus/mthesaur.txt"))
 
-
 ;; Use ripgrep for :grep if possible
 (when (executable-exists? "rg")
   (option :grepprg    "rg --vimgrep --no-heading")
   (option :grepformat "%f:%l:%c:%m,%f:%l:%m"))
 
-
 ;---------------------
 ;-- Keymaps
 ;---------------------
 
-;; Set Thesaurus file
 (keymap "" "<Space>" "<Nop>"
         :silent true)
 (set vim.g.mapleader " ")
@@ -225,7 +220,7 @@
 ; Make CTRL-L also clean highlights
 (keymap :n "<C-l>" "<cmd>nohlsearch<CR><C-l>")
 
-;; Terminal mappins
+;; Terminal mappings
 ; Exit terminal with ESC
 (keymap :t "<Esc>" "<C-\\><C-n>")
 ; And use the default keybind to send ESC (This must be norecursive!!!)
@@ -243,9 +238,6 @@
 ; Close tab
 (keymap :n "<leader>tc" "<cmd>tabclose<CR>")
 
-; Spell checks previous mistake and corrects to first suggestion
-(keymap :i "<C-l>" "<c-g>u<Esc>[s1z=`]a<c-g>u")
-
 ; Search word under cursor on whole project
 (keymap :n "<M-*>" ":grep '<C-r><C-w>' **/*")
 
@@ -258,11 +250,6 @@
 ; While indenting/dedenting, stay on visual mode
 (keymap :x "<" "<gv")
 (keymap :x ">" ">gv")
-
-; Enter path to current file on command mode
-(keymap :c "<A-p>" "getcmdtype() == ':' ? expand('%:h').'/' : ''"
-        :expr true)
-
 
 ;;; Helper function for toggling a list
 (fn toggle-*list [win-type cmd-open cmd-close]
@@ -309,13 +296,24 @@
     ; Restore option to default
     (set vim.o.previewheight backup-previewheight)))
 
+(keymap :n "<C-w>[" "<cmd>vert wincmd ]<CR>")
 (keymap :n "<C-w>{" ptag-vertical)
 
 ;; Disable arrows
-(keymap "" "<Up>"    "")
-(keymap "" "<Down>"  "")
-(keymap "" "<Left>"  "")
-(keymap "" "<Right>" "")
+(each [_ key (ipairs ["<Up>" "<Down>" "<Left>" "<Right>"])]
+  (keymap "" key "")
+  (keymap "v" key ""))
+
+
+;;; Saner Insert mode mappings
+
+; Add an undo break point before deleting the entire lne
+(keymap :i "<C-U>" "<C-G>u<C-U>")
+
+; Spell check previous mistake and correct to first suggestion
+(keymap :i "<C-l>" "<c-g>u<Esc>[s1z=`]a<c-g>u")
+
+;;; Make our life easier on command mode
 
 ;; Emacs-like keybindings for cmd  mode
 ; back one word
@@ -323,6 +321,9 @@
 ; forward one word
 (keymap :c "<M-f>" "<S-Right>")
 
+; Enter path to current file on command mode
+(keymap :c "<M-x>p" "getcmdtype() == ':' ? expand('%:h').'/' : ''"
+        :expr true)
 
 ;; Plugin related
 
@@ -335,18 +336,14 @@
 
 ; Toggle Color Highlight
 (keymap :n "<leader>cc" ":ColorizerToggle<CR>")
-; Toggle Rainbow Parentheses
-(keymap :n "<leader>cr" ":RainbowToggle<CR>")
 
 ; FZF
 (keymap :n "<leader>fe" ":FZFFiles<cr>")
 (keymap :n "<leader>fb" ":FZFBuffers<cr>")
 
 ; Easy Align
-(keymap :n "<leader>a" "<Plug>(EasyAlign)"
-        :noremap false)
-(keymap :x "<leader>a" "<Plug>(EasyAlign)"
-        :noremap false)
+(keymap :n "<leader>a" "<Plug>(EasyAlign)" :noremap false)
+(keymap :x "<leader>a" "<Plug>(EasyAlign)" :noremap false)
 
 ; UndoTree
 (keymap :n "<leader>tu" "<cmd>UndotreeToggle<CR>")
@@ -370,7 +367,9 @@
            "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=0")
   (autocmd :FileType
            [:lua :fennel]
-           "nnoremap <buffer> <F12> :wa<cr>:!love src &<cr>"))
+           #(if (= (vim.fn.isdirectory "src") 1)
+                (keymap :n "<F12>" ":wa<cr>:!love src &<cr>")
+                (keymap :n "<F12>" ":wa<cr>:!love . &<cr>"))))
 
 ;-----------------------------
 ;-- Disable Built-in plugins
