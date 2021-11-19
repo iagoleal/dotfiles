@@ -1,3 +1,5 @@
+require('impatient').enable_profile()
+
 local utils = require "utils"
 local echohl = utils.echohl
 
@@ -26,6 +28,9 @@ end
 bootstrap("packer.nvim", "https://github.com/wbthomason/packer.nvim")
 -- Ensure hotpot is installed
 bootstrap("hotpot.nvim", "https://github.com/rktjmp/hotpot.nvim", false)
+
+-- Use lua based ft (from plugin)
+vim.g.did_load_filetypes = 1
 
 -- Load real config written in Fennel
 require "hotpot"

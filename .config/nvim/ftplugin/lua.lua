@@ -23,7 +23,6 @@ end
 -- This mimics how require internally works.
 local function include_paths(fname, ext)
   ext = ext or "lua"
-  local sep = dir_separator()
   local paths = string.gsub(package.path, '%?', fname)
   for path in split(paths, "%;") do
     if vim.fn.filereadable(path) == 1 then

@@ -83,7 +83,6 @@ function tabname(tabnr, name)
     local tabpages = vim.api.nvim_list_tabpages()
     tpage = tabpages[tabnr]
   end
-  print(tabnr, tpage)
   if name == nil then
     vim.api.nvim_tabpage_del_var(tpage, 'title')
   else

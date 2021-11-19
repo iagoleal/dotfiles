@@ -25,9 +25,19 @@
 ;; The plugin manager itself
 (use "wbthomason/packer.nvim"
       :opt true)
+
 ;; Fennel support for nvim
 (use "rktjmp/hotpot.nvim"
+      :branch "source-cmd"
       :config #(require :hotpot))
+
+;; Faster filetype plugin
+(use "nathom/filetype.nvim")
+;; Cache lua modules
+(use "lewis6991/impatient.nvim")
+;; Profile startup time
+(use "dstein64/vim-startuptime")
+
 ;; Session Management
 (use "rmagatti/auto-session")
 
@@ -46,6 +56,14 @@
 ; Query LSP for tag files.
 ; It Allows me to use built-in tag commands with LSP.
 (use "weilbith/nvim-lsp-smag")
+(use "jose-elias-alvarez/null-ls.nvim"
+     :disable true
+     :requires ["nvim-lua/plenary.nvim" "neovim/nvim-lspconfig"]
+     :config #(let [null-ls   (require :null-ls)
+                    lspconfig (require :lspconfig)
+                    on-attach (require-use :lsp :on-attach)]
+                (null-ls.config {:sources [null-ls.builtins.formatting.fnlfmt]})
+                (lspconfig.null-ls.setup {:on_attach on-attach})))
 ;; Specific for Ubuntu WSL
 (when vim.env.WSLENV
   (use "kabouzeid/nvim-lspinstall"
@@ -193,9 +211,17 @@
 (use "tikhomirov/vim-glsl"
      :ft :glsl)
 
-(use "Julian/lean.nvim"
-     :requires ["neovim/nvim-lspconfig"
-                "nvim-lua/plenary.nvim"])
+(use "nvim-lua/plenary.nvim")
+; (use "Julian/lean.nvim"
+;      :requires ["neovim/nvim-lspconfig"
+;                 "nvim-lua/plenary.nvim"])
+
+(use "edwinb/idris2-vim")
+
+(use "Isti115/agda.nvim"
+     :requires "nvim-lua/plenary.nvim")
+
+; (use "elkowar/yuck.vim")
 
 ;; Themes
 (use "folke/tokyonight.nvim")

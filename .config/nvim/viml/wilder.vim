@@ -1,11 +1,13 @@
 " Only use wilder for command mode
 call wilder#setup({'modes': [':']})
 
+
+
 " Set the pipelines to use fuzzy finders
 call wilder#set_option('pipeline', [
 \ wilder#branch(
 \   wilder#python_file_finder_pipeline({
-\     'file_command': ['rg', '--files'],
+\     'file_command': {_, arg -> arg[0] ==# '.' ? ['rg', '--files', '--hidden'] : ['rg', '--files']},
 \     'dir_command': ['find', '.', '-type', 'd', '-printf', '%P\n'],
 \     'filters': ['fuzzy_filter', 'difflib_sorter'],
 \   }),

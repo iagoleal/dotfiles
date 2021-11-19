@@ -24,7 +24,7 @@
   `(. (require ,pkg) ,...))
 
 ;; Welcome to the XXI century
-(ex syntax :enable)
+; (ex syntax :enable)
 
 ;;; Lazy load packer on file change.
 ;; We adapt the built-in packer commands to use my plugin file.
@@ -49,10 +49,9 @@
   (autocmd :BufWritePost plugins-path ":PackerCompile profile=true")
   (autocmd :User :PackerComplete ":UpdateRemotePlugins"))
 
-
- ;-----------------------
- ; Theme and colors
- ;-----------------------
+;-----------------------
+; Theme and colors
+;-----------------------
 
  ;;; Special Highlights
 (fn personal-highlights []
@@ -215,16 +214,31 @@
 (set vim.g.mapleader " ")
 ; (set vim.g.maplocalleader "\\")
 
-; Rebind Y on normal mode to copy until end of line
-(keymap :n "Y" "y$")
-; Make CTRL-L also clean highlights
-(keymap :n "<C-l>" "<cmd>nohlsearch<CR><C-l>")
+;;; Redefined behaviour
+;;; Modifications on vim's traditional keybidings
+;;; for ergonomic reasons.
 
 ;; Terminal mappings
 ; Exit terminal with ESC
 (keymap :t "<Esc>" "<C-\\><C-n>")
 ; And use the default keybind to send ESC (This must be norecursive!!!)
 (keymap :t "<C-\\><C-n>" "<Esc>")
+
+; Rebind Y on normal mode to copy until end of line
+(keymap :n "Y" "y$")
+; Make CTRL-L also clean highlights
+(keymap :n "<C-l>" "<cmd>nohlsearch<CR><C-l>")
+
+; While indenting/dedenting, stay on visual mode
+(keymap :x "<" "<gv")
+(keymap :x ">" ">gv")
+
+;;; Normal mode additional behaviour
+
+; All this ctrl-w bla is making my pinky sore...
+; Let's try suing a leader key instead to move
+; the hard work to the thumb.
+(keymap :n "<leader>w" "<C-w>")
 
 ; Disable search highlighting (until next search)
 (keymap :n "<leader>/" "<cmd>nohlsearch<CR>")
@@ -243,13 +257,8 @@
 
 ; Search visual selection
 (keymap :v "*" "y/\\V<C-R>=escape(@\",'/\\')<CR><CR>")
-
 ; Search visual selection text on whole project
 (keymap :v "<M-*>" "y:grep '<C-R>=escape(@\",'/\\')<CR>' **/*")
-
-; While indenting/dedenting, stay on visual mode
-(keymap :x "<" "<gv")
-(keymap :x ">" ">gv")
 
 ;;; Helper function for toggling a list
 (fn toggle-*list [win-type cmd-open cmd-close]
@@ -283,7 +292,6 @@
 (unimpaired :l :l) ; Location list
 (unimpaired :b :b) ; Buffers
 
-
 ;; Open :ptag on a vertical split (Like "<C-w>}")
 (fn ptag-vertical []
   (let [backup-previewheight vim.o.previewheight        ; The current/default previewheight
@@ -298,6 +306,10 @@
 
 (keymap :n "<C-w>[" "<cmd>vert wincmd ]<CR>")
 (keymap :n "<C-w>{" ptag-vertical)
+
+;; Scroll the preview window
+(keymap :n "<M-e>" "<C-w>P<C-e><C-w>p")
+(keymap :n "<M-y>" "<C-w>P<C-y><C-w>p")
 
 ;; Disable arrows
 (each [_ key (ipairs ["<Up>" "<Down>" "<Left>" "<Right>"])]
