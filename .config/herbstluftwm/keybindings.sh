@@ -58,6 +58,10 @@ herbstclient keybind XF86Tools              spawn "$HOME/.bin/dmenu-config-files
 
 # fn+4 == XF84Sleep
 
+# Dunst
+herbstclient keybind $Alt-apostrophe spawn dunstctl close
+herbstclient keybind $Alt-Shift-apostrophe spawn dunstctl close-all
+
 # Window manager specific
 
 #System-wide important stuff
