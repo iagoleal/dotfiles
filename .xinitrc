@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Force dpi to 96
+xrandr --dpi 96
+
 # Define folders and files to read
 userresources=$HOME/.Xresources
 usermodmap=$HOME/.Xmodmap
@@ -24,7 +27,7 @@ fi
 # Options are:
 # Capslock key function as Esc
 # Classic Control-Alt-Backspace command to kill X
-setxkbmap -model thinkpad -layout br -option "caps:swapescape" -option "terminate:ctrl_alt_bksp"
+# setxkbmap -model thinkpad -layout br -option "caps:swapescape" -option "terminate:ctrl_alt_bksp"
 
 # Run the custom changes AFTER selecting the keyboard
 if [ -f $usermodmap ]; then
