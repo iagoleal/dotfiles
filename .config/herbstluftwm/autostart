@@ -55,7 +55,7 @@ herbstclient set focus_follows_mouse 1
 # Set Wallpaper to my beloved duck image
 month=$(date +'%m')
 day=$(date +'%d')
-if [ $month -ge 11 -a $day -ge 15 ] || [ $month -le 1 -a $day -le 6 ]
+if [ $month -ge 11 -a $day -ge 15 ] || [ $month -ge 12 ] || [ $month -le 1 -a $day -le 6 ]
 then
     feh --bg-scale ~/Pictures/Wallpapers/xmas/duck_xmas.png
 else

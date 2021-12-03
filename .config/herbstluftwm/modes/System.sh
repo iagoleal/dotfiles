@@ -18,4 +18,4 @@ herbstclient keybind 5 chain , spawn sh "$normalMode" \
 herbstclient keybind 6 chain , spawn sh "$normalMode" \
                              , spawn "$HOME/.bin/system" "poweroff"
 
-herbstclient keybind Escape spawn bash "$normalMode"
+herbstclient keybind Escape spawn sh "$normalMode"
