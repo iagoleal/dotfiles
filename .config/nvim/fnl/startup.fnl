@@ -3,7 +3,6 @@
 
 (local {: autocmd
         : colorscheme
-        : echoerror
         : executable-exists?
         : has?
         : highlight
@@ -23,12 +22,8 @@
 (macro require-use [pkg ...]
   `(. (require ,pkg) ,...))
 
-;; Welcome to the XXI century
-; (ex syntax :enable)
-
 ;;; Lazy load packer on file change.
-;; We adapt the built-in packer commands to use my plugin file.
-
+;; Adapt the built-in packer commands to use my plugin file.
 (def-command PackerInstall [] ((require-use :plugins :install)))
 (def-command PackerUpdate  [] ((require-use :plugins :update)))
 (def-command PackerClean   [] ((require-use :plugins :clean)))
@@ -224,11 +219,6 @@
 ; And use the default keybind to send ESC (This must be norecursive!!!)
 (keymap :t "<C-\\><C-n>" "<Esc>")
 
-; Rebind Y on normal mode to copy until end of line
-(keymap :n "Y" "y$")
-; Make CTRL-L also clean highlights
-(keymap :n "<C-l>" "<cmd>nohlsearch<CR><C-l>")
-
 ; While indenting/dedenting, stay on visual mode
 (keymap :x "<" "<gv")
 (keymap :x ">" ">gv")
@@ -372,7 +362,7 @@
            :haskell
            "nnoremap <buffer> <space>hh <cmd>Hoogle <C-r><C-w><CR>")
   (autocmd :FileType
-           [:markdown :latex :gitcommit]
+           [:markdown :tex :latex :gitcommit]
            "setlocal spell")
   (autocmd :FileType
            :make

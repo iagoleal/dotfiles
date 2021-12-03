@@ -28,7 +28,6 @@
 
 ;; Fennel support for nvim
 (use "rktjmp/hotpot.nvim"
-      :branch "source-cmd"
       :config #(require :hotpot))
 
 ;; Faster filetype plugin
@@ -43,11 +42,12 @@
 
 ;; Treesitter
 (use "nvim-treesitter/nvim-treesitter"
-      :branch "0.5-compat"
       :run    ":TSUpdate"
       :config #(require :plugins.treesitter))
 ; Semantically based text objects (such as functions, classes etc.)
 (use "nvim-treesitter/nvim-treesitter-textobjects"
+     :requires "nvim-treesitter/nvim-treesitter")
+(use "RRethy/nvim-treesitter-textsubjects"
      :requires "nvim-treesitter/nvim-treesitter")
 
 ;; LSP
@@ -56,14 +56,7 @@
 ; Query LSP for tag files.
 ; It Allows me to use built-in tag commands with LSP.
 (use "weilbith/nvim-lsp-smag")
-(use "jose-elias-alvarez/null-ls.nvim"
-     :disable true
-     :requires ["nvim-lua/plenary.nvim" "neovim/nvim-lspconfig"]
-     :config #(let [null-ls   (require :null-ls)
-                    lspconfig (require :lspconfig)
-                    on-attach (require-use :lsp :on-attach)]
-                (null-ls.config {:sources [null-ls.builtins.formatting.fnlfmt]})
-                (lspconfig.null-ls.setup {:on_attach on-attach})))
+
 ;; Specific for Ubuntu WSL
 (when vim.env.WSLENV
   (use "kabouzeid/nvim-lspinstall"
@@ -112,8 +105,7 @@
 ; Add commands to (un)comment text objects
 (use "numToStr/Comment.nvim"
      :config (fn []
-               (let [setup (. (require :Comment) :setup)]
-                 (setup {:ignore "^$"}))))
+               ((require-use :Comment :setup) {:ignore "^$"})))
 ; Edit surrounding objects (vimscript)
 (use "tpope/vim-surround")
 ; (use "machakann/vim-sandwich")
@@ -211,7 +203,6 @@
 (use "tikhomirov/vim-glsl"
      :ft :glsl)
 
-(use "nvim-lua/plenary.nvim")
 ; (use "Julian/lean.nvim"
 ;      :requires ["neovim/nvim-lspconfig"
 ;                 "nvim-lua/plenary.nvim"])

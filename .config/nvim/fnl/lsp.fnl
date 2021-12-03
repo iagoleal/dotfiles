@@ -24,6 +24,7 @@
     (when (capable? client :type_definition)
       (bmap :n "<leader>D" vim.lsp.buf.type_definition))
     (bmap :n "<leader>rn" vim.lsp.buf.rename)
+    (bmap :n "<leader>ca" vim.lsp.buf.code_action)
     (bmap :n "gr"         vim.lsp.buf.references)
     (bmap :n "<leader>e"  vim.lsp.diagnostic.show_line_diagnostics)
     (bmap :n "[d"         vim.lsp.diagnostic.goto_prev)
@@ -82,16 +83,18 @@
 
 
 ;;; Haskell
+
 (lspconfig.hls.setup
   {:on_attach on-attach
    :root_dir (fn [fname]
                (local util lspconfig.util)
-               (local x ((util.root_pattern :hadrian) fname))
-               (when x
-                 (lua "return x"))
-               ((util.root_pattern :*.cabal :stack.yaml
-                                   :cabal.project
-                                   :package.yaml :hie.yaml) fname))})
+               ((util.root_pattern :*.cabal :stack.yaml :cabal.project :package.yaml :hie.yaml :*.hs) fname))
+   :settings
+     {:haskell
+        :plugin
+          :wingman
+            {:config {:proofstate_styling true
+                      :timeout_duration 5}}}})
 
 ;;; Julia
 (lspconfig.julials.setup

@@ -13,10 +13,10 @@
   ;; Scope based text sleection
   :incremental_selection
     {:enable  true
-     :keymaps {:init_selection    "gnn"
-               :node_incremental  "grn"
-               :scope_incremental "grc"
-               :node_decremental  "grm"}}
+     :keymaps {:init_selection    "<M-v>"
+               :node_incremental  "<M-j>"
+               :scope_incremental "<CR>"
+               :node_decremental  "<M-k>"}}
   ;; Use Treesitter for indentation
   :indent
     {:enable true}
@@ -53,4 +53,8 @@
                 "[]" "@class.outer"}}
      :lsp_interop {:enable true
                    :peek_definition_code {"<leader>pf" "@function.outer"
-                                          "<leader>pc" "@class.outer"}}}})
+                                          "<leader>pc" "@class.outer"}}}
+  :textsubjects
+    {:enable true
+     :keymaps {"<CR>" "textsubjects-smart"
+               ";"    "textsubjects-container-outer"}}})

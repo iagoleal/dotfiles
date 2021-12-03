@@ -63,22 +63,28 @@
        (set-forcibly! repl (. repls choice))))
     (iron.core.set_config {:preferred {ft repl}})))
 
+; (fn hidden [bufid showfn]
+;   (var was-hidden false)
+;   (var window (vim.fn.bufwinnr bufid))
+;   (when (= window -1)
+;     (set was-hidden true)
+;     (set window (vim.fn.win_id2win (showfn))))
+;   (values window was-hidden))
+
 (fn hidden [bufid showfn]
-  (var was-hidden false)
-  (var window (vim.fn.bufwinnr bufid))
-  (when (= window -1)
-    (set was-hidden true)
-    (set window (vim.fn.win_id2win (showfn))))
-  (values window was-hidden))
+  (let [window (vim.fn.bufwinnr bufid)]
+    (if (= window -1)
+        (values (vim.fn.win_id2win (showfn)) true)
+        (values window false))))
 
 (fn visibility.blink [bufid showfn]
   (var (window was-hidden) (hidden bufid showfn))
   (if (not was-hidden)
       (do
-        (vim.api.nvim_command (.. window "wincmd c"))
-        (set window (vim.fn.win_id2win (showfn)))
-        (vim.api.nvim_command (.. window "wincmd p")))
-      (vim.api.nvim_command (.. window "wincmd p"))))
+        (vim.cmd (.. window "wincmd c"))
+        (local repl-winnr (vim.fn.win_id2win (showfn)))
+        (vim.cmd (.. repl-winnr "wincmd p")))
+      (vim.cmd (.. window "wincmd p"))))
 
 (global-fn iron-split-open [orientation]
   (let [old-config iron.config.repl_open_cmd]

@@ -54,8 +54,11 @@
 
 ;;; Autocommands
 (fn M.augroup [name ...]
+  (local opening (match (get-literal-type name)
+                   :string (.. "augroup " name)
+                   _       `(.. "augroup " ,name)))
   (local cmds `(do
-                (vim.cmd (.. "augroup " ,name))
+                (vim.cmd ,opening)
                 (vim.cmd "autocmd!")
                 ,...))
   (table.insert cmds '(vim.cmd "augroup END"))
