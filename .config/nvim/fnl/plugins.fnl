@@ -207,14 +207,15 @@
 ;      :requires ["neovim/nvim-lspconfig"
 ;                 "nvim-lua/plenary.nvim"])
 
-(use "edwinb/idris2-vim")
 
-(use "Isti115/agda.nvim"
-     :requires "nvim-lua/plenary.nvim")
 
 ; (use "elkowar/yuck.vim")
 
+(use "~/Code/nvim/doctor"
+     :cmd ":TalkToTheDoctor")
+
 ;; Themes
+(use "rktjmp/lush.nvim")
 (use "folke/tokyonight.nvim")
 
 ;; Return packer itself to allow chaining commands

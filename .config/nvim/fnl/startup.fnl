@@ -79,6 +79,7 @@
              :guifg   "Orange"
              :gui     "Underline"
              :guisp   "Orange")
+  (vim.cmd "highlight link LspCodeLens WarningMsg")
   ;; Reload color dependent files
   (ex runtime! "plugin/statusline.lua")
   (ex runtime! "plugin/tabline.lua"))

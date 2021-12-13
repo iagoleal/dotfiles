@@ -1,5 +1,10 @@
 (local lspconfig (require :lspconfig))
-(local {: keymap-buffer}  (require :futils))
+(local {: keymap-buffer : autocmd}  (require :futils))
+
+(import-macros {: augroup} :macros)
+
+(macro require-use [pkg ...]
+  `(. (require ,pkg) ,...))
 
 (fn capable? [client capability]
   (. client.resolved_capabilities capability))
@@ -7,29 +12,39 @@
 ;;; Only map keybinds after attaching LSP
 (fn on-attach [client bufnr]
   (let [bmap (fn [mode keys cmd ...]
-              (keymap-buffer bufnr mode keys cmd :silent true ...))]
+               (keymap-buffer bufnr mode keys cmd :silent true ...))]
 
     ; Use lsp omnifunc for completion
-    (tset (. vim.bo bufnr) :omnifunc "v:lua.vim.lsp.omnifunc")
+    (tset vim.bo bufnr :omnifunc "v:lua.vim.lsp.omnifunc")
 
     ;; Mappings
+    (bmap :n "K"          vim.lsp.buf.hover)
+    (bmap :n "<C-k>"      vim.lsp.buf.signature_help)
+    (bmap :n "gr"         vim.lsp.buf.references)
     (bmap :n "gD"         vim.lsp.buf.declaration)
     (bmap :n "gd"         vim.lsp.buf.definition)
-    (bmap :n "K"          vim.lsp.buf.hover)
     (bmap :n "g<C-d>"     vim.lsp.buf.implementation)
-    (bmap :n "<C-k>"      vim.lsp.buf.signature_help)
     (bmap :n "<leader>wa" vim.lsp.buf.add_workspace_folder)
     (bmap :n "<leader>wr" vim.lsp.buf.remove_workspace_folder)
     (bmap :n "<leader>wl" #(print (vim.inspect (vim.lsp.buf.list_workspace_folders))))
+    (bmap :n "<leader>rn" vim.lsp.buf.rename)
+
     (when (capable? client :type_definition)
       (bmap :n "<leader>D" vim.lsp.buf.type_definition))
-    (bmap :n "<leader>rn" vim.lsp.buf.rename)
-    (bmap :n "<leader>ca" vim.lsp.buf.code_action)
-    (bmap :n "gr"         vim.lsp.buf.references)
-    (bmap :n "<leader>e"  vim.lsp.diagnostic.show_line_diagnostics)
-    (bmap :n "[d"         vim.lsp.diagnostic.goto_prev)
-    (bmap :n "]d"         vim.lsp.diagnostic.goto_next)
-    (bmap :n "<leader>dq" vim.lsp.diagnostic.set_loclist)
+    (when (capable? client :code_action)
+      (bmap :n "<leader>ca" vim.lsp.buf.code_action))
+    (when (capable? client :code_lens)
+      (bmap :n "<leader>cl" vim.lsp.codelens.run)
+      (augroup :LspCodeLens
+        (autocmd [:BufEnter :CursorHold :InsertLeave] "<buffer>" vim.lsp.codelens.refresh))
+      (vim.lsp.codelens.refresh))
+
+    ;; Diagnostics
+    (bmap :n "<leader>e"  vim.diagnostic.open_float)
+    (bmap :n "[d"         vim.diagnostic.goto_prev)
+    (bmap :n "]d"         vim.diagnostic.goto_next)
+    (bmap :n "<leader>dq" vim.diagnostic.setloclist)
+
     ;; Set some keybinds conditional on server capabilities
     (if (capable? client :document_range_formatting)
         (bmap :n "<leader>=" vim.lsp.buf.range_formatting)
@@ -37,12 +52,11 @@
         (bmap :n "<leader>=" vim.lsp.buf.formatting))))
 
 ;; Configure diagnostics (for all servers)
-(tset vim.lsp.handlers :textDocument/publishDiagnostics
-      (vim.lsp.with vim.lsp.diagnostic.on_publish_diagnostics
-                    {:underline        false
-                     :virtual_text     false
-                     :update_in_insert false
-                     :severity_sort    true}))
+(vim.diagnostic.config {:virtual_text     false
+                        :signs            true
+                        :underline        false
+                        :update_in_insert false
+                        :severity_sort    true})
 
 ;--------------------------
 ; Server specific setups
@@ -83,7 +97,6 @@
 
 
 ;;; Haskell
-
 (lspconfig.hls.setup
   {:on_attach on-attach
    :root_dir (fn [fname]
@@ -91,10 +104,10 @@
                ((util.root_pattern :*.cabal :stack.yaml :cabal.project :package.yaml :hie.yaml :*.hs) fname))
    :settings
      {:haskell
-        :plugin
-          :wingman
+        {:plugin
+          {:wingman
             {:config {:proofstate_styling true
-                      :timeout_duration 5}}}})
+                      :timeout_duration 5}}}}}})
 
 ;;; Julia
 (lspconfig.julials.setup
