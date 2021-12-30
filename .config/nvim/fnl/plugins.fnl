@@ -57,10 +57,19 @@
 ; It Allows me to use built-in tag commands with LSP.
 (use "weilbith/nvim-lsp-smag")
 
-;; Specific for Ubuntu WSL
-(when vim.env.WSLENV
-  (use "kabouzeid/nvim-lspinstall"
-       :requires "neovim/nvim-lspconfig"))
+;;; Completion
+(use "hrsh7th/nvim-cmp"
+  :config #(require :plugins.cmp))
+(use "hrsh7th/cmp-nvim-lsp")
+(use "hrsh7th/cmp-cmdline")
+(use "hrsh7th/cmp-path")
+(use "saadparwaiz1/cmp_luasnip")
+(use "L3MON4D3/LuaSnip")
+
+(use "nvim-telescope/telescope-fzf-native.nvim"
+     :run "make")
+(use "tzachar/cmp-fuzzy-path"
+     :requires ["hrsh7th/nvim-cmp" "hrsh7th/cmp-path" "tzachar/fuzzy.nvim"])
 
 ;; REPL
 (use "hkupty/iron.nvim"
@@ -88,6 +97,7 @@
 ;; so there is some headache when updating.
 (use "gelguy/wilder.nvim"
      ; In case of errors, disable with "call wilder#disable()"
+     :disable true
      :event    [:CursorHold :CmdlineEnter]
      :rocks    ["luarocks-fetch-gitrec" "pcre2"]
      :requires ["romgrk/fzy-lua-native"]
@@ -207,7 +217,10 @@
 ;      :requires ["neovim/nvim-lspconfig"
 ;                 "nvim-lua/plenary.nvim"])
 
+; (use "edwinb/idris2-vim")
 
+; (use "Isti115/agda.nvim"
+;      :requires "nvim-lua/plenary.nvim")
 
 ; (use "elkowar/yuck.vim")
 

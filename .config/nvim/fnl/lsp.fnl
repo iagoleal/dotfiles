@@ -1,5 +1,6 @@
 (local lspconfig (require :lspconfig))
 (local {: keymap-buffer : autocmd}  (require :futils))
+(local util lspconfig.util)
 
 (import-macros {: augroup} :macros)
 
@@ -57,6 +58,12 @@
                         :underline        false
                         :update_in_insert false
                         :severity_sort    true})
+;;; Completion plugin
+(local cmp-capabilities
+  (let [default-capabilities (vim.lsp.protocol.make_client_capabilities)]
+    ((require-use :cmp_nvim_lsp :update_capabilities) default-capabilities)))
+
+(set vim.o.completeopt "menuone,longest")
 
 ;--------------------------
 ; Server specific setups
@@ -72,6 +79,7 @@
 
   (lspconfig.sumneko_lua.setup
     {:on_attach on-attach
+     :capabilities cmp-capabilities
      :cmd [sumneko-binary "-E" (.. sumneko-root-path "/main.lua")]
      :settings
        {:Lua
@@ -99,6 +107,7 @@
 ;;; Haskell
 (lspconfig.hls.setup
   {:on_attach on-attach
+   :capabilities cmp-capabilities
    :root_dir (fn [fname]
                (local util lspconfig.util)
                ((util.root_pattern :*.cabal :stack.yaml :cabal.project :package.yaml :hie.yaml :*.hs) fname))
@@ -113,24 +122,64 @@
 (lspconfig.julials.setup
   {:on_attach on-attach
    :autostart true
-   :on_new_config (fn [new-config new-root-dir]
-                    (local server-path "/home/iago/.julia/packages/LanguageServer/JrIEf/src")
-                    (local cmd ["julia"
-                                (.. "--project=" server-path)
-                                "--startup-file=no"
-                                "--history-file=no"
-                                "-e"
-                                "using Pkg;
-                                 Pkg.instantiate()
-                                 using LanguageServer; using SymbolServer;
-                                 depot_path = get(ENV, \"JULIA_DEPOT_PATH\", \"\")
-                                 project_path = dirname(something(Base.current_project(pwd()), Base.load_path_expand(LOAD_PATH[2])))
-                                 # Make sure that we only load packages from this environment specifically.
-                                 @info \"Running language server\" env=Base.load_path()[1] pwd() project_path depot_path
-                                 server = LanguageServer.LanguageServerInstance(stdin, stdout, project_path, depot_path);
-                                 server.runlinter = true;
-                                 run(server);"])
-                    (set new-config.cmd cmd))})
+   :root_dir (fn [fname]
+               (or ((lspconfig.util.root_pattern "Project.toml") fname)
+                   (util.find_git_ancestor fname)))
+   :cmd  [:julia
+          :--startup-file=no
+          :--history-file=no
+          :-e
+          "    # Load LanguageServer.jl: attempt to load from ~/.julia/environments/nvim-lspconfig
+          # with the regular load path as a fallback
+          ls_install_path = joinpath(
+                                     get(DEPOT_PATH, 1, joinpath(homedir(), \".julia\")),
+                                     \"environments\", \"nvim-lspconfig\"
+                                     )
+          pushfirst!(LOAD_PATH, ls_install_path)
+          using LanguageServer
+          popfirst!(LOAD_PATH)
+          depot_path = get(ENV, \"JULIA_DEPOT_PATH\", \"\")
+          project_path = let
+          dirname(something(
+                            ## 1. Finds an explicitly set project (JULIA_PROJECT)
+                            Base.load_path_expand((
+                                                   p = get(ENV, \"JULIA_PROJECT\", nothing);
+                                                   p === nothing ? nothing : isempty(p) ? nothing : p
+                                                   )),
+                            ## 2. Look for a Project.toml file in the current working directory,
+                            ##    or parent directories, with $HOME as an upper boundary
+                            Base.current_project(),
+                            ## 3. First entry in the load path
+                            get(Base.load_path(), 1, nothing),
+                            ## 4. Fallback to default global environment,
+                            ##    this is more or less unreachable
+                            Base.load_path_expand(\"@v#.#\"),
+                            ))
+          end
+          @info \"Running language server\" VERSION pwd() project_path depot_path
+          server = LanguageServer.LanguageServerInstance(stdin, stdout, project_path, depot_path)
+          server.runlinter = true
+          run(server) "]
+   :single_file_support true
+   :filetypes [:julia]})
+   ; :on_new_config (fn [new-config new-root-dir]
+   ;                  ; (local server-path "/home/iago/.julia/packages/LanguageServer/JrIEf/src")
+   ;                  (local cmd ["julia"
+   ;                              (.. "--project=" server-path)
+   ;                              "--startup-file=no"
+   ;                              "--history-file=no"
+   ;                              "-e"
+   ;                              "using Pkg;
+   ;                               Pkg.instantiate()
+   ;                               using LanguageServer; using SymbolServer;
+   ;                               depot_path = get(ENV, \"JULIA_DEPOT_PATH\", \"\")
+   ;                               project_path = dirname(something(Base.current_project(pwd()), Base.load_path_expand(LOAD_PATH[2])))
+   ;                               # Make sure that we only load packages from this environment specifically.
+   ;                               @info \"Running language server\" env=Base.load_path()[1] pwd() project_path depot_path
+   ;                               server = LanguageServer.LanguageServerInstance(stdin, stdout, project_path, depot_path);
+   ;                               server.runlinter = true;
+   ;                               run(server);"])
+   ;                  (set new-config.cmd cmd))})
 
 
 ;;; Python
