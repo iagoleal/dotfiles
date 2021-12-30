@@ -1,4 +1,17 @@
-:def hoogle \x -> return $ ":!hoogle \"" ++ x ++ "\""
-:def doc \x -> return $ ":!hoogle --info \"" ++ x ++ "\""
+-- Turn on multi-line input and remove the distracting verbosity.
+:set +m -v0
 
+:set editor nvim
+
+-- Browse documentation
+dotGHCI_escapeShellArg arg = "'" ++ concatMap (\c -> if c == '\'' then "'\\''" else [c]) arg ++ "'"
+
+:def! hoogle return . (":!hoogle -q --count=15 --color " ++) . dotGHCI_escapeShellArg
+:def! doc return . (":!hoogle -q --color --info " ++) . dotGHCI_escapeShellArg
+:def! hlint \s -> return $ ":!hlint " ++ if null s then "." else s
+
+-- When I have many repls open, I want to know which is which
 :set prompt "\ESC[1;93m\STXhaskell> \ESC[0m\STX"
+
+-- Show types on repl
+:set +t
