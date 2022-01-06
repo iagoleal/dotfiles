@@ -85,13 +85,13 @@ end
 -- from https://github.com/nvim-lua/lsp-status.nvim/blob/master/lua/lsp-status/diagnostics.lua
 local function get_lsp_diagnostics(bufnr)
   local result = {}
-  local levels = { errors   = "Error"
-                 , warnings = "Warning"
-                 , info     = "Information"
-                 , hints    = "Hint"
+  local levels = { errors   = vim.diagnostic.severity.ERROR
+                 , warnings = vim.diagnostic.severity.WARN
+                 , info     = vim.diagnostic.severity.INFO
+                 , hints    = vim.diagnostic.severity.HINT
                  }
   for k, level in pairs(levels) do
-    result[k] = vim.lsp.diagnostic.get_count(bufnr, level)
+    result[k] = #vim.diagnostic.get(bufnr, {severity = level})
   end
   return result
 end
