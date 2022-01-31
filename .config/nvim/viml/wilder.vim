@@ -1,8 +1,6 @@
 " Only use wilder for command mode
 call wilder#setup({'modes': [':']})
 
-
-
 " Set the pipelines to use fuzzy finders
 call wilder#set_option('pipeline', [
 \ wilder#branch(

@@ -59,11 +59,11 @@
                         :update_in_insert false
                         :severity_sort    true})
 ;;; Completion plugin
-(local cmp-capabilities
-  (let [default-capabilities (vim.lsp.protocol.make_client_capabilities)]
-    ((require-use :cmp_nvim_lsp :update_capabilities) default-capabilities)))
+; (local cmp-capabilities
+;   (let [default-capabilities (vim.lsp.protocol.make_client_capabilities)]
+;     ((require-use :cmp_nvim_lsp :update_capabilities) default-capabilities)))
 
-(set vim.o.completeopt "menuone,longest")
+; (set vim.o.completeopt "menuone,longest")
 
 ;--------------------------
 ; Server specific setups
@@ -79,7 +79,6 @@
 
   (lspconfig.sumneko_lua.setup
     {:on_attach on-attach
-     :capabilities cmp-capabilities
      :cmd [sumneko-binary "-E" (.. sumneko-root-path "/main.lua")]
      :settings
        {:Lua
@@ -107,7 +106,6 @@
 ;;; Haskell
 (lspconfig.hls.setup
   {:on_attach on-attach
-   :capabilities cmp-capabilities
    :root_dir (fn [fname]
                (local util lspconfig.util)
                ((util.root_pattern :*.cabal :stack.yaml :cabal.project :package.yaml :hie.yaml :*.hs) fname))

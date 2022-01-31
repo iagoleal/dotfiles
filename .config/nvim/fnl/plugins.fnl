@@ -1,6 +1,6 @@
 ; Macros and utilities
 (import-macros {:packer-use use : keymap : augroup : ex} :macros)
-(local {: autocmd &as ut} (require :futils))
+(local {: autocmd : executable-exists? &as ut} (require :futils))
 
 ;; Plugin management
 (vim.cmd "packadd packer.nvim")
@@ -37,15 +37,11 @@
 ;; Profile startup time
 (use "dstein64/vim-startuptime")
 
-;; Session Management
-(use "rmagatti/auto-session")
-
 ;; Treesitter
 (use "nvim-treesitter/nvim-treesitter"
       :run    ":TSUpdate"
       :config #(require :plugins.treesitter))
-; Semantically based text objects (such as functions, classes etc.)
-(use "nvim-treesitter/nvim-treesitter-textobjects"
+(use "nvim-treesitter/nvim-treesitter-textobjects" ; Semantically based text objects (such as functions, classes etc.)
      :requires "nvim-treesitter/nvim-treesitter")
 (use "RRethy/nvim-treesitter-textsubjects"
      :requires "nvim-treesitter/nvim-treesitter")
@@ -56,20 +52,6 @@
 ; Query LSP for tag files.
 ; It Allows me to use built-in tag commands with LSP.
 (use "weilbith/nvim-lsp-smag")
-
-;;; Completion
-(use "hrsh7th/nvim-cmp"
-  :config #(require :plugins.cmp))
-(use "hrsh7th/cmp-nvim-lsp")
-(use "hrsh7th/cmp-cmdline")
-(use "hrsh7th/cmp-path")
-(use "saadparwaiz1/cmp_luasnip")
-(use "L3MON4D3/LuaSnip")
-
-(use "nvim-telescope/telescope-fzf-native.nvim"
-     :run "make")
-(use "tzachar/cmp-fuzzy-path"
-     :requires ["hrsh7th/nvim-cmp" "hrsh7th/cmp-path" "tzachar/fuzzy.nvim"])
 
 ;; REPL
 (use "hkupty/iron.nvim"
@@ -95,30 +77,31 @@
 ;; Includes niceties such as fuzzy search.
 ;; Unfortunately, it is a python remote plugin...
 ;; so there is some headache when updating.
+;; TODO: I should find a substitute for this
 (use "gelguy/wilder.nvim"
      ; In case of errors, disable with "call wilder#disable()"
-     :disable true
      :event    [:CursorHold :CmdlineEnter]
      :rocks    ["luarocks-fetch-gitrec" "pcre2"]
      :requires ["romgrk/fzy-lua-native"]
      :run      [":UpdateRemotePlugins"]
      :config #(ex source (.. (vim.fn.stdpath :config)
                              "/viml/wilder.vim")))
-; (use "junegunn/fzf.vim"
-;      :config (fn []
-;                (set vim.g.fzf_command_prefix "FZF")))
-; Integrate with fzf plugin to search Hoogle database
-; (use "monkoose/fzf-hoogle.vim"
-;      :ft :haskell)
 
-;; Major utilities
+;---------------------------------
+;; Extendend Functionality
+;---------------------------------
+
+; Title case operator
+(use "christoomey/vim-titlecase")
+
 ; Add commands to (un)comment text objects
 (use "numToStr/Comment.nvim"
-     :config (fn []
-               ((require-use :Comment :setup) {:ignore "^$"})))
+     :config #((require-use :Comment :setup) {:ignore "^$"}))
+
 ; Edit surrounding objects (vimscript)
 (use "tpope/vim-surround")
 ; (use "machakann/vim-sandwich")
+
 ; Improved matchparen and matchit
 (use "andymass/vim-matchup"
      :config (fn []
@@ -133,19 +116,23 @@
 (use "tpope/vim-dispatch"
      :cmd [:Make :Dispatch])
 ; Reopen file with sudo
-(when (ut.executable-exists? "sudo")
+
+; Allow writing file with sudo
+; even if I open nvim as a normal user
+(when (executable-exists? "sudo")
   (use "lambdalisue/suda.vim"
        :cmd [:SudaRead :SudaWrite]))
+
 ; Alignment utils (vimscript)
 (use "junegunn/vim-easy-align"
-      :config (fn []
-                  (set vim.g.easy_align_delimiters
-                       {">" {:pattern "=>\\|->\\|>\\|→"
-                             :delimiter_align :r}
-                        "<" {:pattern "<-\\|<=\\|<\\|←"
-                             :delimiter_align :l}
-                        "r" {:pattern "{\\|}\\|,"     ; Lua / Haskell style Records
-                             :delimiter_align :r}})))
+      :config #(set vim.g.easy_align_delimiters
+                    {">" {:pattern "=>\\|->\\|>\\|→"
+                          :delimiter_align :r}
+                     "<" {:pattern "<-\\|<=\\|<\\|←"
+                          :delimiter_align :l}
+                     "r" {:pattern "{\\|}\\|,"     ; Lua / Haskell style Records
+                          :delimiter_align :r}}))
+
 ; Tree view buffer for undo history
 (use "mbbill/undotree")
 
@@ -171,17 +158,8 @@
      :config (fn []
                (set vim.g.tex_flavor :latex)
                (set vim.g.vimtex_view_method :zathura)))
-; (use "plasticboy/vim-markdown"
-;      :ft :markdown
-;      :config (fn []
-;                (set vim.g.vim_markdown_folding_disabled     1)
-;                (set vim.g.vim_markdown_conceal              0)
-;                (set vim.g.vim_markdown_fenced_languages
-;                     ["c++=cpp" "viml=vim" "bash=sh" "ini=dosini"])
-;                (set vim.g.vim_markdown_math                 1)
-;                (set vim.g.vim_markdown_frontmatter          1)
-;                (set vim.g.vim_markdown_new_list_item_indent 4)))
 
+(use "monkoose/fzf-hoogle.vim")
 (use "neovimhaskell/haskell-vim"
       :ft :haskell
       :config (fn []
@@ -216,12 +194,9 @@
 ; (use "Julian/lean.nvim"
 ;      :requires ["neovim/nvim-lspconfig"
 ;                 "nvim-lua/plenary.nvim"])
-
 ; (use "edwinb/idris2-vim")
-
 ; (use "Isti115/agda.nvim"
 ;      :requires "nvim-lua/plenary.nvim")
-
 ; (use "elkowar/yuck.vim")
 
 (use "~/Code/nvim/doctor"
@@ -230,6 +205,9 @@
 ;; Themes
 (use "rktjmp/lush.nvim")
 (use "folke/tokyonight.nvim")
+(use "rebelot/kanagawa.nvim")
+(use "pbrisbin/vim-colors-off")
+(use "YorickPeterse/vim-paper")
 
 ;; Return packer itself to allow chaining commands
 packer

@@ -42,7 +42,7 @@
 (local plugins-path (.. (vim.fn.stdpath :config) "/fnl/plugins.fnl"))
 (augroup :PluginManager
   (autocmd :BufWritePost plugins-path ":PackerCompile profile=true")
-  (autocmd :User :PackerComplete ":UpdateRemotePlugins"))
+  (autocmd :User :PackerComplete ":call UpdateRemotePlugins()"))
 
 ;-----------------------
 ; Theme and colors
@@ -91,7 +91,7 @@
 (when (has? :termguicolors)
   (option :termguicolors)
   (option :background :dark)
-  (colorscheme :tokyonight))
+  (colorscheme :off))
 
 ;------------------------
 ; Theme Options
@@ -234,9 +234,6 @@
 ; Disable search highlighting (until next search)
 (keymap :n "<leader>/" "<cmd>nohlsearch<CR>")
 
-; Highlight cross around cursor
-(keymap :n "<leader>cl" "<cmd>set cursorline! cursorcolumn!<CR>")
-
 ; Zoom window at new tab
 (keymap :n "<leader>tz" "<cmd>tab split<CR>")
 
@@ -340,6 +337,12 @@
 ; Toggle Color Highlight
 (keymap :n "<leader>cc" ":ColorizerToggle<CR>")
 
+; Convert from rgb to float
+(keymap :n "<leader>cf" (require-use :color :inplace#hex->float))
+
+; Highlight cross around cursor
+(keymap :n "<leader>cl" "<cmd>set cursorline! cursorcolumn!<CR>")
+
 ; FZF
 (keymap :n "<leader>fe" ":FZFFiles<cr>")
 (keymap :n "<leader>fb" ":FZFBuffers<cr>")
@@ -361,7 +364,7 @@
            "setlocal tabstop=2 softtabstop=2 shiftwidth=2 lisp autoindent")
   (autocmd :FileType
            :haskell
-           "nnoremap <buffer> <space>hh <cmd>Hoogle <C-r><C-w><CR>")
+           "nnoremap <buffer> <leader>hh <cmd>Hoogle <C-r><C-w><CR>")
   (autocmd :FileType
            [:markdown :tex :latex :gitcommit]
            "setlocal spell")
