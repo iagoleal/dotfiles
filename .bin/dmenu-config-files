@@ -7,7 +7,7 @@ term() {
 # List of avaiable options
 cfgs="Neovim\nHerbstluftwm\nPulseaudio\nzsh"
 
-choose="$( echo -e "$cfgs" | dmenu -r -i -c -l 4 -p '% ' )"
+choose="$( echo -e "$cfgs" | dmenu -i -l 4 -p '% ' )"
 
 case "${choose}" in
   Neovim)

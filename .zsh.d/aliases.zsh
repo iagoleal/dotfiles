@@ -1,5 +1,5 @@
 # Show folder
-alias ls='ls --color'
+alias ls='ls --color=auto -F'
 
 # Editor
 alias vi=nvim
@@ -10,11 +10,6 @@ alias hc=herbstclient
 # Git command to manage dotfiles
 alias dotfiles='git --git-dir=$HOME/.dotfiles-gitdir/ --work-tree=$HOME'
 alias dtf=dotfiles
-
-# For Haskell
-alias ghc='stack ghc'
-alias ghci='stack ghci'
-alias runhaskell='stack runhaskell'
 
 # Custom notification sender
 alias notify="$HOME/.bin/notify"
@@ -29,11 +24,13 @@ function update {
   yay -Syu --noconfirm
   echo 'Updating NeoVim...'
   nvim \
-    +"autocmd User PackerComplete UpdateRemotePlugins | sleep 100m | write $PACKER_DUMP | quitall" \
+    +"autocmd User PackerComplete call UpdateRemotePlugins() | sleep 100m | write $PACKER_DUMP | quitall" \
     +PackerSync
   cat $PACKER_DUMP
-  echo 'Updating Haskell Stack...'
-  stack upgrade && stack update
+  echo "\nUpdating Haskell...\n"
+  ghcup upgrade
+  echo "\nUpdating Julia...\n"
+  juliaup update
 }
 
 # Open pdf or ebook files
@@ -50,12 +47,6 @@ function doi2bib {
 function mac2ip {
   local fline=$(ip neigh | grep "$1");
   echo ${fline%% *}
-}
-
-function rpg {
-  rpg-cli cd "$@"
-  cd "$(rpg-cli pwd)"
-  rpg-cli stat
 }
 
 extract() {
@@ -123,7 +114,6 @@ Page Faults:
 
 # Open different file formats by extension
 alias -s {pdf,ps,xps,djvu,epub}=zathura
-alias -s {jpg,jpeg,png,bmp}=feh
-alias -s gif=firefox
+alias -s {jpg,jpeg,png,bmp,gif}=imv-folder
 alias -s {avi,mkv,webm,mp4}=mpv
-alias -s svg=display
+alias -s svg=inkview

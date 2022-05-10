@@ -11,7 +11,7 @@ dotGHCI_escapeShellArg arg = "'" ++ concatMap (\c -> if c == '\'' then "'\\''" e
 :def! hlint \s -> return $ ":!hlint " ++ if null s then "." else s
 
 -- When I have many repls open, I want to know which is which
-:set prompt "\ESC[1;93m\STXhaskell> \ESC[0m\STX"
+:set prompt "\ESC[1;93m\STXghci> \ESC[0m\STX"
 
 -- Show types on repl
 :set +t

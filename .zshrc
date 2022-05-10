@@ -39,6 +39,9 @@ bindkey '^[OB' history-beginning-search-forward
 autoload -Uz compinit
 compinit
 
+# Path for completion files
+fpath=(~/.zsh.d/comp $fpath)
+
 #----------------------------
 # Enable prompt theme system
 #----------------------------

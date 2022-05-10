@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 # Sync backup on external hard drive
+#
+# For dry-run, use -n (only view what will be modified, without really changing it)
 
 # Cummulative backup
 rsync -avP ~/Videos/ /run/media/iago/Elements/Videos/
+# rsync -avP ~/Music/ /run/media/iago/Elements/Music/
 rsync -avP ~/Pictures/ /run/media/iago/Elements/Pictures/
 rsync -avP ~/Documents/ /run/media/iago/Elements/Documents/
 
