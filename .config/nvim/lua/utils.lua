@@ -123,10 +123,6 @@ end
 function echohl(text, hl)
   hl = hl or ""
   local emsg = vim.fn.escape(text, '"')
-  -- vim.cmd(string.format(
-  -- [[ echohl %s | redraw
-  --    echo '%s'
-  --    echohl NONE]], hl, emsg))
   vim.api.nvim_echo({{emsg, hl}}, false, {})
 end
 

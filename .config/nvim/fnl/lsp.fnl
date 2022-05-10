@@ -58,16 +58,11 @@
                         :underline        false
                         :update_in_insert false
                         :severity_sort    true})
-;;; Completion plugin
-; (local cmp-capabilities
-;   (let [default-capabilities (vim.lsp.protocol.make_client_capabilities)]
-;     ((require-use :cmp_nvim_lsp :update_capabilities) default-capabilities)))
 
-; (set vim.o.completeopt "menuone,longest")
+;;--------------------------
+;; Server specific setups
+;;--------------------------
 
-;--------------------------
-; Server specific setups
-;--------------------------
 
 ;;; Lua
 ;; set the path to the sumneko installation;
@@ -160,24 +155,6 @@
           run(server) "]
    :single_file_support true
    :filetypes [:julia]})
-   ; :on_new_config (fn [new-config new-root-dir]
-   ;                  ; (local server-path "/home/iago/.julia/packages/LanguageServer/JrIEf/src")
-   ;                  (local cmd ["julia"
-   ;                              (.. "--project=" server-path)
-   ;                              "--startup-file=no"
-   ;                              "--history-file=no"
-   ;                              "-e"
-   ;                              "using Pkg;
-   ;                               Pkg.instantiate()
-   ;                               using LanguageServer; using SymbolServer;
-   ;                               depot_path = get(ENV, \"JULIA_DEPOT_PATH\", \"\")
-   ;                               project_path = dirname(something(Base.current_project(pwd()), Base.load_path_expand(LOAD_PATH[2])))
-   ;                               # Make sure that we only load packages from this environment specifically.
-   ;                               @info \"Running language server\" env=Base.load_path()[1] pwd() project_path depot_path
-   ;                               server = LanguageServer.LanguageServerInstance(stdin, stdout, project_path, depot_path);
-   ;                               server.runlinter = true;
-   ;                               run(server);"])
-   ;                  (set new-config.cmd cmd))})
 
 
 ;;; Python

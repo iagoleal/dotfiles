@@ -30,12 +30,10 @@
 (use "rktjmp/hotpot.nvim"
       :config #(require :hotpot))
 
-;; Faster filetype plugin
-(use "nathom/filetype.nvim")
 ;; Cache lua modules
 (use "lewis6991/impatient.nvim")
 ;; Profile startup time
-(use "dstein64/vim-startuptime")
+;; (use "dstein64/vim-startuptime")
 
 ;; Treesitter
 (use "nvim-treesitter/nvim-treesitter"
@@ -83,7 +81,7 @@
      :event    [:CursorHold :CmdlineEnter]
      :rocks    ["luarocks-fetch-gitrec" "pcre2"]
      :requires ["romgrk/fzy-lua-native"]
-     :run      [":UpdateRemotePlugins"]
+     :run      [":call UpdateRemotePlugins()"]
      :config #(ex source (.. (vim.fn.stdpath :config)
                              "/viml/wilder.vim")))
 
@@ -136,13 +134,18 @@
 ; Tree view buffer for undo history
 (use "mbbill/undotree")
 
-;; Colors
+(use "NMAC427/guess-indent.nvim"
+  :config #((require-use :guess-indent :setup) {}))
+
+(use "jbyuki/quickmath.nvim")
+
+;;; Colors
+
 (use "norcalli/nvim-colorizer.lua"
       :cmd [:ColorizerToggle :ColorizerReloadAllBuffers :ColorizerAttachToBuffer]
       :config #((. (require :colorizer) :setup)))
-; Color picker
-; NOTE: Can I remake this in lua with floating windows?
-(use "KabbAmine/vCoolor.vim"
+;; Color picker
+(use "KabbAmine/vCoolor.vim"         ; NOTE: Can I remake this in lua with floating windows?
       :config (fn []
                 (set vim.g.vcoolor_disable_mappings 1)
                 (keymap :n "<leader>ce" "<cmd>VCoolor<cr>")))
@@ -199,11 +202,9 @@
 ;      :requires "nvim-lua/plenary.nvim")
 ; (use "elkowar/yuck.vim")
 
-(use "~/Code/nvim/doctor"
-     :cmd ":TalkToTheDoctor")
-
 ;; Themes
 (use "rktjmp/lush.nvim")
+
 (use "folke/tokyonight.nvim")
 (use "rebelot/kanagawa.nvim")
 (use "pbrisbin/vim-colors-off")

@@ -5,22 +5,20 @@
         : colorscheme
         : executable-exists?
         : has?
-        : highlight
-        : keymap
         &as ut} (require :futils))
 
 (import-macros {: option
                 : ex
                 : viml
+                : keymap
                 : augroup
-                : def-command}
+                : def-command
+                : highlight
+                : require-use}
                :macros)
 
-(global dump ut.dump)
+(tset _G :dump ut.dump)
 (tset _G :force_require ut.force-require)
-
-(macro require-use [pkg ...]
-  `(. (require ,pkg) ,...))
 
 ;;; Lazy load packer on file change.
 ;; Adapt the built-in packer commands to use my plugin file.
@@ -37,7 +35,6 @@
 
 (viml "command! -nargs=+ -complete=customlist,v:lua.require'packer'.loader_complete PackerLoad lua require('plugins').loader(<q-args>)")
 
-
 ;; Recompile plugins every time the plugin file changes.
 (local plugins-path (.. (vim.fn.stdpath :config) "/fnl/plugins.fnl"))
 (augroup :PluginManager
@@ -52,33 +49,23 @@
 (fn personal-highlights []
   ; Trailing spaces
   (highlight :Whitespace
-             :ctermfg "Magenta"
-             :guifg   "Magenta")
+             :fg   "Magenta")
   ;; Spell checker colors
   (highlight :SpellBad
-             :ctermfg "Red"
-             :cterm   "Underline"
-             :guifg   "LightRed"
-             :gui     "Underline"
-             :guisp   "LightRed")
+             :fg        "LightRed"
+             :underline true)
   (highlight :SpellCap
-             :ctermfg "Blue"
-             :cterm   "Underline"
-             :guifg   "LightBlue"
-             :gui     "Underline"
-             :guisp   "Blue")
+             :fg        "LightBlue"
+             :sp        "Blue"
+             :underline true)
   (highlight :SpellLocal
-             :ctermfg "Green"
-             :cterm   "Underline"
-             :guifg   "LightGreen"
-             :gui     "Underline"
-             :guisp   "Green")
+             :fg        "LightGreen"
+             :sp        "Green"
+             :underline true)
   (highlight :SpellRare
-             :ctermfg "Yellow"
-             :cterm   "underline"
-             :guifg   "Orange"
-             :gui     "Underline"
-             :guisp   "Orange")
+             :fg        "Orange"
+             :sp        "Orange"
+             :underline true)
   (vim.cmd "highlight link LspCodeLens WarningMsg")
   ;; Reload color dependent files
   (ex runtime! "plugin/statusline.lua")
@@ -128,7 +115,6 @@
 ; Highlight text on yank
 (augroup :Yank
   (autocmd :TextYankPost "*" #(vim.highlight.on_yank {:higroup "IncSearch" :timeout 150 :on_visual false})))
-  ; (autocmd :TextYankPost "*" "silent! lua vim.highlight.on_yank({higroup=”IncSearch”, timeout=150, on_visual=false})"))
 
 ;-------------------------
 ;-- MISC options
@@ -374,8 +360,8 @@
   (autocmd :FileType
            [:lua :fennel]
            #(if (= (vim.fn.isdirectory "src") 1)
-                (keymap :n "<F12>" ":wa<cr>:!love src &<cr>")
-                (keymap :n "<F12>" ":wa<cr>:!love . &<cr>"))))
+                (keymap :n "<F12>" ":wa<cr>:!love --fused src &<cr>")
+                (keymap :n "<F12>" ":wa<cr>:!love --fused . &<cr>"))))
 
 ;-----------------------------
 ;-- Disable Built-in plugins

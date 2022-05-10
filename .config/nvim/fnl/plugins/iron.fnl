@@ -29,6 +29,13 @@
         {:command ["stack" "ghci"]
          :open    ":{"
          :close   [":}" ""]}}
+   :julia
+     {:julia
+        {:command ["julia"]}
+      :projectwise
+        {:command ["julia" "--project=@."]}
+      :lts
+        {:command ["julia" "+lts" "--project=@."]}}
    :scheme
      {:chez
         {:command ["scheme"]}
@@ -39,6 +46,7 @@
    {:preferred {:lua     "lua"
                 :fennel  "fennel"
                 :haskell "stack"
+                :julia   "projectwise"
                 :python  "python"
                 :scheme  "racket"}
     :repl_open_cmd "rightbelow 66 vsplit"

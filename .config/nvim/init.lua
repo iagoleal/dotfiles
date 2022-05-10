@@ -1,6 +1,6 @@
--- require('impatient')
+require('impatient')
 
-local utils = require "utils"
+local utils  = require "utils"
 local echohl = utils.echohl
 
 -- Ensure that a given package is installed and loaded
@@ -29,9 +29,9 @@ bootstrap("packer.nvim", "https://github.com/wbthomason/packer.nvim")
 -- Ensure hotpot is installed
 bootstrap("hotpot.nvim", "https://github.com/rktjmp/hotpot.nvim", false)
 
--- Use lua based ft (from plugin)
+-- Use lua based filetype detection
 vim.g.did_load_filetypes = 0
-vim.g.do_filetype_lua = 1
+vim.g.do_filetype_lua    = 1
 
 -- Fix how UpdateRemotePlugins works
 -- (needed for wilder)

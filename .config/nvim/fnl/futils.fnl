@@ -96,11 +96,9 @@
 
 (fn M.keymap [mode keys cmd ...]
   "Set a keymap on global scope."
-  (let [opts (paired-sequence-to-table [...])
-        cmd  (process-rhs/keymap cmd)]
-    ; Better to be non-recursive by default
-    (default-value! opts.noremap true)
-    (vim.api.nvim_set_keymap mode keys cmd opts)))
+  (let [opts (paired-sequence-to-table [...])]
+    (vim.keymap.set mode keys cmd opts)))
+
 
 (fn M.keymap-buffer [buf mode keys cmd ...]
   "Set a keymap on buffer scope."
@@ -160,24 +158,13 @@
 ; Colorscheme and highlights
 ;-----------------------------
 
-(fn make-highlight-group [group-name opts]
-  (let [hi [:highlight]]
-    ;; Verify if there is an argument to enable ":hi default"
-    (when opts.default
-      (table.insert hi :default)
-      (set opts.default nil))
-    (table.insert hi group-name)
-    (each [k v (pairs opts)]
-      (table.insert hi (.. k "=" v)))
-    (vim.cmd (table.concat hi " "))))
-
 (fn M.colorscheme [c]
   "Set nvim colorscheme."
   (vim.cmd (.. "colorscheme " c)))
 
 (fn M.highlight [name ...]
   (let [keys/values (paired-sequence-to-table [...])]
-    (make-highlight-group name keys/values)))
+    (vim.api.nvim_set_hl 0 name keys/values)))
 
 
 ;; Export

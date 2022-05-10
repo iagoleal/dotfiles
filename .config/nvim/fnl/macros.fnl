@@ -19,6 +19,14 @@
       (multi-sym? x) :multi-sym
       (type x)))
 
+(fn vararg-to-opts [...]
+  (let [cfg [...]
+        out {}]
+    (assert (= 0 (math.fmod (length cfg) 2))
+            "Expected even number of keywords/values pairs.")
+    (for [i 1 (length cfg) 2]
+      (tset out (. cfg i) (. cfg (+ i 1))))
+    out))
 
 ;-----------------------------
 ;;; General Fennel
@@ -26,6 +34,9 @@
 
 (fn M.global-fn [name args body]
   `(global ,name (fn ,args ,body)))
+
+(fn M.require-use [pkg ...]
+  `(. (require ,pkg) ,...))
 
 ;-----------------------------
 ;;; Setting options
@@ -48,9 +59,14 @@
       (set-normal-option name cmd-or-val)))
 
 ;;; Keymaps
-(fn M.keymap [...]
- "Register a new nvim keymap."
-  `((. (require "futils") :keymap) ,...))
+
+(fn M.keymap [mode keys cmd ...]
+  (let [opts (vararg-to-opts ...)]
+    `(vim.keymap.set ,mode ,keys ,cmd ,opts)))
+
+(fn M.highlight [group ...]
+  (let [opts (vararg-to-opts ...)]
+    `(vim.api.nvim_set_hl 0 ,group ,opts)))
 
 ;;; Autocommands
 (fn M.augroup [name ...]
@@ -164,15 +180,6 @@
 ;-------------------
 ;; Package manager
 ;-------------------
-
-(fn vararg-to-opts [...]
-  (let [cfg [...]
-        out {}]
-    (assert (= 0 (math.fmod (length cfg) 2))
-            "Expected even number of keywords/values pairs.")
-    (for [i 1 (length cfg) 2]
-      (tset out (. cfg i) (. cfg (+ i 1))))
-    out))
 
 ;;; Rewrite packer.use with a more fennelish syntax
 (fn M.packer-use [pkg ...]

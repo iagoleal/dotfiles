@@ -5,10 +5,10 @@
 
 (nvim-treesitter-configs.setup
  {:ensure_installed
-    ["bash" "bibtex" "c" "comment" "cpp" "css" "fennel" "haskell" "html" "javascript" "json" "julia" "latex" "lua" "markdown" "python" "yaml"]
+    ["bash" "bibtex" "c" "comment" "cpp" "css" "haskell" "html" "javascript" "json" "julia" "lua" "markdown" "python" "yaml"]
   ;; Improved Syntax highlighting
   :highlight
-    {:enable true
+    {:enable false
      :additional_vim_regex_highlighting false}
   ;; Scope based text sleection
   :incremental_selection
