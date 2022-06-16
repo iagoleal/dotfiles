@@ -50,16 +50,26 @@
 ; Query LSP for tag files.
 ; It Allows me to use built-in tag commands with LSP.
 (use "weilbith/nvim-lsp-smag")
+; Hook external linters/formaters into LSP
+(use "jose-elias-alvarez/null-ls.nvim"
+  :requires "nvim-lua/plenary.nvim"
+  :config #((require-use :null-ls :setup)
+            {:sources [(require-use :null-ls :builtins :diagnostics :vale)
+                       (require-use :null-ls :builtins :diagnostics :trail_space)]
+             :on_attach (require-use :lsp :on-attach)}))
 
+; require("null-ls").builtins.diagnostics.vale,
 ;; REPL
 (use "hkupty/iron.nvim"
+     :commit "bc9c596d6a97955f0306d2abcc10d9c35bbe2f5b"
      :config (fn []
                (set vim.g.iron_map_defaults 0)
                (set vim.g.iron_map_extended 0)
                (require :plugins.iron)))
 (use "Olical/conjure"
-     :ft [:scheme :racket :clojure :fennel]
+     :ft [:scheme :racket :clojure :fennel :lua :julia :lisp]
      :config (fn []
+               (tset vim.g :conjure#extract#tree_sitter#enabled        true)
                (tset vim.g :conjure#highlight#enabled                  true)
                (tset vim.g :conjure#log#hud#border                     "double")
                (tset vim.g :conjure#highlight#enabled                  :IncSearch)
@@ -184,7 +194,7 @@
                 (set vim.g.haskell_indent_in               0)
                 (set vim.g.haskell_indent_guard            2)))
 
-(use "JuliaEditorSupport/julia-vim")
+;; (use "JuliaEditorSupport/julia-vim")
 
 (use "bakpakin/fennel.vim"
      :ft :fennel)
@@ -197,7 +207,7 @@
 ; (use "Julian/lean.nvim"
 ;      :requires ["neovim/nvim-lspconfig"
 ;                 "nvim-lua/plenary.nvim"])
-; (use "edwinb/idris2-vim")
+(use "edwinb/idris2-vim")
 ; (use "Isti115/agda.nvim"
 ;      :requires "nvim-lua/plenary.nvim")
 ; (use "elkowar/yuck.vim")
@@ -206,9 +216,10 @@
 (use "rktjmp/lush.nvim")
 
 (use "folke/tokyonight.nvim")
-(use "rebelot/kanagawa.nvim")
 (use "pbrisbin/vim-colors-off")
 (use "YorickPeterse/vim-paper")
+(use "Shatur/neovim-ayu"
+  :config #((require-use :ayu :setup) {:mirage true}))
 
 ;; Return packer itself to allow chaining commands
 packer

@@ -29,6 +29,9 @@
         {:command ["stack" "ghci"]
          :open    ":{"
          :close   [":}" ""]}}
+   :idris2
+     {:idris2
+        {:command ["idris2"]}}
    :julia
      {:julia
         {:command ["julia"]}
