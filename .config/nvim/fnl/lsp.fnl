@@ -1,5 +1,5 @@
 (local lspconfig (require :lspconfig))
-(local {: keymap-buffer : autocmd}  (require :futils))
+(local {: keymap : autocmd}  (require :futils))
 (local util lspconfig.util)
 
 (import-macros {: augroup} :macros)
@@ -13,13 +13,14 @@
 ;;; Only map keybinds after attaching LSP
 (fn on-attach [client bufnr]
   (let [bmap (fn [mode keys cmd ...]
-               (keymap-buffer bufnr mode keys cmd :silent true ...))]
+               (keymap mode keys cmd :buffer bufnr :silent true ...))]
 
     ; Use lsp omnifunc for completion
     (tset vim.bo bufnr :omnifunc "v:lua.vim.lsp.omnifunc")
 
     ;; Mappings
-    (bmap :n "K"          vim.lsp.buf.hover)
+    (when (capable? client :hover)
+      (bmap :n "K"          vim.lsp.buf.hover))
     (bmap :n "<C-k>"      vim.lsp.buf.signature_help)
     (bmap :n "gr"         vim.lsp.buf.references)
     (bmap :n "gD"         vim.lsp.buf.declaration)
@@ -40,17 +41,22 @@
         (autocmd [:BufEnter :CursorHold :InsertLeave] "<buffer>" vim.lsp.codelens.refresh))
       (vim.lsp.codelens.refresh))
 
-    ;; Diagnostics
-    (bmap :n "<leader>e"  vim.diagnostic.open_float)
-    (bmap :n "[d"         vim.diagnostic.goto_prev)
-    (bmap :n "]d"         vim.diagnostic.goto_next)
-    (bmap :n "<leader>dq" vim.diagnostic.setloclist)
-
     ;; Set some keybinds conditional on server capabilities
     (if (capable? client :document_range_formatting)
         (bmap :n "<leader>=" vim.lsp.buf.range_formatting)
         (capable? client :document_formatting)
         (bmap :n "<leader>=" vim.lsp.buf.formatting))))
+
+
+;; Diagnostics
+(keymap :n "<leader>e"  vim.diagnostic.open_float
+  :desc "Open diagnostics popup")
+(keymap :n "[d"         vim.diagnostic.goto_prev
+  :desc "Previous diagnostic")
+(keymap :n "]d"         vim.diagnostic.goto_next
+  :desc "Next diagnostic")
+(keymap :n "<leader>dq" vim.diagnostic.setloclist
+  :desc "Put diagnostics on location list")
 
 ;; Configure diagnostics (for all servers)
 (vim.diagnostic.config {:virtual_text     false
@@ -127,6 +133,12 @@
 
 ;;; C / C++
 (lspconfig.ccls.setup {:on_attach on-attach})
+
+;;; Prose
+(lspconfig.ltex.setup
+  {:on_attach on-attach
+   :settings
+     {:ltex {:additionalRules {:languageModel "~/Downloads/ngrams/"}}}})
 
 ; Expose local methods
 {: on-attach}

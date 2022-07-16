@@ -19,8 +19,8 @@
 (packer.init config)
 (packer.reset)
 
-;;; Add and manage packages
-;;; Here we load all packages of interest.
+;;;; Add and manage packages
+;;;; Here we load all packages of interest.
 
 ;; The plugin manager itself
 (use "wbthomason/packer.nvim"
@@ -32,42 +32,56 @@
 
 ;; Cache lua modules
 (use "lewis6991/impatient.nvim")
-;; Profile startup time
-;; (use "dstein64/vim-startuptime")
 
-;; Treesitter
+;;;
+;;; Treesitter
+;;;
+
 (use "nvim-treesitter/nvim-treesitter"
       :run    ":TSUpdate"
       :config #(require :plugins.treesitter))
-(use "nvim-treesitter/nvim-treesitter-textobjects" ; Semantically based text objects (such as functions, classes etc.)
+
+; Semantically based text objects (such as functions, classes etc.)
+(use "nvim-treesitter/nvim-treesitter-textobjects"
      :requires "nvim-treesitter/nvim-treesitter")
+
 (use "RRethy/nvim-treesitter-textsubjects"
      :requires "nvim-treesitter/nvim-treesitter")
 
-;; LSP
+;;;
+;;; Language Server Protocol
+;;;
+
 (use "neovim/nvim-lspconfig"
      :config #(require :lsp))
 ; Query LSP for tag files.
 ; It Allows me to use built-in tag commands with LSP.
 (use "weilbith/nvim-lsp-smag")
+
 ; Hook external linters/formaters into LSP
 (use "jose-elias-alvarez/null-ls.nvim"
   :requires "nvim-lua/plenary.nvim"
-  :config #((require-use :null-ls :setup)
-            {:sources [(require-use :null-ls :builtins :diagnostics :vale)
-                       (require-use :null-ls :builtins :diagnostics :trail_space)]
-             :on_attach (require-use :lsp :on-attach)}))
+  :config #(let [null-ls (require :null-ls)]
+            (null-ls.setup
+              {:sources [;null-ls.builtins.diagnostics.trail_space
+                         null-ls.builtins.hover.dictionary]
+               :on_attach (require-use :lsp :on-attach)})))
 
-; require("null-ls").builtins.diagnostics.vale,
-;; REPL
+;;;
+;;; Utilities
+;;;
+
+;; Manage REPLs
 (use "hkupty/iron.nvim"
      :commit "bc9c596d6a97955f0306d2abcc10d9c35bbe2f5b"
      :config (fn []
                (set vim.g.iron_map_defaults 0)
                (set vim.g.iron_map_extended 0)
                (require :plugins.iron)))
+
+;; Better REPL management for Lisps
 (use "Olical/conjure"
-     :ft [:scheme :racket :clojure :fennel :lua :julia :lisp]
+     :ft [:scheme :racket :clojure :fennel :julia :lisp]
      :config (fn []
                (tset vim.g :conjure#extract#tree_sitter#enabled        true)
                (tset vim.g :conjure#highlight#enabled                  true)
@@ -95,9 +109,19 @@
      :config #(ex source (.. (vim.fn.stdpath :config)
                              "/viml/wilder.vim")))
 
-;---------------------------------
-;; Extendend Functionality
-;---------------------------------
+(use "anuvyklack/hydra.nvim"
+  :config #(require :hydra-cfg))
+
+; Tree view buffer for undo history
+(use "mbbill/undotree")
+
+(use "NMAC427/guess-indent.nvim"
+  :disable true
+  :config #((require-use :guess-indent :setup) {}))
+
+;;;
+;;; Should be built-in
+;;;
 
 ; Title case operator
 (use "christoomey/vim-titlecase")
@@ -106,9 +130,10 @@
 (use "numToStr/Comment.nvim"
      :config #((require-use :Comment :setup) {:ignore "^$"}))
 
-; Edit surrounding objects (vimscript)
-(use "tpope/vim-surround")
-; (use "machakann/vim-sandwich")
+; Edit surrounding objects
+(use "kylechui/nvim-surround"
+     :config #((require-use :nvim-surround :setup) {}))
+
 
 ; Improved matchparen and matchit
 (use "andymass/vim-matchup"
@@ -141,26 +166,19 @@
                      "r" {:pattern "{\\|}\\|,"     ; Lua / Haskell style Records
                           :delimiter_align :r}}))
 
-; Tree view buffer for undo history
-(use "mbbill/undotree")
-
-(use "NMAC427/guess-indent.nvim"
-  :config #((require-use :guess-indent :setup) {}))
-
-(use "jbyuki/quickmath.nvim")
-
+;;;
 ;;; Colors
+;;;
 
 (use "norcalli/nvim-colorizer.lua"
       :cmd [:ColorizerToggle :ColorizerReloadAllBuffers :ColorizerAttachToBuffer]
       :config #((. (require :colorizer) :setup)))
+
 ;; Color picker
 (use "KabbAmine/vCoolor.vim"         ; NOTE: Can I remake this in lua with floating windows?
       :config (fn []
                 (set vim.g.vcoolor_disable_mappings 1)
                 (keymap :n "<leader>ce" "<cmd>VCoolor<cr>")))
-(use "amadeus/vim-convert-color-to"
-     :cmd :ConvertColorTo)
 
 ;-------------------------
 ;;; Filetype specific
@@ -168,11 +186,11 @@
 
 (use "lervag/vimtex"
      :ft :tex
-     :config (fn []
-               (set vim.g.tex_flavor :latex)
-               (set vim.g.vimtex_view_method :zathura)))
+     :config #(do (set vim.g.tex_flavor :latex)
+                  (set vim.g.vimtex_view_method :zathura)))
 
 (use "monkoose/fzf-hoogle.vim")
+
 (use "neovimhaskell/haskell-vim"
       :ft :haskell
       :config (fn []
@@ -210,9 +228,10 @@
 (use "edwinb/idris2-vim")
 ; (use "Isti115/agda.nvim"
 ;      :requires "nvim-lua/plenary.nvim")
-; (use "elkowar/yuck.vim")
 
-;; Themes
+;;;
+;;; Themes
+;;;
 (use "rktjmp/lush.nvim")
 
 (use "folke/tokyonight.nvim")

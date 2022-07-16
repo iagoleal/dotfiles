@@ -86,14 +86,6 @@
 ; Keymaps
 ;-------------------
 
-(fn process-rhs/keymap [cmd]
-  (match (type cmd)
-    :string cmd
-    (where _ (callable? cmd)) (fmt "<cmd>lua %s()<CR>"
-                                   (save-function-as-global cmd))
-    _       (error "Only strings, functions or callable table may be mapped.")))
-
-
 (fn M.keymap [mode keys cmd ...]
   "Set a keymap on global scope."
   (let [opts (paired-sequence-to-table [...])]

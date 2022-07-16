@@ -19,9 +19,12 @@
       (multi-sym? x) :multi-sym
       (type x)))
 
+(fn last [t]
+  (. t (length t)))
+
 (fn vararg-to-opts [...]
   (let [cfg [...]
-        out {}]
+          out {}]
     (assert (= 0 (math.fmod (length cfg) 2))
             "Expected even number of keywords/values pairs.")
     (for [i 1 (length cfg) 2]
@@ -58,7 +61,7 @@
       (set-method-option (tostring cmd-or-val) name ?setting-value)
       (set-normal-option name cmd-or-val)))
 
-;;; Keymaps
+;;; Keymap
 
 (fn M.keymap [mode keys cmd ...]
   (let [opts (vararg-to-opts ...)]

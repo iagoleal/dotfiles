@@ -5,7 +5,7 @@ call wilder#setup({'modes': [':']})
 call wilder#set_option('pipeline', [
 \ wilder#branch(
 \   wilder#python_file_finder_pipeline({
-\     'file_command': {_, arg -> arg[0] ==# '.' ? ['rg', '--files', '--hidden'] : ['rg', '--files']},
+\     'file_command': {_, arg -> arg[0] ==# '.' ? ['rg', '--files', '--hidden', '--no-ignore'] : ['rg', '--files']},
 \     'dir_command': ['find', '.', '-type', 'd', '-printf', '%P\n'],
 \     'filters': ['fuzzy_filter', 'difflib_sorter'],
 \   }),

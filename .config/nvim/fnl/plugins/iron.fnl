@@ -29,6 +29,11 @@
         {:command ["stack" "ghci"]
          :open    ":{"
          :close   [":}" ""]}}
+   :lhaskell
+     {:ghci
+        {:command ["ghci"]
+         :open    ":{"
+         :close   [":}" ""]}}
    :idris2
      {:idris2
         {:command ["idris2"]}}

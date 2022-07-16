@@ -120,15 +120,15 @@
 ;-- MISC options
 ;-------------------------
 
-(option :lazyredraw)             ; Don't redraw screen during macros or register operations
+(option :lazyredraw)              ; Don't redraw screen during macros or register operations
 
 (option :joinspaces false)
 
 ;; Search
-(option :incsearch)              ; search as characters are entered
-(option :hlsearch)               ; highlight matches
-(option :ignorecase)             ; case-insensitive search / substitution
-(option :smartcase)              ; If terms are all lowercase, ignore case. Consider case otherwise.
+(option :incsearch)               ; search as characters are entered
+(option :hlsearch)                ; highlight matches
+(option :ignorecase)              ; case-insensitive search / substitution
+(option :smartcase)               ; If terms are all lowercase, ignore case. Consider case otherwise.
 
 (option :inccommand "nosplit")    ; Show result of :s incrementally on buffer
 
@@ -327,7 +327,7 @@
 (keymap :n "<leader>cf" (require-use :color :inplace#hex->float))
 
 ; Highlight cross around cursor
-(keymap :n "<leader>cl" "<cmd>set cursorline! cursorcolumn!<CR>")
+(keymap :n "<leader>chl" "<cmd>set cursorline! cursorcolumn!<CR>")
 
 ; FZF
 (keymap :n "<leader>fe" ":FZFFiles<cr>")
@@ -393,6 +393,31 @@
 
 ; Netrw defaults to tree view
 (set vim.g.netrw_liststyle 3)
+
+(viml "
+  func Thesaur(findstart, base)
+    if a:findstart
+      return searchpos('\\<', 'bnW', line('.'))[1] - 1
+    else
+      let res = []
+      let h = ''
+      for l in systemlist('aiksaurus '.shellescape(a:base))
+        if l[:3] == '=== '
+          let h = '('.substitute(l[4:], ' =*$', ')', '')
+        elseif l ==# 'Alphabetically similar known words are: '
+          let h = '\\U0001f52e'
+        elseif l[0] =~ '\\a' || (h ==# '\\U0001f52e' && l[0] ==# '\\t')
+          call extend(res, map(split(substitute(l, '^\\t', '', ''), ', '), {_, val -> {'word': val, 'menu': h}}))
+        endif
+      endfor
+      return res
+    endif
+  endfunc
+
+  if executable('aiksaurus')
+    set thesaurusfunc=Thesaur
+  endif
+")
 
 ;; Hide sponsor information from Conjure
 (augroup :ConjureRemoveSponsor
