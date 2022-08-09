@@ -78,7 +78,7 @@
 (when (has? :termguicolors)
   (option :termguicolors)
   (option :background :dark)
-  (colorscheme :off))
+  (colorscheme :everforest))
 
 ;------------------------
 ; Theme Options

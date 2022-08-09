@@ -110,10 +110,13 @@
                              "/viml/wilder.vim")))
 
 (use "anuvyklack/hydra.nvim"
-  :config #(require :hydra-cfg))
+  :config #(require :plugins.hydra))
 
 ; Tree view buffer for undo history
 (use "mbbill/undotree")
+
+; Diff mode for directories
+(use "cossonleo/dirdiff.nvim")
 
 (use "NMAC427/guess-indent.nvim"
   :disable true
@@ -189,7 +192,8 @@
      :config #(do (set vim.g.tex_flavor :latex)
                   (set vim.g.vimtex_view_method :zathura)))
 
-(use "monkoose/fzf-hoogle.vim")
+(when (executable-exists? "jq")
+  (use "monkoose/fzf-hoogle.vim"))
 
 (use "neovimhaskell/haskell-vim"
       :ft :haskell
@@ -222,23 +226,18 @@
 (use "tikhomirov/vim-glsl"
      :ft :glsl)
 
-; (use "Julian/lean.nvim"
-;      :requires ["neovim/nvim-lspconfig"
-;                 "nvim-lua/plenary.nvim"])
 (use "edwinb/idris2-vim")
-; (use "Isti115/agda.nvim"
-;      :requires "nvim-lua/plenary.nvim")
 
 ;;;
 ;;; Themes
 ;;;
 (use "rktjmp/lush.nvim")
 
-(use "folke/tokyonight.nvim")
 (use "pbrisbin/vim-colors-off")
 (use "YorickPeterse/vim-paper")
 (use "Shatur/neovim-ayu"
   :config #((require-use :ayu :setup) {:mirage true}))
+(use "sainnhe/everforest")
 
 ;; Return packer itself to allow chaining commands
 packer

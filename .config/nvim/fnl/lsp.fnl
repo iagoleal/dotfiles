@@ -136,9 +136,7 @@
 
 ;;; Prose
 (lspconfig.ltex.setup
-  {:on_attach on-attach
-   :settings
-     {:ltex {:additionalRules {:languageModel "~/Downloads/ngrams/"}}}})
+  {:on_attach on-attach})
 
 ; Expose local methods
 {: on-attach}

@@ -24,10 +24,10 @@ local function bootstrap(name, repo, opt)
   end
 end
 
--- Ensure packer is installed
+-- Ensure base packages are installed
 bootstrap("packer.nvim", "https://github.com/wbthomason/packer.nvim")
--- Ensure hotpot is installed
 bootstrap("hotpot.nvim", "https://github.com/rktjmp/hotpot.nvim", false)
+bootstrap("impatient.nvim", "https://github.com/lewis6991/impatient.nvim", false)
 
 -- Use lua based filetype detection
 vim.g.did_load_filetypes = 0
