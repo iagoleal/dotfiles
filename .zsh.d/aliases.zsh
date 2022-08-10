@@ -1,5 +1,5 @@
 # Show folder
-alias ls='ls --color=auto -F'
+alias ls='ls --color=never -F'
 
 # Editor
 alias vi=nvim

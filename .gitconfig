@@ -13,7 +13,15 @@
 	prompt = true
 [mergetool "vimdiff"]
 	cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+[user]
+	name = Iago Leal
+	email = iago@psr-inc.com
 [init]
 	defaultBranch = master
 [credential]
 	helper = cache
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

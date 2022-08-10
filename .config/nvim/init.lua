@@ -1,5 +1,3 @@
-require('impatient')
-
 local utils  = require "utils"
 local echohl = utils.echohl
 
@@ -28,6 +26,8 @@ end
 bootstrap("packer.nvim", "https://github.com/wbthomason/packer.nvim")
 bootstrap("hotpot.nvim", "https://github.com/rktjmp/hotpot.nvim", false)
 bootstrap("impatient.nvim", "https://github.com/lewis6991/impatient.nvim", false)
+
+require('impatient').enable_profile()
 
 -- Fix how UpdateRemotePlugins works
 -- (needed for wilder)
