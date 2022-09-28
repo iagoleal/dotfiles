@@ -38,8 +38,8 @@
 ;; Recompile plugins every time the plugin file changes.
 (local plugins-path (.. (vim.fn.stdpath :config) "/fnl/plugins.fnl"))
 (augroup :PluginManager
-  (autocmd :BufWritePost plugins-path ":PackerCompile profile=true")
-  (autocmd :User :PackerComplete ":call UpdateRemotePlugins()"))
+  (autocmd :BufWritePost plugins-path ":PackerCompile profile=true"))
+  ;; (autocmd :User :PackerComplete ":call UpdateRemotePlugins()"))
 
 ;-----------------------
 ; Theme and colors
@@ -213,8 +213,7 @@
 ;;; Normal mode additional behaviour
 
 ; All this ctrl-w bla is making my pinky sore...
-; Let's try suing a leader key instead to move
-; the hard work to the thumb.
+; Let's try using a leader key instead in order to move the hard work to the thumb.
 (keymap :n "<leader>w" "<C-w>")
 
 ; Disable search highlighting (until next search)
@@ -287,19 +286,18 @@
 
 ;; Disable arrows
 (each [_ key (ipairs ["<Up>" "<Down>" "<Left>" "<Right>"])]
-  (keymap "" key "")
-  (keymap "v" key ""))
+  (keymap ["" "v"] key ""))
 
 
 ;;; Saner Insert mode mappings
 
-; Add an undo break point before deleting the entire lne
+; Add an undo break point before deleting the entire line
 (keymap :i "<C-U>" "<C-G>u<C-U>")
 
 ; Spell check previous mistake and correct to first suggestion
 (keymap :i "<C-l>" "<c-g>u<Esc>[s1z=`]a<c-g>u")
 
-;;; Make our life easier on command mode
+;;; Make life easier on command mode
 
 ;; Emacs-like keybindings for cmd  mode
 ; back one word
@@ -319,9 +317,6 @@
 ;; Building keymaps
 (keymap :n "<leader>m" ":Dispatch<CR>")
 (keymap :n "<leader>M" ":Dispatch!<CR>")
-
-; Toggle Color Highlight
-(keymap :n "<leader>cc" ":ColorizerToggle<CR>")
 
 ; Convert from rgb to float
 (keymap :n "<leader>cf" (require-use :color :inplace#hex->float))
@@ -350,7 +345,7 @@
            "setlocal tabstop=2 softtabstop=2 shiftwidth=2 lisp autoindent")
   (autocmd :FileType
            :haskell
-           "nnoremap <buffer> <leader>hh <cmd>Hoogle <C-r><C-w><CR>")
+           #(keymap :n "<leader>hh" "<cmd>Hoogle <C-r><C-w><CR>" :buffer true))
   (autocmd :FileType
            [:markdown :tex :latex :gitcommit]
            "setlocal spell")

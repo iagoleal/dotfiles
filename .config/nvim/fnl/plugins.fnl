@@ -1,6 +1,7 @@
 ; Macros and utilities
-(import-macros {:packer-use use : keymap : augroup : ex} :macros)
-(local {: autocmd : executable-exists? &as ut} (require :futils))
+(import-macros {:packer-use use :require-setup setup
+                : keymap : augroup : ex} :macros)
+(local {: autocmd : executable-exists?} (require :futils))
 
 ;; Plugin management
 (vim.cmd "packadd packer.nvim")
@@ -81,14 +82,15 @@
 
 ;; Better REPL management for Lisps
 (use "Olical/conjure"
-     :ft [:scheme :racket :clojure :fennel :julia :lisp]
      :config (fn []
                (tset vim.g :conjure#extract#tree_sitter#enabled        true)
                (tset vim.g :conjure#highlight#enabled                  true)
                (tset vim.g :conjure#log#hud#border                     "double")
                (tset vim.g :conjure#highlight#enabled                  :IncSearch)
+               ; scheme
                (tset vim.g :conjure#client#scheme#stdio#command        "racket -il scheme")
                (tset vim.g :conjure#client#scheme#stdio#prompt_pattern "\n?[\"%w%-./_]*> ")
+               ; fennel
                (tset vim.g :conjure#filetype#fennel                    "conjure.client.fennel.stdio")
                (tset vim.g :conjure#client#fennel#stdio#command        "fennel")))
 
@@ -120,7 +122,11 @@
 
 (use "NMAC427/guess-indent.nvim"
   :disable true
-  :config #((require-use :guess-indent :setup) {}))
+  :config #(setup :guess-indent))
+
+; Async make      (vimscript)
+(use "tpope/vim-dispatch"
+     :cmd [:Make :Dispatch])
 
 ;;;
 ;;; Should be built-in
@@ -131,11 +137,11 @@
 
 ; Add commands to (un)comment text objects
 (use "numToStr/Comment.nvim"
-     :config #((require-use :Comment :setup) {:ignore "^$"}))
+     :config #(setup :Comment :ignore "^$"))
 
 ; Edit surrounding objects
 (use "kylechui/nvim-surround"
-     :config #((require-use :nvim-surround :setup) {}))
+     :config #(setup :nvim-surround))
 
 
 ; Improved matchparen and matchit
@@ -146,12 +152,7 @@
                (set vim.g.matchup_matchparen_hi_surround_always 1)
                (set vim.g.matchup_matchparen_deferred_show_delay 150)
                (set vim.g.matchup_override_vimtex 0)
-               (set vim.g.matchup_matchpref {:html
-                                              {:tagnameonly 1}})))
-; Async make      (vimscript)
-(use "tpope/vim-dispatch"
-     :cmd [:Make :Dispatch])
-; Reopen file with sudo
+               (set vim.g.matchup_matchpref {:html {:tagnameonly 1}})))
 
 ; Allow writing file with sudo
 ; even if I open nvim as a normal user
@@ -169,19 +170,16 @@
                      "r" {:pattern "{\\|}\\|,"     ; Lua / Haskell style Records
                           :delimiter_align :r}}))
 
-;;;
+;-------------------------
 ;;; Colors
-;;;
+;-------------------------
 
-(use "norcalli/nvim-colorizer.lua"
-      :cmd [:ColorizerToggle :ColorizerReloadAllBuffers :ColorizerAttachToBuffer]
-      :config #((. (require :colorizer) :setup)))
-
-;; Color picker
-(use "KabbAmine/vCoolor.vim"         ; NOTE: Can I remake this in lua with floating windows?
-      :config (fn []
-                (set vim.g.vcoolor_disable_mappings 1)
-                (keymap :n "<leader>ce" "<cmd>VCoolor<cr>")))
+(use "uga-rosa/ccc.nvim"
+     :branch "0.7.2"
+     :config #(do
+                (setup :ccc :preserve true)
+                (keymap :n "<leader>ce" "<cmd>CccPick<CR>")
+                (keymap :n "<leader>cc" "<cmd>CccHighlighterToggle<CR>")))
 
 ;-------------------------
 ;;; Filetype specific
@@ -189,8 +187,7 @@
 
 (use "lervag/vimtex"
      :ft :tex
-     :config #(do (set vim.g.tex_flavor :latex)
-                  (set vim.g.vimtex_view_method :zathura)))
+     :config #(set vim.g.vimtex_view_method :zathura))
 
 (when (executable-exists? "jq")
   (use "monkoose/fzf-hoogle.vim"))
@@ -231,12 +228,11 @@
 ;;;
 ;;; Themes
 ;;;
-(use "rktjmp/lush.nvim")
+(use "rktjmp/lush.nvim"
+     :disable true)
 
 (use "pbrisbin/vim-colors-off")
 (use "YorickPeterse/vim-paper")
-(use "Shatur/neovim-ayu"
-  :config #((require-use :ayu :setup) {:mirage true}))
 (use "sainnhe/everforest")
 
 ;; Return packer itself to allow chaining commands

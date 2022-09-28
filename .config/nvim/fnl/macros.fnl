@@ -190,6 +190,10 @@
     (tset opts 1 pkg)
     `((. (require :packer) :use) ,opts)))
 
+(fn M.require-setup [pkg ...]
+  (let [opts (vararg-to-opts ...)]
+   `((. (require ,pkg) :setup) ,opts)))
+
 
 ;; export
 M
