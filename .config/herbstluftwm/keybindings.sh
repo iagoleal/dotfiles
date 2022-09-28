@@ -38,7 +38,6 @@ herbstclient keybind $Super-Print       spawn flameshot gui
 herbstclient keybind Control-Print      spawn "$HOME/.bin/pickcolor"
 
 # Media
-herbstclient keybind $Super-p             spawn sh "$HOME/.bin/musicctl" "toggle"
 herbstclient keybind $Super-$Alt-p        spawn sh "$HOME/.bin/dmenu-chooseplayer"
 herbstclient keybind $Super-Shift-comma   spawn sh "$HOME/.bin/musicctl" "prev"
 herbstclient keybind $Super-Shift-period  spawn sh "$HOME/.bin/musicctl" "next"
@@ -147,14 +146,26 @@ herbstclient keybind $Super-Shift-space                                         
 
 # Focus
 herbstclient keybind $Super-BackSpace         cycle_monitor
+
 herbstclient keybind $Super-Tab               cycle_all +1
 herbstclient keybind $Super-Shift-Tab         cycle_all -1
+
 herbstclient keybind $Super-$Alt-Tab          cycle_frame +1
 herbstclient keybind $Super-$Alt-Shift-Tab    cycle_frame -1
-herbstclient keybind $Super-apostrophe        cycle +1
-herbstclient keybind $Super-Shift-apostrophe  cycle -1
+
+herbstclient keybind $Super-apostrophe        use_index +1 --skip-visible
+herbstclient keybind $Super-Shift-apostrophe  use_index -1 --skip-visible
+
 herbstclient keybind $Super-i                 jumpto urgent
+herbstclient keybind $Super-p                 use_previous
 
 # Gaps
-herbstclient keybind $Super-g       cycle_value window_gap 0 5 10 15 20 25 30 35 40 75 100 200
-herbstclient keybind $Super-Shift-g cycle_value frame_gap 0 5 10 15 20 25 30 35 40 75 100 200
+herbstclient keybind $Super-g       cycle_value window_gap 0 5 10 15 20 25 30 35 40 50
+herbstclient keybind $Super-Shift-g cycle_value frame_gap  0 5 10 15 20 25 30 35 40 50
+
+# mousebinds
+herbstclient mouseunbind --all
+herbstclient mousebind $Super-Button1 move
+herbstclient mousebind $Super-Button2 zoom
+herbstclient mousebind $Super-Button3 resize
+
