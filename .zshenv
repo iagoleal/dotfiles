@@ -6,13 +6,13 @@ export VISUAL="nvim"
 export TERMINAL="xterm"
 export BROWSER="firefox"
 
-# Always start Julia with 8 threads
 export JULIA_NUM_THREADS=8
+export JULIA_161=julia
 
 # Append extra bin folders to PATH variable
 path+=("$HOME/.local/bin")
-path+=("$HOME/.bin")
 path+=("$HOME/bin")
+path=("$HOME/.nix-profile/bin" "$HOME/.bin" $path)
 export PATH
 if command -v luarocks &> /dev/null; then
   eval $(luarocks path --bin)

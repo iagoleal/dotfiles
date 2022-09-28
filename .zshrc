@@ -23,6 +23,9 @@ HISTFILE=~/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
 setopt appendhistory
+setopt inc_append_history
+setopt hist_ignore_dups
+setopt hist_ignore_space
 
 # # When going over history,
 # # only consider commands which match the written characters until now
