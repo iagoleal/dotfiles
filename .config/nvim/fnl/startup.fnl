@@ -20,6 +20,7 @@
 (tset _G :dump ut.dump)
 (tset _G :force_require ut.force-require)
 
+
 ;;; Lazy load packer on file change.
 ;; Adapt the built-in packer commands to use my plugin file.
 (def-command PackerInstall [] ((require-use :plugins :install)))
@@ -138,6 +139,9 @@
 (option :wildmenu)                       ; visual menu for command autocompletion
 (option :wildmode [:full :list :full])   ; first autocomplete the word, afterwards run across the list
 (option :wildignorecase)
+
+(option :completeopt "menuone")
+
 
 ;; Vertical split to the right (default is left)
 (option :splitright)
@@ -276,6 +280,7 @@
     (vim.cmd (fmt "vert ptag %s" current-word))
     ; Restore option to default
     (set vim.o.previewheight backup-previewheight)))
+
 
 (keymap :n "<C-w>[" "<cmd>vert wincmd ]<CR>")
 (keymap :n "<C-w>{" ptag-vertical)

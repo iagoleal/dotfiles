@@ -28,6 +28,10 @@
      {:stack
         {:command ["stack" "ghci"]
          :open    ":{"
+         :close   [":}" ""]}
+      :ghci-par
+        {:command ["ghci" "+RTS" "-N" "-RTS"]
+         :open    ":{"
          :close   [":}" ""]}}
    :lhaskell
      {:ghci
@@ -53,7 +57,7 @@
 (iron.core.set_config
    {:preferred {:lua     "lua"
                 :fennel  "fennel"
-                :haskell "stack"
+                :haskell "ghci-par"
                 :julia   "projectwise"
                 :python  "python"
                 :scheme  "racket"}

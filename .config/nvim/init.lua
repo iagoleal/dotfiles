@@ -29,10 +29,6 @@ bootstrap("packer.nvim", "https://github.com/wbthomason/packer.nvim")
 bootstrap("hotpot.nvim", "https://github.com/rktjmp/hotpot.nvim", false)
 bootstrap("impatient.nvim", "https://github.com/lewis6991/impatient.nvim", false)
 
--- Use lua based filetype detection
-vim.g.did_load_filetypes = 0
-vim.g.do_filetype_lua    = 1
-
 -- Fix how UpdateRemotePlugins works
 -- (needed for wilder)
 vim.cmd [[

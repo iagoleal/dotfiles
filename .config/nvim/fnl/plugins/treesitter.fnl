@@ -37,6 +37,7 @@
                         "if" "@function.inner"
                         "ac" "@class.outer"
                         "ic" "@class.inner"}}
+
      :move {:enable    true
             :set_jumps true
             :goto_next_start
@@ -51,6 +52,9 @@
             :goto_previous_end
                {"[M" "@function.outer"
                 "[]" "@class.outer"}}
+
+     :include_surrounding_whitespace true
+
      :lsp_interop {:enable true
                    :peek_definition_code {"<leader>pf" "@function.outer"
                                           "<leader>pc" "@class.outer"}}}

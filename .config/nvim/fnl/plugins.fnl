@@ -57,7 +57,7 @@
      :config #(require :lsp))
 ; Query LSP for tag files.
 ; It Allows me to use built-in tag commands with LSP.
-(use "weilbith/nvim-lsp-smag")
+;; (use "weilbith/nvim-lsp-smag")
 
 ; Hook external linters/formaters into LSP
 (use "jose-elias-alvarez/null-ls.nvim"
@@ -175,9 +175,12 @@
 ;-------------------------
 
 (use "uga-rosa/ccc.nvim"
-     :branch "0.7.2"
-     :config #(do
-                (setup :ccc :preserve true)
+     :config #(let [ccc (require :ccc)]
+                (setup :ccc
+                   :outputs [ccc.output.hex
+                                 ccc.output.css_rgb
+                                 ccc.output.css_hsl
+                                 ccc.output.float])
                 (keymap :n "<leader>ce" "<cmd>CccPick<CR>")
                 (keymap :n "<leader>cc" "<cmd>CccHighlighterToggle<CR>")))
 
@@ -186,8 +189,8 @@
 ;-------------------------
 
 (use "lervag/vimtex"
-     :ft :tex
-     :config #(set vim.g.vimtex_view_method :zathura))
+     :config #(do (set vim.g.tex_flavor :latex)
+                  (set vim.g.vimtex_view_method :zathura)))
 
 (when (executable-exists? "jq")
   (use "monkoose/fzf-hoogle.vim"))

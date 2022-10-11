@@ -8,7 +8,7 @@
   `(. (require ,pkg) ,...))
 
 (fn capable? [client capability]
-  (. client.resolved_capabilities capability))
+  (. client.server_capabilities capability))
 
 ;;; Only map keybinds after attaching LSP
 (fn on-attach [client bufnr]
@@ -19,33 +19,43 @@
     (tset vim.bo bufnr :omnifunc "v:lua.vim.lsp.omnifunc")
 
     ;; Mappings
-    (when (capable? client :hover)
+    (when (capable? client :hoverProvider)
       (bmap :n "K"          vim.lsp.buf.hover))
-    (bmap :n "<C-k>"      vim.lsp.buf.signature_help)
+    (when (capable? client :signatureHelpProvider)
+      (bmap :n "<C-k>"      vim.lsp.buf.signature_help))
+
     (bmap :n "gr"         vim.lsp.buf.references)
-    (bmap :n "gD"         vim.lsp.buf.declaration)
-    (bmap :n "gd"         vim.lsp.buf.definition)
-    (bmap :n "g<C-d>"     vim.lsp.buf.implementation)
+    (bmap :n "<leader>rn" vim.lsp.buf.rename)
+
     (bmap :n "<leader>wa" vim.lsp.buf.add_workspace_folder)
     (bmap :n "<leader>wr" vim.lsp.buf.remove_workspace_folder)
     (bmap :n "<leader>wl" #(print (vim.inspect (vim.lsp.buf.list_workspace_folders))))
-    (bmap :n "<leader>rn" vim.lsp.buf.rename)
 
-    (when (capable? client :type_definition)
-      (bmap :n "<leader>D" vim.lsp.buf.type_definition))
-    (when (capable? client :code_action)
-      (bmap :n "<leader>ca" vim.lsp.buf.code_action))
-    (when (capable? client :code_lens)
-      (bmap :n "<leader>cl" vim.lsp.codelens.run)
-      (augroup :LspCodeLens
-        (autocmd [:BufEnter :CursorHold :InsertLeave] "<buffer>" vim.lsp.codelens.refresh))
-      (vim.lsp.codelens.refresh))
+    (when (capable? client :definitionProvider)
+      (bmap :n "gd"         vim.lsp.buf.definition
+        :desc "Go to definition"))
+    (when (capable? client :typeDefinitionProvider)
+      (bmap :n "<leader>D" vim.lsp.buf.type_definition
+        :desc "Go to type definition"))
+    (when (capable? client :declarationProvider)
+      (bmap :n "gD"         vim.lsp.buf.declaration
+        :desc "Go to declaration"))
+    (when (capable? client :implementationProvider)
+      (bmap :n "g<C-d>"     vim.lsp.buf.implementation
+        :desc "Go to implementation"))
 
     ;; Set some keybinds conditional on server capabilities
-    (if (capable? client :document_range_formatting)
-        (bmap :n "<leader>=" vim.lsp.buf.range_formatting)
-        (capable? client :document_formatting)
-        (bmap :n "<leader>=" vim.lsp.buf.formatting))))
+    (bmap :n "<leader>=" #(vim.lsp.buf.format {:async true}))
+
+    (when (capable? client :codeActionProvider)
+      (bmap :n "<leader>ca" vim.lsp.buf.code_action
+        :desc "Execute Code Action under cursor"))
+
+    (when (capable? client :codeLensProvider)
+      (bmap :n "<leader>cl" vim.lsp.codelens.run)
+      (augroup :LspCodeLens
+        (autocmd [:BufEnter :CursorHold :InsertLeave] "<buffer>" vim.lsp.codelens.refresh
+          :desc "Execute Code Lens under cursor")))))
 
 
 ;; Diagnostics
