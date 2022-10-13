@@ -22,7 +22,6 @@ unsetopt beep
 HISTFILE=~/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
-setopt appendhistory
 setopt inc_append_history
 setopt hist_ignore_dups
 setopt hist_ignore_space
@@ -71,3 +70,12 @@ source $HOME/.zsh.d/prompt.zsh
 source $HOME/.zsh.d/fzf.zsh
 # Enable syntax highlighting
 source $HOME/.zsh.d/syntax-highlighting.zsh
+
+    # >>> juliaup initialize >>>
+
+# !! Contents within this block are managed by juliaup !!
+
+path=('/home/iago/.julia/juliaup/bin' $path)
+export PATH
+
+# <<< juliaup initialize <<<

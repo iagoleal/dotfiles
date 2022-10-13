@@ -118,3 +118,7 @@ alias -s {pdf,ps,xps,djvu,epub}=zathura
 alias -s {jpg,jpeg,png,bmp,gif}=imv-folder
 alias -s {avi,mkv,webm,mp4}=mpv
 alias -s svg=inkview
+
+function cp_from_file() {
+    for dir in "$3"/*/; do cat "$1" | xargs -I{} find "$2" -iname {} | xargs -I{} cp {} "$dir"; done
+}
