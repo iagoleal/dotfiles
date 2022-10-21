@@ -40,7 +40,6 @@
 (local plugins-path (.. (vim.fn.stdpath :config) "/fnl/plugins.fnl"))
 (augroup :PluginManager
   (autocmd :BufWritePost plugins-path ":PackerCompile profile=true"))
-  ;; (autocmd :User :PackerComplete ":call UpdateRemotePlugins()"))
 
 ;-----------------------
 ; Theme and colors
@@ -88,10 +87,6 @@
 (option :synmaxcol 179)
 (option :wrap false)
 
-(option :showcmd)
-(option :ruler)
-(option :conceallevel 0)
-
 (option :list) ; Show trailing {spaces, tabs}
 (option :listchars {:tab      "├─"
                     :trail    "۰"
@@ -123,35 +118,28 @@
 
 (option :lazyredraw)              ; Don't redraw screen during macros or register operations
 
-(option :joinspaces false)
-
 ;; Search
-(option :incsearch)               ; search as characters are entered
-(option :hlsearch)                ; highlight matches
 (option :ignorecase)              ; case-insensitive search / substitution
 (option :smartcase)               ; If terms are all lowercase, ignore case. Consider case otherwise.
-
-(option :inccommand "nosplit")    ; Show result of :s incrementally on buffer
 
 ;; Find files on subfolders
 (option :path append "**")
 
-(option :wildmenu)                       ; visual menu for command autocompletion
+;; Completion
 (option :wildmode [:full :list :full])   ; first autocomplete the word, afterwards run across the list
 (option :wildignorecase)
 
 (option :completeopt "menuone")
-
 
 ;; Vertical split to the right (default is left)
 (option :splitright)
 
 ;; Spaces and Tabs, settling the war
 (fn set-spaces-per-tab [n]
-  (set vim.opt.tabstop n)
+  (set vim.opt.tabstop     n)
   (set vim.opt.softtabstop n)
-  (set vim.opt.shiftwidth n)
-  (set vim.opt.expandtab true))
+  (set vim.opt.shiftwidth  n)
+  (set vim.opt.expandtab   true))
 
 ;; Expose it as a command
 (def-command SpacesPerTab [n]
@@ -163,24 +151,16 @@
 (option :smarttab false)
 
 
-;; Indentation
-(option :autoindent)
-
 ;; Session
 ; Remember options (local and global) and all tabpages in a single session file
 (option :sessionoptions append [:options :tabpages])
 
 ;; Backup
 (option :backup)
-(option :backupdir  ["~/.vim/tmp" "~/.tmp" "~/tmp" "/var/tmp" "/tmp" "."])
-(option :backupskip ["/tmp/*" "/private/tmp/*"])
-(option :directory  ["~/.vim/tmp" "~/.tmp" "~/tmp" "/var/tmp" "tmp"])
-(option :writebackup)
-
-
-;; Set undo
-(option :undodir ["~/.tmp" "~/tmp" "/var/tmp" "/tmp" "$XDG_DATA_HOME/nvim/undo" "."])
 (option :undofile)
+(option :backupdir ["/var/tmp" "/tmp" "$XDG_STATE_HOME/nvim/backup//"])
+(option :directory ["/tmp" "/var/tmp" "$XDG_STATE_HOME/nvim/swap//"])
+(option :undodir   ["/var/tmp" "/tmp" "$XDG_STATE_HOME/nvim/undo"])
 
 ;; Set backup files
 (option :thesaurus append (.. (vim.fn.stdpath :config)
@@ -195,10 +175,8 @@
 ;-- Keymaps
 ;---------------------
 
-(keymap "" "<Space>" "<Nop>"
-        :silent true)
+(keymap "" "<Space>" "<Nop>" :silent true)
 (set vim.g.mapleader " ")
-; (set vim.g.maplocalleader "\\")
 
 ;;; Redefined behaviour
 ;;; Modifications on vim's traditional keybidings
@@ -220,9 +198,6 @@
 ; Let's try using a leader key instead in order to move the hard work to the thumb.
 (keymap :n "<leader>w" "<C-w>")
 
-; Disable search highlighting (until next search)
-(keymap :n "<leader>/" "<cmd>nohlsearch<CR>")
-
 ; Zoom window at new tab
 (keymap :n "<leader>tz" "<cmd>tab split<CR>")
 
@@ -234,6 +209,7 @@
 
 ; Search visual selection
 (keymap :v "*" "y/\\V<C-R>=escape(@\",'/\\')<CR><CR>")
+(keymap :v "#" "y?\\V<C-R>=escape(@\",'/\\')<CR><CR>")
 ; Search visual selection text on whole project
 (keymap :v "<M-*>" "y:grep '<C-R>=escape(@\",'/\\')<CR>' **/*")
 
@@ -286,18 +262,15 @@
 (keymap :n "<C-w>{" ptag-vertical)
 
 ;; Scroll the preview window
-(keymap :n "<M-e>" "<C-w>P<C-e><C-w>p")
-(keymap :n "<M-y>" "<C-w>P<C-y><C-w>p")
+(keymap :n "<M-e>" (.. "'<C-w>P' . v:count1 . '<C-e><C-w>p'")
+        :expr true)
+(keymap :n "<M-y>" (.. "'<C-w>P' . v:count1 . '<C-y><C-w>p'")
+        :expr true)
 
 ;; Disable arrows
 (each [_ key (ipairs ["<Up>" "<Down>" "<Left>" "<Right>"])]
   (keymap ["" "v"] key ""))
 
-
-;;; Saner Insert mode mappings
-
-; Add an undo break point before deleting the entire line
-(keymap :i "<C-U>" "<C-G>u<C-U>")
 
 ; Spell check previous mistake and correct to first suggestion
 (keymap :i "<C-l>" "<c-g>u<Esc>[s1z=`]a<c-g>u")
@@ -314,9 +287,9 @@
 (keymap :c "<M-x>p" "getcmdtype() == ':' ? expand('%:h').'/' : ''"
         :expr true)
 
-;; Plugin related
+;;; Plugin related
+;--------------------------
 
-; Toggle quickfix window on the bottom of screen
 (keymap :n "gx" "<cmd>call netrw#BrowseX(expand((exists(\"g:netrw_gx\")? g:netrw_gx : '<cfile>')),netrw#CheckIfRemote())<cr>")
 
 ;; Building keymaps
@@ -329,13 +302,8 @@
 ; Highlight cross around cursor
 (keymap :n "<leader>chl" "<cmd>set cursorline! cursorcolumn!<CR>")
 
-; FZF
-(keymap :n "<leader>fe" ":FZFFiles<cr>")
-(keymap :n "<leader>fb" ":FZFBuffers<cr>")
-
 ; Easy Align
-(keymap :n "<leader>a" "<Plug>(EasyAlign)" :noremap false)
-(keymap :x "<leader>a" "<Plug>(EasyAlign)" :noremap false)
+(keymap [:n :x] "<leader>a" "<Plug>(EasyAlign)" :noremap false)
 
 ; UndoTree
 (keymap :n "<leader>tu" "<cmd>UndotreeToggle<CR>")
@@ -352,6 +320,9 @@
            :haskell
            #(keymap :n "<leader>hh" "<cmd>Hoogle <C-r><C-w><CR>" :buffer true))
   (autocmd :FileType
+           :julia
+           "setlocal iskeyword+=!")
+  (autocmd :FileType
            [:markdown :tex :latex :gitcommit]
            "setlocal spell")
   (autocmd :FileType
@@ -367,11 +338,11 @@
 ;-- Disable Built-in plugins
 ;-----------------------------
 
-(local disabled-built-ins [:gzip
+(local disabled-built-ins [; :gzip
                            ; :zip
                            ; :zipPlugin
-                           :tar
-                           :tarPlugin
+                           ; :tar
+                           ;:tarPlugin
                            :getscript
                            :getscriptPlugin
                            :vimball
