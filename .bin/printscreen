@@ -2,7 +2,7 @@
 
 screenshotsFolder="$HOME/Pictures/Screenshots"
 
-while getopts cwf flag; do
+while getopts 'cwf:' flag; do
     case $flag in
         w)
             cbflag=true

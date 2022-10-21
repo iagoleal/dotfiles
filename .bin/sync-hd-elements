@@ -1,15 +1,19 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 # Sync backup on external hard drive
 #
-# For dry-run, use -n (only view what will be modified, without really changing it)
+# To dry-run, use -n (only view what will be modified, without really changing it)
+# To remove deleted files from backup, use --delete
 
 # Cummulative backup
-rsync -avP ~/Videos/ /run/media/iago/Elements/Videos/
-# rsync -avP ~/Music/ /run/media/iago/Elements/Music/
-rsync -avP ~/Pictures/ /run/media/iago/Elements/Pictures/
-rsync -avP ~/Documents/ /run/media/iago/Elements/Documents/
+rsync -avP ~/Videos/ /media/Elements/Videos/
+# rsync -avP ~/Music/ /media/Elements/Music/
+rsync -avP ~/Pictures/ /media/Elements/Pictures/
+rsync -avP ~/Books/ /media/Elements/Books/
+
+rsync -avP ~/Documents/ /media/Elements/Documents/
 
 # Non-cumulative backup
-rsync -avP --delete ~/Code/ /run/media/iago/Elements/Code/
-rsync -avP --delete ~/Books/ /run/media/iago/Elements/Books/
+rsync -avP --delete ~/Code/ /media/Elements/Code/
 
+# List of installed packages
+yay -Qe > /media/Elements/pacman-installed.txt

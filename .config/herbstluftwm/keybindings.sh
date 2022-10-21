@@ -18,9 +18,9 @@ herbstclient keyunbind --all
 herbstclient keybind $Super-Return           spawn $Terminal
 herbstclient keybind $Super-Shift-Escape     spawn "$Terminal -e htop"
 
-herbstclient keybind $Super-Shift-d          spawn dmenu_run -r -p '> '
-herbstclient keybind $Super-b                spawn "$HOME/.bin/dmenu-bookfinder"
-herbstclient keybind $Super-slash            spawn "$HOME/.bin/internet-search-cb"
+herbstclient keybind $Super-Shift-d        spawn dmenu_run -r -p '> '
+herbstclient keybind $Super-b              spawn "$HOME/.bin/wrapmenu" searcher "$HOME/Books"
+herbstclient keybind $Super-slash          spawn "$HOME/.bin/internet-search-cb"
 
 # Notifications
 herbstclient keybind $Super-q       spawn "$HOME/.bin/notify" "-e" "$HOME/.bin/getinfo"
@@ -53,7 +53,7 @@ herbstclient keybind XF86AudioMicMute     spawn "$HOME/.bin/volctl" "micmute"
 herbstclient keybind XF86MonBrightnessUp    spawn xbacklight -inc 5
 herbstclient keybind XF86MonBrightnessDown  spawn xbacklight -dec 5
 herbstclient keybind XF86Display            spawn arandr
-herbstclient keybind XF86Tools              spawn "$HOME/.bin/dmenu-config-files"
+herbstclient keybind XF86Tools             spawn wrapmenu -c cfgmenu "$HOME/.bin/open-config-files"
 
 # fn+4 == XF84Sleep
 

@@ -1,25 +1,28 @@
 #!/bin/sh
 
 term() {
-  xterm -e "$1"
+  nohup xterm -e "$1" > /dev/null 2>&1 &
 }
 
 # List of avaiable options
 cfgs="Neovim\nHerbstluftwm\nPulseaudio\nzsh"
 
-choose="$( echo -e "$cfgs" | dmenu -i -l 4 -p '% ' )"
+choose="$( echo -e "$cfgs" | fzf --border --no-info -1 --height=~40% --prompt '% ' --no-multi --layout=reverse )"
 
 case "${choose}" in
   Neovim)
-    term "cd ~/.config/nvim && nvim fnl/startup.fnl" #+':rightbelow 40 vsplit .' +':exe \"normal \<c-w>1\<c-w>\"'"
+    term "cd ~/.config/nvim && nvim fnl/startup.fnl"
     ;;
   Herbstluftwm)
     term 'cd ~/.config/herbstluftwm && nvim -O autostart keybindings.sh'
     ;;
  Pulseaudio)
-    pavucontrol
+    nohup pavucontrol > /dev/null 2>&1 &
     ;;
   zsh)
     term 'cd ~/.zsh.d/ && nvim ~/.zshrc *'
     ;;
 esac
+
+# We need to spawn the processes before quitting
+sleep 0.0001

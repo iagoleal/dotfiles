@@ -20,14 +20,13 @@ done
 
 # rules
 herbstclient unrule -F
-#herbstclient rule class=XTerm tag=3 # move all xterms to tag 3
-#herbstclient rule focus=off # normally do not focus new clients
-# give focus to most common terminals
-#herbstclient rule class~'(.*[Rr]xvt.*|.*[Tt]erm|Konsole)' focus=on
 herbstclient rule focus=on # normally focus new clients
-herbstclient rule windowtype~'_NET_WM_WINDOW_TYPE_(DIALOG|UTILITY|SPLASH)' pseudotile=on --focus=on
+herbstclient rule windowtype~'_NET_WM_WINDOW_TYPE_(DIALOG|UTILITY|SPLASH)' floating=on --focus=on
 herbstclient rule windowtype='_NET_WM_WINDOW_TYPE_DIALOG' focus=on
 herbstclient rule windowtype~'_NET_WM_WINDOW_TYPE_(NOTIFICATION|DOCK|DESKTOP)' manage=off
+
+herbstclient rule class=wrapmenu floating=true floating_geometry=1880x880+20+100 floatplacement=center
+herbstclient rule class=cfgmenu  floating=true floating_geometry=1920x150+0+0
 
 # unlock, just to be sure
 herbstclient unlock

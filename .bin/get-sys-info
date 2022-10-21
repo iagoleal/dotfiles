@@ -1,0 +1,160 @@
+#!/usr/bin/env bash
+
+#-------------------------
+# Battery
+#-------------------------
+
+bat_querycapacity() {
+  BATLEVEL="$(cat /sys/class/power_supply/$1/capacity)"
+  echo "${BATLEVEL}%"
+}
+
+cmd_battery() {
+  local BAT
+  if [ -z $1 ]; then
+    BAT=BAT0
+  else
+    BAT="BAT${1}"
+  fi
+  echo $(bat_querycapacity $BAT)
+}
+
+#---------------------
+# Bluetooth
+#---------------------
+
+bt_getstatus() {
+  echo "$(bluetooth | cut -f 3 -d' ')"
+}
+
+cmd_bluetooth() {
+  echo $(bt_getstatus)
+}
+
+
+#-------------------------
+# Pulseaudio queries
+#-------------------------
+# Information related to audio.
+# This uses pulseaudio instead of ALSA because of the bluetooth adapter.
+
+pa_defaultsinkname() {
+  pacmd stat | awk -F": " '/^Default sink name: /{print $2}'
+}
+
+pa_getsinkvolume() {
+  local SINK
+  if [ -z $1 ]; then
+    SINK="$(pa_defaultsinkname)"
+  else
+    SINK="$1"
+  fi
+  pacmd list-sinks |
+    awk '/^\s+name: /{indefault = $2 == "<'$SINK'>"}
+         /^\s+volume: / && indefault {print $5; exit}'
+}
+
+pa_getsinkmuted() {
+  local SINK
+  if [ -z $1]; then
+    SINK="$(pa_defaultsinkname)"
+  else
+    SINK="$1"
+  fi
+  pacmd list-sinks |
+    awk '/^\s+name: /{indefault = $2 == "<'$SINK'>"}
+         /^\s+muted: / && indefault {print $2; exit}'
+}
+
+cmd_audio() {
+  case "$1" in
+    "muted")
+      pa_getsinkmuted
+      ;;
+    "volume")
+      pa_getsinkvolume
+      ;;
+    "default-sink")
+      pa_defaultsinkname
+      ;;
+  esac
+}
+
+#------------------------
+# Screen Brightness
+#------------------------
+brightness_query() {
+  echo "$( printf "%0.1f\n" $(xbacklight -get))"
+}
+
+cmd_screenbrightness() {
+  echo $(brightness_query)
+}
+
+#------------------------
+# Temperature
+#------------------------
+temp_query() {
+  local temp_mC="$(cat /sys/class/thermal/$ZONE/temp)"
+  local temp_fmt=$(awk '{tp=$1/1000.; printf("%.1fºC", tp) }' <<<"$temp_mC")
+  echo "${temp_fmt}"
+}
+
+cmd_temperature() {
+  local ZONE
+  if [ -z $1]; then
+    ZONE=thermal_zone0
+  else
+    ZONE="thermal_zone${1}"
+  fi
+  echo $(temp_query $ZONE)
+}
+
+#-----------------------
+# Memory usage
+#------------------------
+mem_total() {
+  echo $(free -m | grep Mem | awk '{print $2}')
+}
+mem_used() {
+  echo $(free -m | grep Mem | awk '{print $3}')
+}
+
+mem_percentage() {
+  echo $(free -m | grep Mem | awk '{perc=$3/$2*100; printf("%.1f%%", perc)}')
+}
+
+cmd_memory() {
+  echo $(mem_percentage)
+}
+
+###########################
+# Command Interface
+###########################
+
+ACTION=$1
+shift
+case $ACTION in
+  "audio")
+    cmd_audio "$@"
+    ;;
+  "battery")
+    cmd_battery "$@"
+    ;;
+  "bluetooth")
+    cmd_bluetooth "$@"
+    ;;
+  "memory")
+    cmd_memory "$@"
+    ;;
+  "screen-brightness")
+    cmd_screenbrightness "$@"
+    ;;
+  "temperature")
+    cmd_temperature "$@"
+    ;;
+  *) 
+    echo "Error: '${ACTION}' is not a valid command." >&2
+    exit 1
+    ;;
+esac

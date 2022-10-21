@@ -1,0 +1,14 @@
+#!/bin/sh
+
+FOLDER="$(realpath "$1")"
+
+item=$(cd $FOLDER && rg --files | sed "s:^\./::g" \
+  | fzf-ueberzogen.sh --prompt="β " --scheme=path --info=inline --no-multi --preview 'fzf-preview.sh {}')
+exit_code=$?
+item_path="$FOLDER/$item"
+
+if [ $exit_code == 0 ]; then
+  nohup xdg-open "$item_path" > /dev/null 2>&1 & sleep 0.000000001
+else
+  exit "$exit_code"
+fi

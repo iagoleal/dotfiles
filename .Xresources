@@ -15,16 +15,16 @@ dmenu.selbackground: #56bb78
 dmenu.selforeground: BG
 
 !! Xterm config
-XTerm*termName: xterm-256color
-XTerm*faceName: xft:mononoki::antialias=true:hinting=false
-XTerm*faceSize: 15
-XTerm*renderFont: true
-XTerm*locale: true
+xterm*termName: xterm-256color
+xterm*faceName: xft:mononoki::antialias=true:hinting=false
+xterm*faceSize: 15
+xterm*renderFont: true
+xterm*locale: true
 ! allows alt+key to be used for commands
-XTerm*metaSendsEscape:  true
+xterm*metaSendsEscape:  true
 ! Fix backspace escape code
-XTerm.vt100.backarrowKey: false
-XTerm.ttyModes: erase ^?
+xterm*vt100.backarrowKey: false
+xterm*ttyModes: erase ^?
 ! Clipboard
 xterm*VT100.Translations: #override \
                  Ctrl Shift <Key>V:    insert-selection(CLIPBOARD) \n\
