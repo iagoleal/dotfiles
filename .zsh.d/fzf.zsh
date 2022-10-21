@@ -27,7 +27,7 @@ bindkey '^X^R' fzf-history-widget-accept
 export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 
 # Default options
-export FZF_DEFAULT_OPTS='-m'
+export FZF_DEFAULT_OPTS='-m --cycle --bind=alt-e:preview-down --bind=alt-y:preview-up'
 
 # Use rg as grep tool
 if command -v rg &> /dev/null; then
@@ -40,10 +40,17 @@ source /home/iago/.zsh.d/lib/fzf-git.sh
 # use fzf for general tab completion
 source $HOME/.zsh.d/lib/fzf-tab/fzf-tab.plugin.zsh
 
+bindkey '^[[Z' $fzf_default_completion # bind Shift-Tab
+
 zstyle ':completion:*:descriptions' format '[%d]'
 zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
 zstyle ':fzf-tab:complete:(-command-|-parameter-|-brace-parameter-|export|unset|expand):*' fzf-preview 'echo ${(P)word}'
 
+# Get help
+zstyle ':fzf-tab:complete:(\\|)run-help:*' fzf-preview 'run-help $word'
+zstyle ':fzf-tab:complete:(\\|*/|)man:*' fzf-preview 'man $word'
+
+# Git
 zstyle ':fzf-tab:complete:git-(add|diff|restore):*' fzf-preview \
   'git diff --color=always $word'
 zstyle ':fzf-tab:complete:git-log:*' fzf-preview \

@@ -29,7 +29,6 @@ function update {
   cat $PACKER_DUMP
   echo "\nUpdating Haskell...\n"
   ghcup upgrade
-  cabal update
   echo "\nUpdating Julia...\n"
   juliaup update
 }
