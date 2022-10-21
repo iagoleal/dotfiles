@@ -15,50 +15,45 @@ Alt=Mod1    # Use Alt key when necessary
 herbstclient keyunbind --all
 
 # Main spawn shortcuts
-herbstclient keybind $Super-Return           spawn $Terminal
-herbstclient keybind $Super-Shift-Escape     spawn "$Terminal -e htop"
+herbstclient keybind $Super-Return         spawn $Terminal
+herbstclient keybind $Super-Shift-Escape   spawn "$Terminal -e htop"
 
 herbstclient keybind $Super-Shift-d        spawn dmenu_run -r -p '> '
 herbstclient keybind $Super-b              spawn "$HOME/.bin/wrapmenu" searcher "$HOME/Books"
 herbstclient keybind $Super-slash          spawn "$HOME/.bin/internet-search-cb"
 
 # Notifications
-herbstclient keybind $Super-q       spawn "$HOME/.bin/notify" "-e" "$HOME/.bin/getinfo"
-herbstclient keybind $Super-w       spawn "$HOME/.bin/notify" "-e" "$HOME/.bin/hlwm-tags"
+herbstclient keybind $Super-q              spawn "$HOME/.bin/notify" "-e" "$HOME/.bin/getinfo"
+herbstclient keybind $Super-w              spawn "$HOME/.bin/notify" "-e" "$HOME/.bin/hlwm-tags"
 
 # Change mode
-herbstclient keybind $Super-Shift-e spawn sh "${modes_folder}/System.sh"
-herbstclient keybind $Super-d       spawn sh "${modes_folder}/Launcher.sh"
-herbstclient keybind $Super-n       spawn sh "${modes_folder}/Notify.sh"
+herbstclient keybind $Super-Shift-e        spawn sh "${modes_folder}/System.sh"
+herbstclient keybind $Super-d              spawn sh "${modes_folder}/Launcher.sh"
+herbstclient keybind $Super-n              spawn sh "${modes_folder}/Notify.sh"
 
 # Screenshots
-herbstclient keybind Print              spawn flameshot full -c
-herbstclient keybind $Super-Shift-Print spawn flameshot full -c -p "$HOME/Pictures/Screenshots"
-herbstclient keybind $Super-Print       spawn flameshot gui
-herbstclient keybind Control-Print      spawn "$HOME/.bin/pickcolor"
-
-# Media
-herbstclient keybind $Super-$Alt-p        spawn sh "$HOME/.bin/dmenu-chooseplayer"
-herbstclient keybind $Super-Shift-comma   spawn sh "$HOME/.bin/musicctl" "prev"
-herbstclient keybind $Super-Shift-period  spawn sh "$HOME/.bin/musicctl" "next"
+herbstclient keybind Print                 spawn flameshot full -c
+herbstclient keybind $Super-Shift-Print    spawn flameshot full -c -p "$HOME/Pictures/Screenshots"
+herbstclient keybind $Super-Print          spawn flameshot gui
+herbstclient keybind Control-Print         spawn "$HOME/.bin/pickcolor"
 
 # Bind Special Keys
 
 # increase/decrease/mute sound volume
-herbstclient keybind XF86AudioMute        spawn "$HOME/.bin/volctl" "mute"
-herbstclient keybind XF86AudioRaiseVolume spawn "$HOME/.bin/volctl" "raise"
-herbstclient keybind XF86AudioLowerVolume spawn "$HOME/.bin/volctl" "lower"
-herbstclient keybind XF86AudioMicMute     spawn "$HOME/.bin/volctl" "micmute"
+herbstclient keybind XF86AudioMute         spawn "$HOME/.bin/volctl" mute
+herbstclient keybind XF86AudioRaiseVolume  spawn "$HOME/.bin/volctl" raise
+herbstclient keybind XF86AudioLowerVolume  spawn "$HOME/.bin/volctl" lower
+herbstclient keybind XF86AudioMicMute      spawn "$HOME/.bin/volctl" micmute
 
-herbstclient keybind XF86MonBrightnessUp    spawn xbacklight -inc 5
-herbstclient keybind XF86MonBrightnessDown  spawn xbacklight -dec 5
-herbstclient keybind XF86Display            spawn arandr
+herbstclient keybind XF86MonBrightnessUp   spawn xbacklight -inc 5
+herbstclient keybind XF86MonBrightnessDown spawn xbacklight -dec 5
+herbstclient keybind XF86Display           spawn arandr
 herbstclient keybind XF86Tools             spawn wrapmenu -c cfgmenu "$HOME/.bin/open-config-files"
 
 # fn+4 == XF84Sleep
 
 # Dunst
-herbstclient keybind $Alt-apostrophe spawn dunstctl close
+herbstclient keybind $Alt-apostrophe       spawn dunstctl close
 herbstclient keybind $Alt-Shift-apostrophe spawn dunstctl close-all
 
 # Window manager specific
@@ -88,10 +83,10 @@ herbstclient keybind $Super-$Alt-k       resize up +$resizestep
 herbstclient keybind $Super-$Alt-l       resize right +$resizestep
 
 # Screen split
-herbstclient keybind $Super-Control-h       split   left    0.5
-herbstclient keybind $Super-Control-j       split   bottom  0.5
-herbstclient keybind $Super-Control-k       split   top     0.5
-herbstclient keybind $Super-Control-l       split   right   0.5
+herbstclient keybind $Super-Control-h split   left    0.5
+herbstclient keybind $Super-Control-j split   bottom  0.5
+herbstclient keybind $Super-Control-k split   top     0.5
+herbstclient keybind $Super-Control-l split   right   0.5
 
 herbstclient keybind $Super-e         split   explode
 herbstclient keybind $Super-r         remove
@@ -168,4 +163,3 @@ herbstclient mouseunbind --all
 herbstclient mousebind $Super-Button1 move
 herbstclient mousebind $Super-Button2 zoom
 herbstclient mousebind $Super-Button3 resize
-
