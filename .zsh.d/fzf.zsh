@@ -35,10 +35,6 @@ if command -v rg &> /dev/null; then
 fi
 
 # Git completion
-source /home/iago/.zsh.d/lib/fzf-git.sh
-
-# use fzf for general tab completion
-source $HOME/.zsh.d/lib/fzf-tab/fzf-tab.plugin.zsh
 
 bindkey '^[[Z' $fzf_default_completion # bind Shift-Tab
 
