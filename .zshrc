@@ -1,14 +1,12 @@
 #----------------------------
 # Keybindings
 #----------------------------
-# bindkey -v # Vim mode for keybinds
 bindkey -e # Emacs mode for keybinds
 
 autoload edit-command-line
 zle -N edit-command-line
 bindkey '' edit-command-line
 bindkey -M vicmd '' edit-command-line
-bindkey '^R' history-incremental-search-backward
 
 #----------------------------
 # Beep
@@ -22,7 +20,6 @@ unsetopt beep
 HISTFILE=~/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
-setopt appendhistory
 setopt inc_append_history
 setopt hist_ignore_dups
 setopt hist_ignore_space
@@ -38,7 +35,6 @@ bindkey '^[OB' history-beginning-search-forward
 #----------------------------
 # Autocompletion
 #----------------------------
-# zstyle :compinstall filename '/home/iagoleal/.zshrc'
 autoload -Uz compinit
 compinit
 
@@ -73,8 +69,12 @@ source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
+
+zinit ice wait lucid
 zinit light zsh-users/zsh-syntax-highlighting
+zinit ice wait lucid
 zinit light zsh-users/zsh-history-substring-search
+zinit ice wait lucid blockf atpull'zinit creinstall -q .'
 zinit light zsh-users/zsh-completions
 
 # Use fzf for tab completion
@@ -82,7 +82,7 @@ zinit ice wait lucid
 zinit light Aloxaf/fzf-tab
 
 # Keybindings for git objects using fzf
-zinit ice wait'1' lucid
+zinit ice wait lucid
 zinit snippet https://raw.githubusercontent.com/junegunn/fzf-git.sh/main/fzf-git.sh
 
 
@@ -95,5 +95,3 @@ source $HOME/.zsh.d/aliases.zsh
 source $HOME/.zsh.d/prompt.zsh
 # fzf keybindings and completion
 source $HOME/.zsh.d/fzf.zsh
-# Enable syntax highlighting
-source $HOME/.zsh.d/syntax-highlighting.zsh
