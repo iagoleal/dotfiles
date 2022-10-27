@@ -48,5 +48,3 @@ function _rprompt {
 # Export the prompt per se
 
 prompt walters
-
-# vim:filetype=zsh
