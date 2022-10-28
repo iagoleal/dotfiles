@@ -23,7 +23,7 @@ function update {
   echo 'Updating Pacman and AUR...'
   yay -Syu --noconfirm
   echo "Updating zsh..."
-  zinit update --all --parallel 8
+  plugin-update
   echo 'Updating NeoVim...'
   nvim \
     +"autocmd User PackerComplete call UpdateRemotePlugins() | sleep 1 | write $PACKER_DUMP | quitall" \
