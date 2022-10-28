@@ -1,9 +1,5 @@
 #!/bin/sh
 
-term() {
-  nohup xterm -e "$1" > /dev/null 2>&1 &
-}
-
 # List of avaiable options
 cfgs="Neovim\nHerbstluftwm\nPulseaudio\nzsh"
 
@@ -11,18 +7,15 @@ choose="$( echo -e "$cfgs" | fzf --border --no-info -1 --height=~40% --prompt '%
 
 case "${choose}" in
   Neovim)
-    term "cd ~/.config/nvim && nvim fnl/startup.fnl"
+    herbstclient spawn xterm -e sh -c 'cd ~/.config/nvim && nvim fnl/startup.fnl'
     ;;
   Herbstluftwm)
-    term 'cd ~/.config/herbstluftwm && nvim -O autostart keybindings.sh'
+    herbstclient spawn xterm -e sh -c 'cd ~/.config/herbstluftwm && nvim -O autostart keybindings.sh'
     ;;
  Pulseaudio)
-    nohup pavucontrol > /dev/null 2>&1 &
+    herbstclient spawn pavucontrol
     ;;
   zsh)
-    term 'cd ~/.zsh.d/ && nvim ~/.zshrc *'
+    herbstclient spawn xterm -e sh -c 'cd ~/.zsh.d/ && nvim ~/.zshrc *'
     ;;
 esac
-
-# We need to spawn the processes before quitting
-sleep 0.0001

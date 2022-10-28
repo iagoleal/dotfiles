@@ -8,9 +8,10 @@
 rsync -avP ~/Videos/ /media/Elements/Videos/
 # rsync -avP ~/Music/ /media/Elements/Music/
 rsync -avP ~/Pictures/ /media/Elements/Pictures/
-rsync -avP ~/Books/ /media/Elements/Books/
+rsync -avP --delete ~/Books/ /media/Elements/Books/
 
 rsync -avP ~/Documents/ /media/Elements/Documents/
+rsync -avP ~/Zotero/ /media/Elements/Zotero/
 
 # Non-cumulative backup
 rsync -avP --delete ~/Code/ /media/Elements/Code/

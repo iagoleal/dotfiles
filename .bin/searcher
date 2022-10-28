@@ -8,7 +8,7 @@ exit_code=$?
 item_path="$FOLDER/$item"
 
 if [ $exit_code == 0 ]; then
-  nohup xdg-open "$item_path" > /dev/null 2>&1 & sleep 0.000000001
+  herbstclient spawn xdg-open "$item_path"
 else
   exit "$exit_code"
 fi

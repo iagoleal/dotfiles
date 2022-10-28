@@ -1,18 +1,33 @@
-#!/usr/bin/env lua
-local fmt = string.format
-local smatch = string.match
+#!/bin/env zsh
 
--- Access system
-local color_handle = io.popen "colorpicker --one-shot --preview"
-local color_rawinfo = color_handle:read()
-color_handle:close()
+function extract_channel() {
+  echo $((16#${1:$2:2}))
+}
 
--- Get the color info in different formats
-local hexcolor = smatch(color_rawinfo, '%#%x+$')
-local r, g, b = smatch(color_rawinfo, '^R:%s*(%d+),%s*G:%s*(%d+),%s*B:%s*(%d+)')
+function int2float() {
+  echo $((${1}/256.0))
+}
 
-local out = fmt("Hex:   %s\nRGB:   (%d, %d, %d)\nFloat: (%.3f, %.3f, %.3f)", hexcolor, r, g, b, r/255, g/255, b/255)
+# The color in hexadecimal representation
+hex="$(colorpicker --one-shot --short --preview)"
 
-print(out)
-os.execute(fmt("echo '%s' | xclip", out))
-os.execute(fmt("$HOME/.bin/notify '%s'", out))
+# The color components as Int8 representation
+ri=$(extract_channel $hex 1)
+gi=$(extract_channel $hex 3)
+bi=$(extract_channel $hex 5)
+
+# The color components as floats in [0.0,1.0]
+rf=$(int2float $ri)
+gf=$(int2float $gi)
+bf=$(int2float $bi)
+
+rgb="rgb($ri,$gi,$bi)"
+
+# For glsl
+vec3="vec3($rf, $gf, $bf)"
+
+# As used in love2d
+love2d="{$rf, $gf, $bf}"
+
+wrapmenu -c cfgmenu \
+  "echo -e '$hex\n$rgb\n$vec3\n$love2d' | fzf --border --no-info -1 --height=~40% --prompt='color> ' --layout=reverse | xclip -selection clipboard"
