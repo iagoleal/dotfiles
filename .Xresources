@@ -23,10 +23,16 @@ xterm*locale: true
 ! allows alt+key to be used for commands
 xterm*metaSendsEscape:  true
 ! Fix backspace escape code
-xterm*vt100.backarrowKey: false
+xterm*VT100.backarrowKey: false
 xterm*ttyModes: erase ^?
+! Save more lines on scrollback
+XTerm.VT100.saveLines: 4096
+! Smooth scroll
+XTerm.VT100.jumpScroll: true
+XTerm.VT100.fastScroll: false
+XTerm.VT100.multiScroll: true
 ! Clipboard
-xterm*VT100.Translations: #override \
+XTerm.VT100.Translations: #override \
                  Ctrl Shift <Key>V:    insert-selection(CLIPBOARD) \n\
                  Ctrl Shift <Key>C:    copy-selection(CLIPBOARD)
 
