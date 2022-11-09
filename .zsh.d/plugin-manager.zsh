@@ -1,6 +1,6 @@
 # Based on https://github.com/mattmc3/zsh_unplugged
 
-ZPLUGINDIR="${XDG_DATA_HOME}/zsh/plugins"
+ZPLUGINDIR="${XDG_DATA_HOME:-.local/share}/zsh/plugins"
 
 function plugin-load {
   local repo plugdir initfile

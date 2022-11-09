@@ -1,13 +1,16 @@
 #!/bin/sh
 
 # List of avaiable options
-cfgs="Neovim\nHerbstluftwm\nPulseaudio\nzsh"
+cfgs="Neovim\nHerbstluftwm\nNix\nPulseaudio\nzsh"
 
 choose="$( echo -e "$cfgs" | fzf --border --no-info -1 --height=~40% --prompt '% ' --no-multi --layout=reverse )"
 
 case "${choose}" in
   Neovim)
     herbstclient spawn xterm -e sh -c 'cd ~/.config/nvim && nvim fnl/startup.fnl'
+    ;;
+  Nix)
+    herbstclient spawn xterm -e sh -c 'cd ~/.config/nixpkgs && nvim config.nix'
     ;;
   Herbstluftwm)
     herbstclient spawn xterm -e sh -c 'cd ~/.config/herbstluftwm && nvim -O autostart keybindings.sh'

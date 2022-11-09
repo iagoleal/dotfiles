@@ -9,14 +9,13 @@
 | Shell             | zsh           |
 | Window Manager    | herbstluftwm  |
 | Terminal Emulator | xterm         |
-| App Launcher      | dmenu         |
+| App Launcher      | fzf           |
 | Text Editor       | nvim          |
 | Browser           | firefox       |
-| File Manager      | pcmanfm       |
+| File Manager      | fzf           |
 | Network Manager   | networkmanager|
-| Music Player      | mpd + ncmpcpp |
 | Video Player      | mpv           |
-| Image Viewer      | feh           |
+| Image Viewer      | imv           |
 | PDF   Viewer      | zathura       |
 | Screen Locker     | slock         |
 | Font              | mononoki      |

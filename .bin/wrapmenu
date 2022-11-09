@@ -1,52 +1,28 @@
 #!/bin/sh
 
-EMULATOR=xterm
-
 WIDTH=230
 HEIGHT=40
 OFFSET_X=0
 OFFSET_Y=0
 
+EMULATOR=xterm
 TERM_CLASS=wrapmenu
 
-FLAG_CLASS=
-FLAG_GEOMETRY=
-
-init() {
-  GEOMETRY=$WIDTH"x"$HEIGHT+$OFFSET_X+$OFFSET_Y
-  case $EMULATOR in
-    st)
-      FLAG_CLASS=-c
-      FLAG_GEOMETRY=-g
-      ;;
-    xterm)
-      FLAG_CLASS=-class
-      FLAG_GEOMETRY=-geometry
-      ;;
-    alacritty)
-      FLAG_CLASS=--class
-      FLAG_GEOMETRY=
-      GEOMETRY="-o window.padding.x=15 -o window.padding.y=15 -o window.dimensions.columns=200"
-      ;;
-  esac
-}
+GEOMETRY=$WIDTH"x"$HEIGHT+$OFFSET_X+$OFFSET_Y
 
 while getopts c: flag; do
-    case $flag in
-        c)
-            TERM_CLASS="$OPTARG"
-            ;;
-    esac
+  case $flag in
+    c)
+      TERM_CLASS="$OPTARG"
+      ;;
+  esac
 done
 shift $((OPTIND-1))
 
 
 ARGS="$@"
 
-init
-
 $EMULATOR \
-  $FLAG_CLASS $TERM_CLASS \
-  $FLAG_GEOMETRY $GEOMETRY \
+  -class    $TERM_CLASS \
+  -geometry $GEOMETRY \
   -e "sh" -c "$ARGS" 2> /dev/null
-[ -s "$FILE_CHOICES" ] || exit 1

@@ -17,6 +17,7 @@ herbstclient keybind a           chain , spawn "$exec_on_tag" "" anki --no-sandb
 herbstclient keybind f           chain , spawn "$exec_on_tag" "" firefox            , spawn sh "$normalMode"
 herbstclient keybind g           chain , spawn "$exec_on_tag" "" gimp               , spawn sh "$normalMode"
 herbstclient keybind h           chain , spawn "$exec_on_tag" "" $TERMINAL -e htop  , spawn sh "$normalMode"
+herbstclient keybind z           chain , spawn "$exec_on_tag" "" zotero             , spawn sh "$normalMode"
 herbstclient keybind n           chain , spawn "$exec_on_tag" "" $TERMINAL -e nmtui , spawn sh "$normalMode"
 herbstclient keybind Return      chain , spawn "$exec_on_tag" "" $TERMINAL          , spawn sh "$normalMode"
 herbstclient keybind Mod4-Return chain , spawn "$exec_on_tag" "" $TERMINAL          , spawn sh "$normalMode"
@@ -35,6 +36,7 @@ for i in ${!tag_names[@]}; do
     '->' keybind f      chain , spawn "$exec_on_tag" "${tag_names[$i]}" firefox            , spawn sh "$normalMode" \
     '->' keybind g      chain , spawn "$exec_on_tag" "${tag_names[$i]}" gimp               , spawn sh "$normalMode" \
     '->' keybind h      chain , spawn "$exec_on_tag" "${tag_names[$i]}" $TERMINAL -e htop  , spawn sh "$normalMode" \
+    '->' keybind z      chain , spawn "$exec_on_tag" "${tag_names[$i]}" zotero             , spawn sh "$normalMode" \
     '->' keybind n      chain , spawn "$exec_on_tag" "${tag_names[$i]}" $TERMINAL -e nmtui , spawn sh "$normalMode" \
     '->' keybind Return chain , spawn "$exec_on_tag" "${tag_names[$i]}" $TERMINAL          , spawn sh "$normalMode"
 done
