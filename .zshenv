@@ -10,9 +10,11 @@ export JULIA_NUM_THREADS=8
 export JULIA_161=julia
 
 # Append extra bin folders to PATH variable
-path+=("$HOME/.local/bin")
-path+=("$HOME/bin")
-path=("$HOME/.nix-profile/bin" "$HOME/.bin" $path)
+path=("$HOME/.nix-profile/bin"
+      "$HOME/bin"
+      "$HOME/.bin"
+      "$HOME/.local/bin"
+      $path)
 export PATH
 if command -v luarocks &> /dev/null; then
   eval $(luarocks path --bin)

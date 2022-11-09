@@ -1,19 +1,8 @@
-# Load the installed packages
-function check_and_source {
-  for fname in "$@"; do
-    if [[ -f "$fname" ]]; then
-      source "$fname"
-      break
-    fi
-  done
-}
-
-# Source key-bindings
-check_and_source '/usr/share/fzf/key-bindings.zsh' \
-                 '/usr/share/doc/fzf/examples/key-bindings.zsh'
-# Source completion
-check_and_source '/usr/share/fzf/completion.zsh' \
-                 '/usr/share/doc/fzf/examples/completion.zsh'
+# Find where is fzf in the nix store
+if [ -n "${commands[fzf-share]}" ]; then
+  source "$(fzf-share)/key-bindings.zsh"
+  source "$(fzf-share)/completion.zsh"
+fi
 
 # Directly accept on C-r
 fzf-history-widget-accept() {
@@ -33,8 +22,6 @@ export FZF_DEFAULT_OPTS='-m --cycle --bind=alt-e:preview-down --bind=alt-y:previ
 if command -v rg &> /dev/null; then
   export FZF_DEFAULT_COMMAND='rg --files'
 fi
-
-# Git completion
 
 bindkey '^[[Z' $fzf_default_completion # bind Shift-Tab
 

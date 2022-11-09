@@ -14,6 +14,8 @@ alias dtf=dotfiles
 # Custom notification sender
 alias notify="$HOME/.bin/notify"
 
+alias nix-reload='nix-env -riA nixpkgs.myPackages'
+
 # Get weather information
 function weather { curl wttr.in/"$*"; }
 
@@ -22,6 +24,9 @@ function update {
   local PACKER_DUMP='/tmp/packer-sync-result'
   echo 'Updating Pacman and AUR...'
   yay -Syu --noconfirm
+  echo 'Nix Nix Nix'
+  nix-channel --update
+  nix-env -u '*'
   echo "Updating zsh..."
   plugin-update
   echo 'Updating NeoVim...'
