@@ -31,32 +31,30 @@ xterm*VT100.Translations: #override \
                  Ctrl Shift <Key>C:    copy-selection(CLIPBOARD)
 
 ! special
-/* *.foreground:   #e9e0d3 */
-/* *.background:   #1a221a */
-*.cursorColor:  #e9e0d3
-*.foreground:   #c0caf5
-*.background:   #24283b
+*.background:   #2f383e
+*.foreground:   #d3c6aa
+*.cursorColor:  #d3c6aa
 ! black
-*.color0:       #0d0c0c
-*.color8:       #3c4142
+*.color0:       #4a555b
+*.color8:       #4a555b
 ! red
-*.color1:       #e04a3c
-*.color9:       #e01719
+*.color1:       #e67e80
+*.color9:       #e67e80
 ! green
-*.color2:       #2be353
-*.color10:      #21d225
+*.color2:       #a7c080
+*.color10:      #a7c080
 ! yellow
-*.color3:       #ede945
-*.color11:      #f7e632
+*.color3:       #dbbc7f
+*.color11:      #dbbc7f
 ! blue
-*.color4:       #5fafee
-*.color12:      #2ebcf6
+*.color4:       #7fbbb3
+*.color12:      #7fbbb3
 ! magenta
-*.color5:       #d96af6
-*.color13:      #db4bda
+*.color5:       #d699b6
+*.color13:      #d699b6
 ! cyan
-*.color6:       #3ff4e7
-*.color14:      #23f9e7
+*.color6:       #83c092
+*.color14:      #83c092
 ! white
-*.color7:       #eae3d8
-*.color15:      #e5e5e5
+*.color7:       #d3c6aa
+*.color15:      #d3c6aa
