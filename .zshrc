@@ -65,6 +65,12 @@ setopt unset
 # use zsh style word splitting
 setopt noshwordsplit
 
+# allow comments on interactive shell
+setopt interactive_comments
+
+# Auto send SIGCONT to disowned jobs
+setopt auto_continue
+
 #----------------------------
 # Keybindings
 #----------------------------

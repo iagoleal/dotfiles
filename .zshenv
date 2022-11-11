@@ -5,7 +5,7 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
-export XDG_DATA_DIRS=/usr/local/share:/usr/share
+export XDG_DATA_DIRS="/usr/local/share:/usr/share:$HOME/.local/share/applications/"
 export XDG_CONFIG_DIRS=/etc/xdg
 
 
@@ -15,7 +15,7 @@ export TERMINAL="xterm"
 export BROWSER="firefox"
 
 export JULIA_NUM_THREADS=8
-export JULIA_161=julia
+export JULIA_161='julia +1.6'
 
 # Append extra bin folders to PATH variable
 path=("$HOME/.nix-profile/bin"

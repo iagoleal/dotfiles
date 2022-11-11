@@ -11,38 +11,53 @@ alias hc=herbstclient
 alias dotfiles='git --git-dir=$HOME/.dotfiles-gitdir/ --work-tree=$HOME'
 alias dtf=dotfiles
 
-# Custom notification sender
-alias notify="$HOME/.bin/notify"
-
 alias nix-reload='nix-env -riA nixpkgs.myPackages'
+
+# Open pdf or ebook files
+alias zth='zathura --fork'
 
 # Get weather information
 function weather { curl wttr.in/"$*"; }
 
+# Check if a given command exists in the path
+function hascmd { (( $+commands[$1] )) }
+
 # Update everything
 function update {
-  local PACKER_DUMP='/tmp/packer-sync-result'
-  echo 'Updating Pacman and AUR...'
-  yay -Syu --noconfirm
+  if hascmd yay ;then
+    echo 'Updating pacman and AUR...'
+    yay -Syu --noconfirm
+  elif hascmd pacman ;then
+    echo 'Updating pacman... (No AUR helper found)'
+    sudo pacman -Syu --noconfirm
+  elif hascmd apt-get ;then
+    echo 'Updating apt...'
+    sudo apt-get update && sudo apt-get upgrade
+  else
+    echo "What distribution are you running?"
+    return
+  fi
+
   echo 'Nix Nix Nix'
   nix-channel --update
   nix-env -u '*'
+
   echo "Updating zsh..."
   plugin-update
+
   echo 'Updating NeoVim...'
+  local PACKER_DUMP=$(mktemp --suffix='_PACKER')
   nvim \
     +"autocmd User PackerComplete call UpdateRemotePlugins() | sleep 1 | write $PACKER_DUMP | quitall" \
     +PackerSync
   cat $PACKER_DUMP
+
   echo "\nUpdating Haskell...\n"
   ghcup upgrade
+
   echo "\nUpdating Julia...\n"
   juliaup update
 }
-
-# Open pdf or ebook files
-function zth { zathura "$@" &}
-zstyle ":completion:*:*:zth:*" file-patterns "*.{pdf,djvu,epub,ps,xps}"
 
 function trash { mv -i $@ ~/.trash }
 
@@ -56,7 +71,7 @@ function mac2ip {
   echo ${fline%% *}
 }
 
-extract() {
+function extract {
   if [ -f $1 ] ; then
     case $1 in
       *.tar.bz2) tar xjvf $1 ;;
@@ -79,7 +94,7 @@ extract() {
 }
 zstyle ":completion:*:*:extract:*" file-patterns "*.{tar.bz2,tar.gz,tar.xz,bz2,rar,gz,tar,tbz2,tgz,zip,7z,xz}"
 
-countdown(){
+function countdown {
   local date1=$((`date +%s` + $1));
   while [ "$date1" -ge `date +%s` ]; do
     ## Is this more than 24h away?
@@ -87,9 +102,10 @@ countdown(){
     echo -ne "$days day(s) and $(date -u --date @$(($date1 - `date +%s`)) +%H:%M:%S)\r";
     sleep 0.1
   done
+  hascmd notify && notify "Finished countdown"
 }
 
-stopwatch(){
+function stopwatch {
   local date1=`date +%s`;
   while true; do
     days=$(( $(($(date +%s) - date1)) / 86400 ))
@@ -98,9 +114,17 @@ stopwatch(){
   done
 }
 
+# Random integer generator.
+# Generate numbers between $1 and $2 inclusive.
+function rand {
+  local OFFSET=${1}
+  local BASE=$(( ${2} - ${OFFSET} + 1 ))
+  echo $[${RANDOM}%${BASE}+${OFFSET}]
+}
+
+
 function timev {
-  local TIMEFMT=$'
-command: %J
+  local TIMEFMT=$'command: %J
 =======================
     Time Statistics
 =======================
@@ -116,7 +140,7 @@ Memory:
 Page Faults:
   disk: \t%F
   other:\t%R'
-  time $@
+  time "$@"
 }
 
 # Open different file formats by extension
