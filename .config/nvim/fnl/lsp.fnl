@@ -82,15 +82,12 @@
 
 ;;; Lua
 ;; set the path to the sumneko installation;
-(let [sumneko-root-path "/usr/share/lua-language-server"
-      sumneko-binary    "/bin/lua-language-server"
-      path              (vim.split package.path ";")]
+(let [path (vim.split package.path ";")]
   (table.insert path "lua/?.lua")
   (table.insert path "lua/?/init.lua")
 
   (lspconfig.sumneko_lua.setup
     {:on_attach on-attach
-     :cmd [sumneko-binary "-E" (.. sumneko-root-path "/main.lua")]
      :settings
        {:Lua
          {:runtime
@@ -104,12 +101,10 @@
              :checkThirdParty false
              :library
                ;; Make the server aware of Neovim and love2d runtime files
-               {(vim.fn.expand  "$VIMRUNTIME/lua")         true
-                (vim.fn.stdpath :config)                   true
-                (vim.fn.expand  "$VIMRUNTIME/lua/vim/lsp") true
-                "${3rd}/love2d/library"                    true}
-             (vim.fn.expand "~/.luarocks/share/lua/5.1") true
-             "/usr/share/lua/5.1" true}
+               [(vim.api.nvim_get_runtime_file "" true)
+                "${3rd}/love2d/library"
+                (vim.fn.expand "~/.luarocks/share/lua/5.1")
+                "/usr/share/lua/5.1"]}
           ; Do NOT send telemetry data
           :telemetry {:enable false}}}}))
 

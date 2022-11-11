@@ -162,9 +162,10 @@
 (option :directory ["/tmp" "/var/tmp" "$XDG_STATE_HOME/nvim/swap//"])
 (option :undodir   ["/var/tmp" "/tmp" "$XDG_STATE_HOME/nvim/undo"])
 
-;; Set backup files
-(option :thesaurus append (.. (vim.fn.stdpath :config)
-                              "/thesaurus/mthesaur.txt"))
+
+(option :dictionary append "/usr/share/dict/words")
+(option :thesaurus  append (.. (vim.fn.stdpath :config)
+                               "/thesaurus/mthesaur.txt"))
 
 ;; Use ripgrep for :grep if possible
 (when (executable-exists? "rg")
@@ -179,8 +180,8 @@
 (set vim.g.mapleader " ")
 
 ;;; Redefined behaviour
-;;; Modifications on vim's traditional keybidings
-;;; for ergonomic reasons.
+;;;---------------------
+;;; Modifications on vim's traditional keybidings for ergonomic reasons.
 
 ;; Terminal mappings
 ; Exit terminal with ESC
@@ -192,11 +193,12 @@
 (keymap :x "<" "<gv")
 (keymap :x ">" ">gv")
 
-;;; Normal mode additional behaviour
+;;; Additional behaviour
+;;;---------------------
 
 ; All this ctrl-w bla is making my pinky sore...
 ; Let's try using a leader key instead in order to move the hard work to the thumb.
-(keymap :n "<leader>w" "<C-w>")
+(keymap :n "<leader>w" "<C-w>" :remap true)
 
 ; Zoom window at new tab
 (keymap :n "<leader>tz" "<cmd>tab split<CR>")
@@ -210,6 +212,7 @@
 ; Search visual selection
 (keymap :v "*" "y/\\V<C-R>=escape(@\",'/\\')<CR><CR>")
 (keymap :v "#" "y?\\V<C-R>=escape(@\",'/\\')<CR><CR>")
+
 ; Search visual selection text on whole project
 (keymap :v "<M-*>" "y:grep '<C-R>=escape(@\",'/\\')<CR>' **/*")
 
@@ -277,7 +280,7 @@
 
 ;;; Make life easier on command mode
 
-;; Emacs-like keybindings for cmd  mode
+;; Emacs-like keybindings for cmd mode
 ; back one word
 (keymap :c "<M-b>" "<S-Left>")
 ; forward one word
@@ -286,6 +289,9 @@
 ; Enter path to current file on command mode
 (keymap :c "<M-x>p" "getcmdtype() == ':' ? expand('%:h').'/' : ''"
         :expr true)
+
+(keymap :i "<C-r>" "<C-g>u<C-r>")
+
 
 ;;; Plugin related
 ;--------------------------
@@ -389,6 +395,7 @@
     set thesaurusfunc=Thesaur
   endif
 ")
+
 
 ;; Hide sponsor information from Conjure
 (augroup :ConjureRemoveSponsor

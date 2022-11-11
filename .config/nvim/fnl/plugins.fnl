@@ -140,8 +140,10 @@
      :config #(setup :Comment :ignore "^$"))
 
 ; Edit surrounding objects
-(use "kylechui/nvim-surround"
-     :config #(setup :nvim-surround))
+(use "tpope/vim-surround")
+
+; Additional text operators
+(use "wellle/targets.vim")
 
 
 ; Improved matchparen and matchit

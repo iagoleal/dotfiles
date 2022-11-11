@@ -32,6 +32,10 @@
       :ghci-par
         {:command ["ghci" "+RTS" "-N" "-RTS"]
          :open    ":{"
+         :close   [":}" ""]}
+      :cabal
+        {:command ["cabal" "repl"]
+         :open    ":{"
          :close   [":}" ""]}}
    :lhaskell
      {:ghci
