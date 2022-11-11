@@ -1,0 +1,22 @@
+#!/bin/bash
+# dependencies:
+#   wmctrl
+#   herbstluftwm
+#   fzf
+
+finder() {
+  fzf --border --prompt='-> ' --info=inline --header='Window Selection' --select-1 --with-nth='2..'
+}
+
+function tag-name() {
+  herbstclient attr "tags.${1}.name"
+}
+
+function list-windows() {
+  wmctrl -l -x | while read -r ID TAG CLASS HOST TITLE ; do
+    echo "$ID $(tag-name "$TAG") ${CLASS##*.} $TITLE"
+  done | column -t -l 4 | sort -n -k 2
+}
+
+# Select a window and issue wm command to jump to it
+herbstclient jumpto "$(list-windows | finder | cut -d' ' -f1)"

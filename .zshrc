@@ -117,3 +117,8 @@ source $HOME/.zsh.d/aliases.zsh
 source $HOME/.zsh.d/prompt.zsh
 # fzf keybindings and completion
 source $HOME/.zsh.d/fzf.zsh
+
+# Hooks to set xterm title only on X session
+if [[ $DISPLAY ]]; then
+  source $HOME/.zsh.d/wintitle.zsh
+fi

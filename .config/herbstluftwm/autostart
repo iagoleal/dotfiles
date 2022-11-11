@@ -4,14 +4,22 @@
 herbstclient emit_hook reload
 
 # Set default frame layout to horizontal split
-herbstclient set default_frame_layout 1
+herbstclient set default_frame_layout horizontal
+
+# Only set algorithm on first run
+if hc silent new_attr bool my_not_first_autostart ; then
+  herbstclient substitute ALGO settings.default_frame_layout \
+      foreach T tags.by-name. \
+      sprintf ATTR '%c.tiling.root.algorithm' T \
+      set_attr ATTR ALGO
+fi
 
 # theme
-source "$HOME/.config/herbstluftwm/theme.sh"
+DIR=$(dirname $(realpath "$0"))
+source "${DIR}/theme.sh"
 
 # Create tags
 tag_names=( {1..10} )
-tag_keys=( {1..9} 0 )
 
 herbstclient rename default "${tag_names[0]}" || true
 for tag in "${tag_names[@]}" ; do
@@ -25,8 +33,9 @@ herbstclient rule windowtype~'_NET_WM_WINDOW_TYPE_(DIALOG|UTILITY|SPLASH)' float
 herbstclient rule windowtype='_NET_WM_WINDOW_TYPE_DIALOG' focus=on
 herbstclient rule windowtype~'_NET_WM_WINDOW_TYPE_(NOTIFICATION|DOCK|DESKTOP)' manage=off
 
-herbstclient rule class=wrapmenu floating=true floating_geometry=1880x880+20+100 floatplacement=center
-herbstclient rule class=cfgmenu  floating=true floating_geometry=1920x150+0+0
+herbstclient rule class=FloatMenu  floating=true floating_geometry=1880x880+20+100 floatplacement=center
+herbstclient rule class=TopMenu    floating=true floating_geometry=1920x150+0+0
+herbstclient rule class=BottomMenu floating=true floating_geometry=1920x150+0+930
 
 # unlock, just to be sure
 herbstclient unlock
@@ -43,9 +52,9 @@ source ~/.config/herbstluftwm/keybindings.sh
 
 # mousebinds
 herbstclient mouseunbind --all
-herbstclient mousebind Mod4-Button1 move
-herbstclient mousebind Mod4-Button2 zoom
-herbstclient mousebind Mod4-Button3 resize
+herbstclient mousebind Super-Button1 move
+herbstclient mousebind Super-Button2 zoom
+herbstclient mousebind Super-Button3 resize
 
 # Features
 # Focus follow mouse
@@ -60,7 +69,3 @@ then
 else
     feh --bg-scale ~/Pictures/Wallpapers/duck.jpg
 fi
-
-# Little hack from the FAQ
-# Necessary to make vertical splitting the default on tag 1
-herbstclient split vertical 0.5 ; herbstclient remove
