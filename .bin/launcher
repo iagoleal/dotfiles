@@ -1,0 +1,24 @@
+#!/bin/bash
+
+list-commands() {
+  IFS=:; find -L ${PATH} -maxdepth 1 -executable -type f -printf '%f\n' 2> /dev/null
+}
+
+list-desktops() {
+  IFS=:; a=("$XDG_DATA_DIRS")
+  IFS=: read -r -a a <<< "$XDG_DATA_DIRS"
+  local DDIRS="${a[@]/%//applications}"
+  find $DDIRS -maxdepth 1 -type f -iname '*.desktop' -exec basename {} .desktop \; 2> /dev/null
+}
+
+forked-exec() {
+  while read -r command; do # We loop for the case when the user chooses multiple cmds
+    [ -z "$command" ] && continue
+
+    nohup "${SHELL:-/bin/sh}" -c "$command" > /dev/null 2>&1 &
+  done
+}
+
+list-commands | fzf --prompt="$ " --info=inline --border --reverse --multi | sort -u | forked-exec
+
+exec xdotool getactivewindow windowunmap

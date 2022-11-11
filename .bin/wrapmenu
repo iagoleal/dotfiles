@@ -6,14 +6,18 @@ OFFSET_X=0
 OFFSET_Y=0
 
 EMULATOR=xterm
-TERM_CLASS=wrapmenu
+TERM_CLASS=FloatMenu
+TERM_TITLE="Menu"
 
 GEOMETRY=$WIDTH"x"$HEIGHT+$OFFSET_X+$OFFSET_Y
 
-while getopts c: flag; do
+while getopts c:T: flag; do
   case $flag in
     c)
       TERM_CLASS="$OPTARG"
+      ;;
+    T)
+      TERM_TITLE="$OPTARG"
       ;;
   esac
 done
@@ -23,6 +27,7 @@ shift $((OPTIND-1))
 ARGS="$@"
 
 $EMULATOR \
-  -class    $TERM_CLASS \
-  -geometry $GEOMETRY \
+  -class    "$TERM_CLASS" \
+  -geometry "$GEOMETRY" \
+  -T        "$TERM_TITLE" \
   -e "sh" -c "$ARGS" 2> /dev/null

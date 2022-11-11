@@ -6,7 +6,7 @@ case $1 in
         locker
         ;;
     "suspend")
-        systemctl suspend
+        systemctl suspend-then-hibernate
         ;;
     "logout")
         herbstclient quit

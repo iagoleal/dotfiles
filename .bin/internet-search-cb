@@ -1,3 +1,0 @@
-#!/bin/sh
-selection=$(xclip -o -selection primary)
-firefox -new-tab "https://duckduckgo.com/?q=${selection}"

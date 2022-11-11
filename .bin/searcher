@@ -2,13 +2,20 @@
 
 FOLDER="$(realpath "$1")"
 
-item=$(cd $FOLDER && rg --files | sed "s:^\./::g" \
-  | fzf-ueberzogen.sh --prompt="β " --scheme=path --info=inline --no-multi --preview 'fzf-preview.sh {}')
+finder() {
+ fzf-ueberzogen.sh --prompt="β " --scheme=path --info=inline --no-multi --preview 'fzf-preview.sh {}'
+}
+
+spawn() {
+  herbstclient spawn xdg-open "$@"
+}
+
+item=$(cd $FOLDER && rg --files | sed "s:^\./::g" | finder)
 exit_code=$?
 item_path="$FOLDER/$item"
 
 if [ $exit_code == 0 ]; then
-  herbstclient spawn xdg-open "$item_path"
+  spawn "$item_path"
 else
   exit "$exit_code"
 fi
