@@ -1,20 +1,35 @@
 #Enable selection to clipboard
 set selection-clipboard clipboard
 
+set window-title-basename true
+set window-title-page true
+
+# Keep view on zoom (good for WM splits)
+set zoom-center
+
 # Only show file name on status bar
 set statusbar-basename true
+
+# Save history at each page change (default is only when closing)
+set continuous-hist-save true
+
+# Use sqlite as database
+set database sqlite
+
+# Font
+set font "mononoki normal 14"
 
 # Make default bg color white
 set default-bg "#ededed"
 set default-fg "#dddddd"
 
-# Font
-set font "mononoki normal 14"
-
 # Rebind zoom keys
 map - zoom out
 unmap =
 map = zoom in
+
+# Open another view of the same document
+map <A-o> exec 'zathura "$FILE" -P "$PAGE"'
 
 # Enable synctex
 set synctex true
