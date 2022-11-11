@@ -26,15 +26,18 @@ xterm*metaSendsEscape:  true
 xterm*VT100.backarrowKey: false
 xterm*ttyModes: erase ^?
 ! Save more lines on scrollback
-XTerm.VT100.saveLines: 4096
+xterm.VT100.saveLines: 4096
 ! Smooth scroll
-XTerm.VT100.jumpScroll: true
-XTerm.VT100.fastScroll: false
-XTerm.VT100.multiScroll: true
+xterm.VT100.jumpScroll: true
+xterm.VT100.fastScroll: false
+xterm.VT100.multiScroll: true
 ! Clipboard
-XTerm.VT100.Translations: #override \
+xterm.VT100.Translations: #override \
                  Ctrl Shift <Key>V:    insert-selection(CLIPBOARD) \n\
                  Ctrl Shift <Key>C:    copy-selection(CLIPBOARD)
+
+
+!! Let it be colorful
 
 ! special
 *.background:   #2f383e
@@ -64,3 +67,7 @@ XTerm.VT100.Translations: #override \
 ! white
 *.color7:       #d3c6aa
 *.color15:      #d3c6aa
+
+TopMenu*background:     #252f34
+BottomMenu*background:  #252f34
+FloatMenu*background:   #252f34
