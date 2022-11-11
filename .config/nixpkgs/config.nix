@@ -16,6 +16,11 @@
         tmux
         ueberzug
         w3m
+
+        # Language Servers
+        sumneko-lua-language-server
+        pyright
+        ltex-ls
       ];
     };
   };
