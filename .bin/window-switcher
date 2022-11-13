@@ -4,8 +4,11 @@
 #   herbstluftwm
 #   fzf
 
-finder() {
-  fzf --border --prompt='-> ' --info=inline --header='Window Selection' --select-1 --with-nth='2..'
+function finder() {
+  fzf --border --prompt='-> ' --info=inline \
+      --header=$'~:~ Window Selection ~:~\nM-S-q - close | M-BS - bring | Enter - jump' \
+      --select-1 --cycle --multi --with-nth='2..' \
+      --expect='alt-Q,alt-bspace'
 }
 
 function tag-name() {
@@ -14,9 +17,30 @@ function tag-name() {
 
 function list-windows() {
   wmctrl -l -x | while read -r ID TAG CLASS HOST TITLE ; do
+    # (window id) (tag name, not index) (last class component) (win title)
     echo "$ID $(tag-name "$TAG") ${CLASS##*.} $TITLE"
   done | column -t -l 4 | sort -n -k 2
 }
 
-# Select a window and issue wm command to jump to it
-herbstclient jumpto "$(list-windows | finder | cut -d' ' -f1)"
+function map() {
+  for x in $2 ; do $1 "${x}" ; done
+}
+
+# Select a window
+mapfile -t out <<<"$(list-windows | finder)"
+
+key="${out[0]}"
+wids=$(printf "%s\n" "${out[@]:1}" | cut -d' ' -f1)
+
+case "$key" in
+  alt-Q) # Close the chosen windows
+    CMD=close
+    ;;
+  alt-bspace) # Bring the chosen windows to focused tag
+    CMD=bring
+    ;;
+  *)      # Go to the last chosen window
+    CMD=jumpto
+esac
+
+map "herbstclient $CMD" "$wids"
