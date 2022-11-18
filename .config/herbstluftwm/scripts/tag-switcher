@@ -1,0 +1,25 @@
+#!/bin/bash
+
+function finder() {
+  fzf --border --prompt='=> ' --info=inline \
+      --header=$'~:~ Session Selection ~:~' \
+      --cycle --nth=1
+}
+
+function list-tags() {
+  herbstclient foreach T tags.by-name \
+                 sprintf S  "%{%c.name} (%{%c.client_count})" T T \
+                 echo S | column -t | sort -n -k 1
+}
+
+function list-sessions() {
+  herbstclient get_attr my_sessions | tr '|' '\n' | while read -r s; do
+    echo $s
+  done
+}
+
+if [[ "$1" = sessions ]]; then
+  herbstclient emit_hook session_enter "$(list-sessions | finder)"
+else
+  herbstclient use "$(list-tags | finder | cut -d' ' -f1)"
+fi

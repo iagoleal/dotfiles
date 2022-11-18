@@ -3,47 +3,50 @@
 # Folder with scripts to other modes
 DIR=$(dirname $(realpath "$0"))
 MODES="${DIR}/modes"
+SCRIPTS="${DIR}/scripts"
 
 TERMINAL="${TERMINAL:-xterm}"
 
 # At start unbinding all keys
 herbstclient keyunbind --all
 
-# Main spawn shortcuts
-herbstclient keybind Super-Return          spawn $TERMINAL
-herbstclient keybind Super-Shift-Escape    spawn $TERMINAL -e htop
-
-herbstclient keybind Super-Shift-d         spawn "$HOME/.bin/wrapmenu" -c TopMenu   -T 'Program Launcher' launcher
-herbstclient keybind Super-b               spawn "$HOME/.bin/wrapmenu" -c FloatMenu -T 'Book Searcher'    searcher "$HOME/Books"
-herbstclient keybind Super-Shift-w         spawn "$HOME/.bin/wrapmenu" -c FloatMenu -T 'Window Switcher'  window-switcher
-
-# Notifications
-herbstclient keybind Super-q               spawn "$HOME/.bin/notify" "-e" "$HOME/.bin/getinfo"
-herbstclient keybind Super-w               spawn "$HOME/.bin/notify" "-e" "$HOME/.bin/hlwm-tags"
-
-# Change mode
+# Submodes
 herbstclient keybind Super-Shift-e         spawn sh "${MODES}/System.sh"
 herbstclient keybind Super-d               spawn sh "${MODES}/Launcher.sh"
 herbstclient keybind Super-n               spawn sh "${MODES}/Notify.sh"
 
+# Main spawn shortcuts
+herbstclient keybind Super-Return          spawn $TERMINAL
+herbstclient keybind Super-Shift-Escape    spawn $TERMINAL -e htop
+
+# Menus
+herbstclient keybind Super-Shift-d         spawn wrapmenu -c TopMenu   -T 'Program Launcher' launcher
+herbstclient keybind Super-b               spawn wrapmenu -c FloatMenu -T 'Book Searcher'    searcher "$HOME/Books"
+herbstclient keybind Super-Shift-w         spawn wrapmenu -c FloatMenu -T 'Window Switcher'  $SCRIPTS/window-switcher
+herbstclient keybind Super-Shift-s         spawn wrapmenu -c FloatMenu -T 'Tag Switcher'     $SCRIPTS/tag-switcher
+herbstclient keybind XF86Tools             spawn wrapmenu -c TopMenu   -T 'Config Chooser'   $SCRIPTS/open-config-files
+
+# Notifications
+herbstclient keybind Super-q               spawn notify -e getinfo
+herbstclient keybind Super-w               spawn "$SCRIPTS/show-tags"
+
 # Screenshots
-herbstclient keybind Print                 spawn flameshot full -c
-herbstclient keybind Super-Shift-Print     spawn flameshot full -c -p "$HOME/Pictures/Screenshots"
-herbstclient keybind Super-Print           spawn flameshot gui
-herbstclient keybind Control-Print         spawn "$HOME/.bin/pickcolor"
+herbstclient keybind Print                 spawn flameshot gui
+herbstclient keybind Super-Print           spawn flameshot full -c -p "$HOME/Pictures/Screenshots"
+herbstclient keybind Super-Shift-Print     spawn flameshot full -c
+herbstclient keybind Control-Print         spawn pickcolor
 
 # Bind Special Keys
 
 # increase/decrease/mute sound volume
-herbstclient keybind XF86AudioMute         spawn "$HOME/.bin/volctl" mute
-herbstclient keybind XF86AudioRaiseVolume  spawn "$HOME/.bin/volctl" raise
-herbstclient keybind XF86AudioLowerVolume  spawn "$HOME/.bin/volctl" lower
-herbstclient keybind XF86AudioMicMute      spawn "$HOME/.bin/volctl" micmute
+herbstclient keybind XF86AudioMute         spawn volctl mute
+herbstclient keybind XF86AudioRaiseVolume  spawn volctl raise
+herbstclient keybind XF86AudioLowerVolume  spawn volctl lower
+herbstclient keybind XF86AudioMicMute      spawn volctl micmute
 
 herbstclient keybind XF86MonBrightnessUp   spawn xbacklight -inc 5
 herbstclient keybind XF86MonBrightnessDown spawn xbacklight -dec 5
 herbstclient keybind XF86Display           spawn arandr
-herbstclient keybind XF86Tools             spawn wrapmenu -c TopMenu "$HOME/.bin/open-config-files"
 
 # fn+4 == XF84Sleep
 
@@ -66,7 +69,7 @@ herbstclient keybind Super-j           focus down
 herbstclient keybind Super-k           focus up
 herbstclient keybind Super-l           focus right
 
-# moving clients on same tag
+# Move clients
 herbstclient keybind Super-Shift-h     shift left
 herbstclient keybind Super-Shift-j     shift down
 herbstclient keybind Super-Shift-k     shift up
@@ -145,9 +148,6 @@ herbstclient keybind Super-Shift-Tab         cycle_all -1
 
 herbstclient keybind Super-Alt-Tab          cycle_frame +1
 herbstclient keybind Super-Alt-Shift-Tab    cycle_frame -1
-
-herbstclient keybind Super-apostrophe        use_index +1 --skip-visible
-herbstclient keybind Super-Shift-apostrophe  use_index -1 --skip-visible
 
 herbstclient keybind Super-i                 jumpto urgent
 herbstclient keybind Super-p                 use_previous

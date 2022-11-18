@@ -1,0 +1,69 @@
+#!/bin/bash
+
+set -e
+
+function hc() {
+  herbstclient "$@"
+}
+
+function beautify-active() {
+  local fg=yellow
+  echo "<span font_weight='bold' color='$fg'>$1</span>"
+}
+
+function beautify-urgent {
+  local fg=red
+  echo "<span font_weight='heavy' color='$fg'>$1</span>"
+}
+
+function beautify_monitor {
+  local fg='#62FD52'
+  echo "<span font_weight='semibold' color='$fg'>$1</span>"
+}
+
+# Chinese
+declare -A tag_symbol=( \
+[1]='一' [2]='二' [3]='三' [4]='四' [5]='五'  \
+[6]='六' [7]='七' [8]='八' [9]='九' [10]='十' \
+)
+
+function list-tags() {
+  # hc foreach --unique --filter-name="[0-9]*" T tags. sprintf S "%{%c.name}" T echo S
+  local current=$(hc get_attr my_session)
+  IFS='@'; hc get_attr "my_session_tags_$current" | tr '|' '\n' | (IFS='@'; while read -r i s; do
+    echo $i $s
+  done)
+}
+
+function prettify() {
+  focused=$(hc attr tags.focus.name)
+
+  list-tags | while read -r i tag; do
+    num_clients=$(hc attr tags.by-name.$tag.client_count)
+    visibility=$(hc attr tags.by-name.$tag.visible)
+    urgency=$(hc attr tags.by-name.$tag.urgent_count)
+
+    symbol="${tag_symbol[$tag]}"
+    if [[ -z $symbol ]]; then
+      symbol=$tag
+    fi
+
+    printf "${i}:"
+
+    if   [[ $tag = $focused ]]; then
+      echo "$( beautify-active "${symbol}" )"
+    elif [[ $urgency -gt 0 ]]; then
+      echo "$( beautify-urgent "${symbol}" )"
+    elif [[ $visibility = true ]]; then
+      echo "$( beautify-monitor "${symbol}" )"
+    else
+      echo "${symbol}"
+    fi
+  done
+
+}
+
+declare -a prettified
+
+
+notify-send -h string:x-dunst-stack-tag:tags "tag-list" "$(prettify | tr '\n' ' ')"
