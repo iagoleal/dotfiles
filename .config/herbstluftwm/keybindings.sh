@@ -24,6 +24,7 @@ herbstclient keybind Super-Shift-d         spawn wrapmenu -c TopMenu   -T 'Progr
 herbstclient keybind Super-b               spawn wrapmenu -c FloatMenu -T 'Book Searcher'    searcher "$HOME/Books"
 herbstclient keybind Super-Shift-w         spawn wrapmenu -c FloatMenu -T 'Window Switcher'  $SCRIPTS/window-switcher
 herbstclient keybind Super-Shift-s         spawn wrapmenu -c FloatMenu -T 'Tag Switcher'     $SCRIPTS/tag-switcher
+herbstclient keybind Super-s               spawn wrapmenu -c FloatMenu -T 'Session Switcher' $SCRIPTS/tag-switcher sessions
 herbstclient keybind XF86Tools             spawn wrapmenu -c TopMenu   -T 'Config Chooser'   $SCRIPTS/open-config-files
 
 # Notifications
@@ -101,24 +102,24 @@ herbstclient keybind Super-Up        split   top     0.5
 herbstclient keybind Super-Right     split   right   0.5
 
 ## Tags
-# get tag names from client
-tags_raw="$(herbstclient tag_status | sed 's/\t//g')"
-# tags_raw="${tags_raw#?}"
-IFS='[.:#]' read -r -a tag_names <<< "${tags_raw#?}"
-tag_keys=( {1..9} 0 )
-
-for i in ${!tag_names[@]} ; do
-    key="${tag_keys[$i]}"
-    tag="${tag_names[$i]}"
+for key in {1..9} ; do
     if ! [ -z "$key" ] ; then
         # Go to tag i
-        herbstclient keybind "Super-$key" use_index "$i"
+        # herbstclient keybind "Super-$key" chain . add $tag . use $tag
+        # herbstclient keybind "Super-Control-$key" chain . add $tag . move $tag
+        # herbstclient keybind "Super-Shift-$key" chain , add $tag , move $tag , use $tag
+        herbstclient keybind "Super-$key" chain . emit_hook session_tag_switch "$key"
         # Move focused window to tag i
-        herbstclient keybind "Super-Control-$key" move_index "$i"
+        herbstclient keybind "Super-Control-$key" chain , emit_hook session_window_move $key
         # Move focused window and go to tag i
-        herbstclient keybind "Super-Shift-$key" chain , move_index "$i" , use_index "$i"
+        herbstclient keybind "Super-Shift-$key" chain , emit_hook session_window_move $key , emit_hook session-tag_switch $key
     fi
 done
+
+# Cycle through sessions
+herbstclient keybind Super-apostrophe        emit_hook session_enter work
+herbstclient keybind Super-Shift-apostrophe  use_index -1 --skip-visible
+
 
 # Cycle through tags
 herbstclient keybind Super-period  use_index +1 --skip-visible

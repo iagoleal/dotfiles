@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
+DIR=$(dirname $(realpath "$0"))
 
 # this is a simple config for herbstluftwm
 herbstclient emit_hook reload
+
+# Turn daemons on
+$DIR/hooks.sh &
+lua "${DIR}/sessions.lua" &
 
 # Set default frame layout to horizontal split
 herbstclient set default_frame_layout horizontal
 
 # Only set algorithm on first run
-if hc silent new_attr bool my_not_first_autostart ; then
+if herbstclient silent new_attr bool my_not_first_autostart ; then
   herbstclient substitute ALGO settings.default_frame_layout \
       foreach T tags.by-name. \
       sprintf ATTR '%c.tiling.root.algorithm' T \
@@ -15,16 +20,21 @@ if hc silent new_attr bool my_not_first_autostart ; then
 fi
 
 # theme
-DIR=$(dirname $(realpath "$0"))
 source "${DIR}/theme.sh"
 
-# Create tags
-tag_names=( {1..10} )
+# Create sessions and tags
+herbstclient rename default nav || true
 
-herbstclient rename default "${tag_names[0]}" || true
-for tag in "${tag_names[@]}" ; do
-    herbstclient add "$tag"
-done
+herbstclient emit_hook session_create main nav
+
+# if herbstclient silent new_attr bool my_not_first_autostart ; then
+#   herbstclient emit_hook session_create "main"
+
+#   for tag in "${tag_names[@]}" ; do
+#     herbstclient emit_hook session_tag_add "$tag"
+#   done
+# fi
+
 
 # rules
 herbstclient unrule -F
@@ -37,9 +47,6 @@ herbstclient rule class=FloatMenu  floating=true floating_geometry=1880x880+20+1
 herbstclient rule class=TopMenu    floating=true floating_geometry=1920x150+0+0
 herbstclient rule class=BottomMenu floating=true floating_geometry=1920x150+0+930
 
-# unlock, just to be sure
-herbstclient unlock
-
 herbstclient set tree_style '╾│ ├└╼─┐'
 
 # do multi monitor setup here, e.g.:
@@ -48,13 +55,7 @@ herbstclient set tree_style '╾│ ├└╼─┐'
 # herbstclient detect_monitors
 
 # keybinds
-source ~/.config/herbstluftwm/keybindings.sh
-
-# mousebinds
-herbstclient mouseunbind --all
-herbstclient mousebind Super-Button1 move
-herbstclient mousebind Super-Button2 zoom
-herbstclient mousebind Super-Button3 resize
+source "${DIR}/keybindings.sh"
 
 # Features
 # Focus follow mouse
@@ -69,3 +70,6 @@ then
 else
     feh --bg-scale ~/Pictures/Wallpapers/duck.jpg
 fi
+
+# unlock, just to be sure
+herbstclient unlock
