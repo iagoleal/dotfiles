@@ -86,8 +86,26 @@ bindkey -M vicmd '' edit-command-line
 autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
-bindkey '^[[A' history-beginning-search-backward
-bindkey '^[[B' history-beginning-search-forward
+bindkey '^[[A' history-beginning-search-backward # arrow up
+bindkey '^[[B' history-beginning-search-forward  # arrow down
+
+# Restore last background job to foreground.
+# Useful in order to hit C-z twice to quickly see the alternate screen.
+# This was adpated from grml zsh confg.
+function go-to-fg {
+  if (( ${#jobstates} )); then
+    zle .push-input
+    [[ -o hist_ignore_space ]] && BUFFER=' ' || BUFFER=''
+    BUFFER="${BUFFER}fg"
+    zle .accept-line
+  else
+    zle -M 'No background jobs. Doing nothing.'
+  fi
+}
+zle -N go-to-fg
+
+bindkey '^z' go-to-fg
+
 
 
 #----------------------------
@@ -99,6 +117,12 @@ if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
 else
   compinit -C;
 fi;
+
+# Informative completion to kill command
+zstyle ':completion:*:processes' command "ps -u $USER -o pid,stat,%cpu,%mem,cputime,command"
+
+# Provide more processes in completion of programs like killall:
+zstyle ':completion:*:processes-names' command 'ps c -u ${USER} -o command | uniq'
 
 # Path for completion files
 # fpath=(~/.zsh.d/comp $fpath)
