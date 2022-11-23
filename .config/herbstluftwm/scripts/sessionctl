@@ -1,0 +1,157 @@
+#!/usr/bin/env lua
+-- Command sessionctl
+-- This command provides a high-level interface to session-based tag management
+-- without direcly dealing with wm hooks.
+--
+-- Look at the dispatch table for a list of subcommands.
+table.unpack = table.unpack or unpack
+
+local fmt = string.format
+
+local function split(str, delimiter)
+  local words = {}
+  for word in string.gmatch(str, fmt("([^%s]+)", delimiter)) do
+    table.insert(words, word)
+  end
+  return words
+end
+
+-- Interface for herbstclient command
+local hc = setmetatable({
+  query = function(attr)
+    local pipe = io.popen(fmt("herbstclient get_attr %s", attr))
+    local s = pipe:read("*a"):gsub("^%s+", ""):gsub("%s+^", ""):gsub("[\r\n]+$", "")
+    pipe:close()
+    return s
+  end
+  }, {
+  __call = function(_, ...)
+    return os.execute(fmt("herbstclient %s", table.concat(table.pack(...), " ")))
+  end,
+
+  __index = function(t, k)
+    return function(...)
+      return t(k, ...)
+    end
+  end
+})
+
+local function with_my_session(n, ...)
+  local nargs = select("#", ...)
+
+  if     nargs == n then
+    return ...
+  elseif nargs == n-1 then
+    local session = hc.query "my_session"
+    return session, ...
+  else
+    error("Invalid number of arguments")
+  end
+end
+
+-- Query the serialized tags/session names
+-- that we store in "my_..." variables inside herbstluftwm object tree.
+-- This returns a lua iterator that loops over names and (when appliable) indices.
+local function query_my(session)
+end
+
+local function print_tags(session)
+  session = session or hc.query "my_session"
+  local my_tags = hc.query ("my_session_tags_" .. session)
+
+  for line in my_tags:gmatch("([^%|]+)") do
+    local i, s = line:match("(.*)@(.*)")
+    print(i, s)
+  end
+end
+
+local dispatch = {
+  ["create"] = function(name, ...)
+    hc.emit_hook("session_create", name, ...)
+  end,
+
+  ["enter"] = function(name, index)
+    index = index or ""
+
+    -- First creates the session and then enters it
+    hc.chain(".", "emit_hook", "session_create", name, ".", "emit_hook", "session_enter", name, index)
+  end,
+
+  ["rename"] = function(...)
+    local old, new = with_my_session(2, ...)
+
+    hc.emit_hook("session_rename", old, new)
+  end,
+
+  ["merge"] = function(...)
+    local target, rip = with_my_session(2, ...)
+
+    hc.emit_hook("session_merge", rip, target)
+  end,
+
+  ["rm"] = function(rip)
+    local focus = hc.query("my_session")
+
+    hc.emit_hook("session_merge", rip, focus)
+  end,
+
+  ["add-tag"] = function(session, tag, index)
+    hc.emit_hook("session_tag_add", session, tag, index)
+  end,
+
+  ["rm-tag"] = function(session, tag)
+    hc.emit_hook("session_tag_remove", session, tag)
+  end,
+
+  ["move-tag"] = function(session, tag, target, index)
+    -- Removes the `tag` from `session` and adds it to `target` at `index`.
+    -- NOTE: What about entering the session on move?
+    hc.emit_hook("session_tag_add", target, tag, index)
+    hc.emit_hook("session_tag_remove", session, tag)
+  end,
+
+  ["swap-tags"] = function(...)
+    local session, i1, i2 = with_my_session(3, ...)
+
+    hc.emit_hook("session_tag_swap", session, i1, i2)
+  end,
+
+  ["jump-to"] = function(...)
+    -- Goto tag at `index` in current session
+    local session, index = with_my_session(2, ...)
+
+    hc.emit_hook("session_enter", session, index)
+  end,
+
+  ["win-to"] = function(...)
+    local session, index = with_my_session(2, ...)
+
+    hc.emit_hook("session_window_move", session, index)
+  end,
+
+  ["query"] = function(subcmd, ...)
+    if subcmd == "active" then
+      print(hc.query("my_session"))
+    elseif subcmd == "all" then
+      local my_sessions = hc.query "my_sessions"
+      for s in my_sessions:gmatch("([^%|]+)") do
+        print(s)
+      end
+    elseif subcmd == "tags" then
+      print_tags(...)
+    else
+      io.stderr:write("Unknown get subcommand: ", tostring(subcmd), "\n")
+    end
+  end,
+}
+
+local function dispatcher(subcmd, ...)
+  if dispatch[subcmd] then
+    dispatch[subcmd](...)
+  else
+    io.stderr:write("Unknown command: ", subcmd, "\n")
+  end
+end
+
+-- Entry point
+dispatcher(...)

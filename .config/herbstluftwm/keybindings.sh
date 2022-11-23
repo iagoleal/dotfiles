@@ -14,6 +14,7 @@ herbstclient keyunbind --all
 herbstclient keybind Super-Shift-e         spawn sh "${MODES}/System.sh"
 herbstclient keybind Super-d               spawn sh "${MODES}/Launcher.sh"
 herbstclient keybind Super-n               spawn sh "${MODES}/Notify.sh"
+herbstclient keybind Super-Shift-w         spawn sh "${MODES}/Session.sh"
 
 # Main spawn shortcuts
 herbstclient keybind Super-Return          spawn $TERMINAL
@@ -22,7 +23,7 @@ herbstclient keybind Super-Shift-Escape    spawn $TERMINAL -e htop
 # Menus
 herbstclient keybind Super-Shift-d         spawn wrapmenu -c TopMenu   -T 'Program Launcher' launcher
 herbstclient keybind Super-b               spawn wrapmenu -c FloatMenu -T 'Book Searcher'    searcher "$HOME/Books"
-herbstclient keybind Super-Shift-w         spawn wrapmenu -c FloatMenu -T 'Window Switcher'  $SCRIPTS/window-switcher
+# herbstclient keybind Super-Shift-w         spawn wrapmenu -c FloatMenu -T 'Window Switcher'  $SCRIPTS/window-switcher
 herbstclient keybind Super-Shift-s         spawn wrapmenu -c FloatMenu -T 'Tag Switcher'     $SCRIPTS/tag-switcher
 herbstclient keybind Super-s               spawn wrapmenu -c FloatMenu -T 'Session Switcher' $SCRIPTS/tag-switcher sessions
 herbstclient keybind XF86Tools             spawn wrapmenu -c TopMenu   -T 'Config Chooser'   $SCRIPTS/open-config-files
@@ -103,22 +104,21 @@ herbstclient keybind Super-Right     split   right   0.5
 
 ## Tags
 for key in {1..9} ; do
-    if ! [ -z "$key" ] ; then
-        # Go to tag i
-        # herbstclient keybind "Super-$key" chain . add $tag . use $tag
-        # herbstclient keybind "Super-Control-$key" chain . add $tag . move $tag
-        # herbstclient keybind "Super-Shift-$key" chain , add $tag , move $tag , use $tag
-        herbstclient keybind "Super-$key" chain . emit_hook session_tag_switch "$key"
-        # Move focused window to tag i
-        herbstclient keybind "Super-Control-$key" chain , emit_hook session_window_move $key
-        # Move focused window and go to tag i
-        herbstclient keybind "Super-Shift-$key" chain , emit_hook session_window_move $key , emit_hook session-tag_switch $key
-    fi
+  # herbstclient keybind "Super-$key" chain . add $tag . use $tag
+  # herbstclient keybind "Super-Control-$key" chain . add $tag . move $tag
+  # herbstclient keybind "Super-Shift-$key" chain , add $tag , move $tag , use $tag
+
+  # Go to tag i
+  herbstclient keybind "Super-$key" spawn $SCRIPTS/sessionctl jump-to "$key"
+  # Move focused window to tag i
+  herbstclient keybind "Super-Control-$key" spawn $SCRIPTS/sessionctl win-to "$key"
+  # Move focused window and go to tag i
+  herbstclient keybind "Super-Shift-$key" chain , spawn $SCRIPTS/sessionctl win-to "$key" , spawn $SCRIPTS/sessionctl jump-to $key
 done
 
 # Cycle through sessions
-herbstclient keybind Super-apostrophe        emit_hook session_enter work
-herbstclient keybind Super-Shift-apostrophe  use_index -1 --skip-visible
+herbstclient keybind Super-apostrophe        $SCRIPTS/sessionctl next
+herbstclient keybind Super-Shift-apostrophe  $SCRIPTS/sessionctl prev
 
 
 # Cycle through tags
@@ -132,11 +132,11 @@ herbstclient keybind Super-o       pseudotile toggle
 # The following cycles through the available layouts within a frame, but skips
 # layouts, if the layout change wouldn't affect the actual window positions.
 # I.e. if there are two windows within a frame, the grid layout is skipped.
-herbstclient keybind Super-space                                               \
+herbstclient keybind Super-space                                                \
             or , and . compare tags.focus.curframe_wcount = 2                   \
                      . cycle_layout +1 vertical horizontal max vertical grid    \
                , cycle_layout +1
-herbstclient keybind Super-Shift-space                                         \
+herbstclient keybind Super-Shift-space                                          \
             or , and . compare tags.focus.curframe_wcount = 2                   \
                      . cycle_layout -1 vertical horizontal max vertical grid    \
                , cycle_layout -1

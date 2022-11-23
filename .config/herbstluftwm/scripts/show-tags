@@ -1,9 +1,12 @@
 #!/bin/bash
-
 set -e
 
 function hc() {
   herbstclient "$@"
+}
+
+function sessionctl() {
+  $(dirname $(realpath "$0"))/sessionctl $@
 }
 
 function beautify-active() {
@@ -28,11 +31,7 @@ declare -A tag_symbol=( \
 )
 
 function list-tags() {
-  # hc foreach --unique --filter-name="[0-9]*" T tags. sprintf S "%{%c.name}" T echo S
-  local current=$(hc get_attr my_session)
-  IFS='@'; hc get_attr "my_session_tags_$current" | tr '|' '\n' | (IFS='@'; while read -r i s; do
-    echo $i $s
-  done)
+  sessionctl query tags
 }
 
 function prettify() {
@@ -62,8 +61,5 @@ function prettify() {
   done
 
 }
-
-declare -a prettified
-
 
 notify-send -h string:x-dunst-stack-tag:tags "tag-list" "$(prettify | tr '\n' ' ')"

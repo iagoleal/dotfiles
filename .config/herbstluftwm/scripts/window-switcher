@@ -22,10 +22,6 @@ function list-windows() {
   done | column -t -l 4 | sort -n -k 2
 }
 
-function map() {
-  for x in $2 ; do $1 "${x}" ; done
-}
-
 # Select a window
 mapfile -t out <<<"$(list-windows | finder)"
 
@@ -43,4 +39,4 @@ case "$key" in
     CMD=jumpto
 esac
 
-map "herbstclient $CMD" "$wids"
+for x in $wids ; do herbstclient $CMD "${x}" ; done

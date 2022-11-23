@@ -12,11 +12,13 @@ lua "${DIR}/sessions.lua" &
 herbstclient set default_frame_layout horizontal
 
 # Only set algorithm on first run
-if herbstclient silent new_attr bool my_not_first_autostart ; then
+if herbstclient silent new_attr bool my_first_autostart false; then
   herbstclient substitute ALGO settings.default_frame_layout \
       foreach T tags.by-name. \
       sprintf ATTR '%c.tiling.root.algorithm' T \
       set_attr ATTR ALGO
+
+  PATH=$PATH:$DIR/scripts
 fi
 
 # theme
@@ -24,17 +26,7 @@ source "${DIR}/theme.sh"
 
 # Create sessions and tags
 herbstclient rename default nav || true
-
 herbstclient emit_hook session_create main nav
-
-# if herbstclient silent new_attr bool my_not_first_autostart ; then
-#   herbstclient emit_hook session_create "main"
-
-#   for tag in "${tag_names[@]}" ; do
-#     herbstclient emit_hook session_tag_add "$tag"
-#   done
-# fi
-
 
 # rules
 herbstclient unrule -F

@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Ensure that pipe returns error if any process fails
+set -o pipefail
+
+CURRENT="$(herbstclient get_attr tags.focus.name)"
+NEW=""
+
+are_we_done=1
+
+while [[ $are_we_done -ne 0 ]]; do
+
+  NEW=$(echo "from: $CURRENT" | fzf --layout=reverse --no-info --prompt="rename> " --query=$NEW --disabled --print-query | head -1 | tr -d '[[:space:]]' )
+  if [[ $? -ne 0 || $CURRENT = $NEW ]]; then
+    break
+  fi
+
+  herbstclient rename "$CURRENT" "$NEW" &> /dev/null
+
+  are_we_done=$?
+done

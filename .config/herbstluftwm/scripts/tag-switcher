@@ -1,9 +1,23 @@
 #!/bin/bash
 
-function finder() {
+function sessionctl() {
+  $(dirname $(realpath "$0"))/sessionctl $@
+}
+#
+
+function session-finder() {
   fzf --border --prompt='=> ' --info=inline \
       --header=$'~:~ Session Selection ~:~' \
-      --cycle --nth=1
+      --cycle --nth=1 \
+      --header-lines=1 \
+      --expect='alt-t'
+}
+
+function tag-finder() {
+  fzf --border --prompt='=> ' --info=inline \
+      --header=$'~:~ Session Selection ~:~' \
+      --cycle --multi --nth=1 \
+      --expect='alt-Q,alt-bspace'
 }
 
 function list-tags() {
@@ -13,13 +27,50 @@ function list-tags() {
 }
 
 function list-sessions() {
-  herbstclient get_attr my_sessions | tr '|' '\n' | while read -r s; do
-    echo $s
-  done
+  echo "M-t : send to session"
+  sessionctl query all
+}
+
+function focused-tag() {
+  herbstclient get_attr tags.focus.name
 }
 
 if [[ "$1" = sessions ]]; then
-  herbstclient emit_hook session_enter "$(list-sessions | finder)"
+  mapfile -t out <<<"$(list-sessions | session-finder)"
+
+  key="${out[0]}"
+  sessions=$(printf "%s\n" "${out[@]:1}" | cut -d' ' -f1)
+
+  case "$key" in
+    alt-t)      # Remove tags from session
+      my_tag=$(focused-tag)
+
+      for session in $sessions; do
+        herbstclient emit_hook session_tag_add $session $my_tag
+      done
+      ;;
+    *)          # Go to session
+      herbstclient emit_hook session_enter "$( echo $sessions | tail -1)"
+  esac
 else
-  herbstclient use "$(list-tags | finder | cut -d' ' -f1)"
+  mapfile -t out <<<"$(list-tags | tag-finder)"
+
+  key="${out[0]}"
+  tags=$(printf "%s\n" "${out[@]:1}" | cut -d' ' -f1)
+
+  case "$key" in
+    alt-Q)      # Remove tags from session
+      my_session=$(herbstclient get_attr my_session)
+      for tag in $tags; do
+        sessionctl rm-tag $my_session $tag
+      done
+      ;;
+    alt-bspace) # Merge tags with current tag
+      for tag in $tags; do
+        herbstclient merge_tag $tag
+      done
+      ;;
+    *)          # Go to tag
+      herbstclient use "$( echo $tags | tail -1)"
+  esac
 fi
