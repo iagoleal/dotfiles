@@ -37,9 +37,8 @@ function list-tags() {
 function prettify() {
   focused=$(hc attr tags.focus.name)
 
-  list-tags | while read -r i tag; do
+  list-tags | while read -r tag i status; do
     num_clients=$(hc attr tags.by-name.$tag.client_count)
-    visibility=$(hc attr tags.by-name.$tag.visible)
     urgency=$(hc attr tags.by-name.$tag.urgent_count)
 
     symbol="${tag_symbol[$tag]}"
@@ -53,7 +52,7 @@ function prettify() {
       echo "$( beautify-active "${symbol}" )"
     elif [[ $urgency -gt 0 ]]; then
       echo "$( beautify-urgent "${symbol}" )"
-    elif [[ $visibility = true ]]; then
+    elif [[ $status = active ]]; then
       echo "$( beautify-monitor "${symbol}" )"
     else
       echo "${symbol}"

@@ -4,6 +4,7 @@
 -- without direcly dealing with wm hooks.
 --
 -- Look at the dispatch table for a list of subcommands.
+
 table.unpack = table.unpack or unpack
 
 local fmt = string.format
@@ -17,13 +18,14 @@ local function split(str, delimiter)
 end
 
 -- Interface for herbstclient command
-local hc = setmetatable({
+hc = setmetatable({
   query = function(attr)
     local pipe = io.popen(fmt("herbstclient get_attr %s", attr))
     local s = pipe:read("*a"):gsub("^%s+", ""):gsub("%s+^", ""):gsub("[\r\n]+$", "")
     pipe:close()
     return s
   end
+
   }, {
   __call = function(_, ...)
     return os.execute(fmt("herbstclient %s", table.concat(table.pack(...), " ")))
@@ -52,17 +54,29 @@ end
 -- Query the serialized tags/session names
 -- that we store in "my_..." variables inside herbstluftwm object tree.
 -- This returns a lua iterator that loops over names and (when appliable) indices.
-local function query_my(session)
+local function query_my(attr)
+  local tag_str = hc.query(attr)
+  return coroutine.wrap(function()
+    for line in tag_str:gmatch("([^%|]+)") do
+      local i, status, tag = line:match("(.*)([%@%%])(.*)")
+      coroutine.yield(tag, tonumber(i), status == "%")
+    end
+  end)
 end
 
-local function print_tags(session)
-  session = session or hc.query "my_session"
-  local my_tags = hc.query ("my_session_tags_" .. session)
-
-  for line in my_tags:gmatch("([^%|]+)") do
-    local i, s = line:match("(.*)@(.*)")
-    print(i, s)
+-- Print the serialized information in a way that is easier for other programs to consume.
+local function echo_my(str)
+  for s, i, status in query_my(str) do
+    io.write(s, "\t", i)
+    if status then
+      io.write("\t", "active")
+    end
+    io.write("\n")
   end
+end
+
+local function query_my_tags(session)
+  return query_my("my_session_tags_" .. session)
 end
 
 local dispatch = {
@@ -133,12 +147,10 @@ local dispatch = {
     if subcmd == "active" then
       print(hc.query("my_session"))
     elseif subcmd == "all" then
-      local my_sessions = hc.query "my_sessions"
-      for s in my_sessions:gmatch("([^%|]+)") do
-        print(s)
-      end
+      echo_my("my_sessions")
     elseif subcmd == "tags" then
-      print_tags(...)
+      local session = with_my_session(1, ...)
+      echo_my("my_session_tags_" .. session)
     else
       io.stderr:write("Unknown get subcommand: ", tostring(subcmd), "\n")
     end

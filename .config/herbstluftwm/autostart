@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 DIR=$(dirname $(realpath "$0"))
+SCRIPTS="${DIR}/scripts"
 
 # this is a simple config for herbstluftwm
 herbstclient emit_hook reload
@@ -26,7 +27,7 @@ source "${DIR}/theme.sh"
 
 # Create sessions and tags
 herbstclient rename default nav || true
-herbstclient emit_hook session_create main nav
+$SCRIPTS/sessionctl create main nav
 
 # rules
 herbstclient unrule -F

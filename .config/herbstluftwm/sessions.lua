@@ -1,6 +1,8 @@
 #!/usr/bin/env lua
 
 -- This pipe receives hooks emitted by herbstluftmwm
+-- We place this in the top in order to not lose any emmited hook
+-- while the file is being executed
 local hooks, msg = io.popen("herbstclient -i")
 if not hooks then error(msg) end
 
@@ -20,6 +22,14 @@ end
 
 local function infof(str, ...)
   io.write("INFO: ", fmt(str, ...), "\n")
+end
+
+local function keys(t)
+  local out = {}
+  for k in pairs(t) do
+    out[#out+1] = k
+  end
+  return out
 end
 
 local function find(t, v)
@@ -69,26 +79,12 @@ local function split(str, delimiter)
   return hook, args
 end
 
-function os.capture(cmd, raw)
-  local f = assert(io.popen(cmd, 'r'))
-  local s = assert(f:read('*a'))
-  f:close()
-  if raw then return s end
-  s = string.gsub(s, '^%s+', '')
-  s = string.gsub(s, '%s+$', '')
-  s = string.gsub(s, '[\n\r]+', ' ')
-  return s
-end
-
 -- Interface for herbstclient command
 local hc = setmetatable({
   query = function(attr)
     local pipe = io.popen(fmt("herbstclient get_attr %s", attr))
-    local s = pipe:read("*a")
+    local s = pipe:read("*a"):gsub("^%s+", ""):gsub("%s+^", ""):gsub("[\r\n]+$", "")
     pipe:close()
-    s = string.gsub(s, '[\n\r]+', ' ')
-    s = string.gsub(s, '^%s+', '')
-    s = string.gsub(s, '%s+$', '')
     return s
   end
   }, {
@@ -107,15 +103,18 @@ local hc = setmetatable({
 -- Session manipulation
 -----------------------------------------------
 
--- Store all sessions
-sessions = {}
-
--- Index of the currently active session.
---The intent is to use it in conjunction with the sessions list above.
-active_session = nil
+-- Whole program state.
+local Layout = {
+  -- Store all sessions by name
+  sessions = {},
+  -- Index of the currently active session.
+  --The intent is to use it in conjunction with the sessions list above.
+  active_session = nil,
+}
 
 local hlwm_separator = "|"
 local hlwm_index_separator = "@"
+local hlwm_active_separator = "%"
 
 local function tags_string(session)
   local tags = {}
@@ -127,8 +126,8 @@ local function tags_string(session)
   table.sort(tags, function(x, y) return x.key < y.key end)
 
   for k, v in ipairs(tags) do
-    sep = (v.key == session.active) and hlwm_index_separator or (hlwm_index_separator .. hlwm_index_separator)
-    tags[k] = fmt("%s%s%s", v.key, hlwm_index_separator, v.tag)
+    local sep = (v.key == session.active) and hlwm_active_separator or hlwm_index_separator
+    tags[k] = fmt("%s%s%s", v.key, sep, v.tag)
   end
 
   local a = table.concat(tags, hlwm_separator)
@@ -137,30 +136,31 @@ local function tags_string(session)
 end
 
 local function sessions_string(sessions)
-  local names = {}
+  local names = keys(sessions)
+  local outs = {}
 
-  for k in pairs(sessions) do
-    names[#names + 1] = k
+  table.sort(names)
+
+  for k, name in ipairs(names) do
+    local sep = (name == Layout.active_session) and hlwm_active_separator or hlwm_index_separator
+    outs[k] = fmt("%s%s%s", k, sep, name)
   end
 
-  return "'" .. table.concat(names, hlwm_separator) .. "'"
+  return "'" .. table.concat(outs, hlwm_separator) .. "'"
 end
 
 local function notify_wm()
-  local current = sessions[active_session]
+  -- Tell wm that we switched focus
+  hc.set_attr("my_session", Layout.active_session)
 
-  hc.set_attr("my_sessions", sessions_string(sessions))
-  hc.set_attr("my_session_tags", tags_string(current))
+  hc.set_attr("my_sessions", sessions_string(Layout.sessions))
 
-  for name, session in pairs(sessions) do
+  for name, session in pairs(Layout.sessions) do
     hc.set_attr("my_session_tags_" .. name, tags_string(session))
   end
-
-  -- Tell wm that we switched focus
-  hc.set_attr("my_session", active_session)
 end
 
-local methods = {
+local session_methods = {
   add_tag = function(session, tag, index, move)
 
     -- Do nothing if the session already has this tag
@@ -223,7 +223,7 @@ local methods = {
 
     -- Mark this tag as the new active
     -- and tell window manager to use it.
-    active_session = session.name
+    Layout.active_session = session.name
     session.active = index
     hc.use(session.active_tag)
   end,
@@ -238,8 +238,8 @@ local session_mt = {
     if k == "active_tag" then
       local index = t.active
       return t.tags[index]
-    elseif methods[k] ~= nil then
-      return methods[k]
+    elseif session_methods[k] ~= nil then
+      return session_methods[k]
     end
   end
 }
@@ -253,15 +253,15 @@ local function Session(name)
 end
 
 -- This is a dispatch table defining how to react to each hook.
-local actions
-actions = {
+local reactions
+reactions = {
   session_create = function(name, ...)
-    if sessions[name] then
+    if Layout.sessions[name] then
         errorf("A session called '%s' already exists", name)
     end
 
     local session  = Session(name)
-    sessions[name] = session
+    Layout.sessions[name] = session
 
     local tags = table.pack(...)
     for i = 1, tags.n do
@@ -272,13 +272,13 @@ actions = {
     hc.new_attr("string", "my_session_tags_" .. name)
 
     -- Enter the session if there is no other
-    if not active_session then
+    if not Layout.active_session then
       session:enter()
     end
   end,
 
   session_enter = function(name, unparsed_index)
-    local session = sessions[name]
+    local session = Layout.sessions[name]
     local index   = tonumber(unparsed_index)
 
     if not session then
@@ -289,17 +289,17 @@ actions = {
   end,
 
   session_rename = function(old, new)
-    if not sessions[old] then
+    if not Layout.sessions[old] then
       errorf("No session '%s'", old)
     end
 
-    if sessions[new] then
+    if Layout.sessions[new] then
       errorf("Session '%s' already exists", new)
     end
 
-    sessions[new] = sessions[old]
-    sessions[old] = nil
-    sessions[new].name = new
+    Layout.sessions[new] = Layout.sessions[old]
+    Layout.sessions[old] = nil
+    Layout.sessions[new].name = new
 
     local s = hc.query("my_session_tags_" .. old)
     hc.new_attr("string", "my_session_tags_" .. new, fmt('"%s"', s))
@@ -307,33 +307,33 @@ actions = {
   end,
 
   session_merge = function(rip, target)
-    if not sessions[rip] or not sessions[target] then
+    if not Layout.sessions[rip] or not Layout.sessions[target] then
       errorf("One of the sessions %s and %s does not exist", rip, target)
     end
 
-    if active_session == rip then
+    if Layout.active_session == rip then
       errorf("Cannot delete active session %s", rip)
     end
 
     -- Movw all tags to target
-    for _, tag in ipairs(sessions[rip].tags) do
-      sessions[target]:add_tag(tag)
+    for _, tag in ipairs(Layout.sessions[rip].tags) do
+      Layout.sessions[target]:add_tag(tag)
     end
 
-    sessions[rip] = nil
+    Layout.sessions[rip] = nil
 
     hc.remove_attr("my_session_tags_" .. rip)
   end,
 
   session_tag_add = function(name, tag, unparsed_index)
     local index   = tonumber(unparsed_index)
-    local session = sessions[name]
+    local session = Layout.sessions[name]
 
     session:add_tag(tag, index)
   end,
 
   session_tag_remove = function(name, tag)
-    local session   = sessions[name]
+    local session   = Layout.sessions[name]
 
     if session.active_tag == tag then
       errorf("Cannot remove active tag '%s' from session '%s'", tag, name)
@@ -343,7 +343,7 @@ actions = {
   end,
 
   session_tag_swap = function(name, unparsed_i1, unparsed_i2)
-    local session = sessions[name]
+    local session = Layout.sessions[name]
     local i1, i2 = tonumber(unparsed_i1), tonumber(unparsed_i2)
 
     session.tags[i1], session.tags[i2] = session.tags[i2], session.tags[i1]
@@ -357,7 +357,7 @@ actions = {
   end,
 
   session_window_move = function(name, unparsed_index)
-    local session = sessions[name]
+    local session = Layout.sessions[name]
     local index   = tonumber(unparsed_index)
 
     if not session then
@@ -377,7 +377,7 @@ actions = {
   -- These are fired automatically when some tag-changing event happens.
 
   tag_added   = function(tag)
-    local session = sessions[active_session]
+    local session = Layout.sessions[Layout.active_session]
 
     if hc.attr("tags.by-name." .. tag) then
       infof("Trying to add tag '%s' but it already exists", tag)
@@ -387,13 +387,13 @@ actions = {
   end,
 
   tag_removed = function(tag)
-    for _, session in pairs(sessions) do
+    for _, session in pairs(Layout.sessions) do
       session:remove_tag(tag)
     end
   end,
 
   tag_renamed = function(old, new)
-    for _, session in pairs(sessions) do
+    for _, session in pairs(Layout.sessions) do
       tags = session.tags
       for k in pairs(tags) do
         if tags[k] == old then
@@ -405,7 +405,7 @@ actions = {
   end,
 
   tag_changed = function(tag)
-    local session = sessions[active_session]
+    local session = Layout.sessions[Layout.active_session]
     local index = find(session.tags, tag)
 
     if index then
@@ -416,7 +416,7 @@ actions = {
   -- Synchronize hlwm attributes with this script's state
   attribute_changed = function(path, old, new)
     if path == "my_session" then
-      sessions[new]:enter()
+      Layout.sessions[new]:enter()
     end
   end
 }
@@ -428,34 +428,37 @@ local function pread(cmd, mode)
   return out
 end
 
+local function query_my(str)
+  local tag_str = hc.query(str)
+  return coroutine.wrap(function()
+    for line in tag_str:gmatch("([^%|]+)") do
+      local i, status, tag = line:match("(.*)([%@%%])(.*)")
+      coroutine.yield(tag, tonumber(i), status == "%")
+    end
+  end)
+end
 
 local function restore_from_attributes()
   -- Reload sessions
-  local my_sessions = pread("herbstclient get_attr my_sessions", "*l")
+  for name, _ , is_active_session in query_my("my_sessions") do
+    local session = Session(name)
+    Layout.sessions[name] = session
 
-  if my_sessions then
-    for name in string.gmatch(my_sessions, fmt("([^%s]+)", hlwm_separator)) do
-      sessions[name] = Session(name)
+    -- Add tags to this session
+    for tag, index, isactive in query_my("my_session_tags_" .. name) do
+      print("restore", name, index, tag, isactive)
 
-      -- Restore tags for this session
-      local my_session_tags = pread("herbstclient get_attr my_session_tags_" .. name, "*l")
+      session:add_tag(tag, index)
 
-      if my_session_tags then
-        for word in my_session_tags:gmatch(fmt("([^%s]+)", hlwm_separator)) do
-          local index, tag = word:match("(%d+)" .. hlwm_index_separator .. "(.*)")
-          print("restore", name, index, tag)
-          if index and tag then
-            sessions[name]:add_tag(tag, tonumber(index))
-          end
-        end
+      if isactive then
+        session.active = index
       end
     end
-  end
 
-  -- Activate current saved session
-  local my_session = pread("herbstclient get_attr my_session", "*l")
-  if my_session then
-    sessions[my_session]:enter()
+    -- Enter the active session
+    if is_active_session then
+      Layout.sessions[name]:enter()
+    end
   end
 end
 
@@ -466,7 +469,6 @@ end
 -- Store info in the wm for external querying
 hc.new_attr("string", "my_session")
 hc.new_attr("string", "my_sessions")
-hc.new_attr("string", "my_session_tags")
 
 -- Try restoring after reload
 local code, msg = pcall(restore_from_attributes)
@@ -491,8 +493,8 @@ for line in hooks:lines() do
     debug.debug()
   end
 
-  if actions[hook] then
-    local code, msg = pcall(actions[hook], table.unpack(args))
+  if reactions[hook] then
+    local code, msg = pcall(reactions[hook], table.unpack(args))
 
     if code then
       code, msg = pcall(notify_wm)

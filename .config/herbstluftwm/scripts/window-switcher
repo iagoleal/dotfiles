@@ -8,7 +8,7 @@ function finder() {
   fzf --border --prompt='-> ' --info=inline \
       --header=$'~:~ Window Selection ~:~\nM-S-q - close | M-BS - bring | Enter - jump' \
       --select-1 --cycle --multi --with-nth='2..' \
-      --expect='alt-Q,alt-bspace'
+      --expect="alt-Q,alt-b"
 }
 
 function tag-name() {
@@ -32,7 +32,7 @@ case "$key" in
   alt-Q) # Close the chosen windows
     CMD=close
     ;;
-  alt-bspace) # Bring the chosen windows to focused tag
+   alt-b) # Bring the chosen windows to focused tag
     CMD=bring
     ;;
   *)      # Go to the last chosen window
