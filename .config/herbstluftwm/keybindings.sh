@@ -5,16 +5,36 @@ DIR=$(dirname $(realpath "$0"))
 MODES="${DIR}/modes"
 SCRIPTS="${DIR}/scripts"
 
+normalMode="$0"
+
 TERMINAL="${TERMINAL:-xterm}"
 
 # At start unbinding all keys
 herbstclient keyunbind --all
 
 # Submodes
-herbstclient keybind Super-Shift-e         spawn sh "${MODES}/System.sh"
 herbstclient keybind Super-d               spawn sh "${MODES}/Launcher.sh"
-herbstclient keybind Super-n               spawn sh "${MODES}/Notify.sh"
-herbstclient keybind Super-Shift-w         spawn sh "${MODES}/Session.sh"
+herbstclient keybind Super-Shift-e         spawn sh "${MODES}/System.sh"
+
+# Notifications
+herbstclient keybind Super-q               spawn notify -e getinfo
+
+herbstclient keybind Super-n chain \
+ . keyunbind --all \
+ . keybind q chain , spawn notify -e getinfo , spawn sh "$normalMode" \
+ . keybind c chain , spawn notify -e getcal  , spawn sh "$normalMode" \
+ . keybind Escape spawn sh "$normalMode"
+
+# Session management
+herbstclient keybind Super-w chain \
+ . keyunbind --all \
+ . keybind w       chain , spawn wrapmenu -c FloatMenu -T 'Window Switcher'  $SCRIPTS/window-switcher       , spawn sh "$normalMode" \
+ . keybind Shift-s chain , spawn wrapmenu -c FloatMenu -T 'Tag Switcher'     $SCRIPTS/tag-switcher          , spawn sh "$normalMode" \
+ . keybind s       chain , spawn wrapmenu -c FloatMenu -T 'Session Switcher' $SCRIPTS/tag-switcher sessions , spawn sh "$normalMode" \
+ . keybind r       chain , spawn wrapmenu -c TopMenu   -T 'Rename Tag'       $SCRIPTS/rename-tag            , spawn sh "$normalMode" \
+ . keybind Super-w chain , spawn $SCRIPTS/show-tags , spawn sh "$normalMode" \
+ . keybind e       chain , spawn $SCRIPTS/show-tags , spawn sh "$normalMode" \
+ . keybind Escape spawn bash "$normalMode"
 
 # Main spawn shortcuts
 herbstclient keybind Super-Return          spawn $TERMINAL
@@ -23,14 +43,7 @@ herbstclient keybind Super-Shift-Escape    spawn $TERMINAL -e htop
 # Menus
 herbstclient keybind Super-Shift-d         spawn wrapmenu -c TopMenu   -T 'Program Launcher' launcher
 herbstclient keybind Super-b               spawn wrapmenu -c FloatMenu -T 'Book Searcher'    searcher "$HOME/Books"
-# herbstclient keybind Super-Shift-w         spawn wrapmenu -c FloatMenu -T 'Window Switcher'  $SCRIPTS/window-switcher
-herbstclient keybind Super-Shift-s         spawn wrapmenu -c FloatMenu -T 'Tag Switcher'     $SCRIPTS/tag-switcher
-herbstclient keybind Super-s               spawn wrapmenu -c FloatMenu -T 'Session Switcher' $SCRIPTS/tag-switcher sessions
 herbstclient keybind XF86Tools             spawn wrapmenu -c TopMenu   -T 'Config Chooser'   $SCRIPTS/open-config-files
-
-# Notifications
-herbstclient keybind Super-q               spawn notify -e getinfo
-herbstclient keybind Super-w               spawn "$SCRIPTS/show-tags"
 
 # Screenshots
 herbstclient keybind Print                 spawn flameshot gui
