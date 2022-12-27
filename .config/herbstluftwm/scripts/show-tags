@@ -5,12 +5,8 @@ function hc() {
   herbstclient "$@"
 }
 
-function sessionctl() {
-  $(dirname $(realpath "$0"))/sessionctl $@
-}
-
 function beautify-active() {
-  local fg=yellow
+  local fg=#f6db55
   echo "<span font_weight='bold' color='$fg'>$1</span>"
 }
 
@@ -34,8 +30,15 @@ function list-tags() {
   sessionctl query tags
 }
 
+function list-tags() {
+  sessionctl query tags
+}
+
 function prettify() {
   focused=$(hc attr tags.focus.name)
+
+  # Active session name
+  printf '<span font_weight="bold" color="%s">%s</span> | ' '#5acc74' "$(sessionctl query active)"
 
   list-tags | while read -r tag i status; do
     num_clients=$(hc attr tags.by-name.$tag.client_count)
@@ -46,7 +49,7 @@ function prettify() {
       symbol=$tag
     fi
 
-    printf "${i}:"
+    printf "${tag_symbol[$i]}:"
 
     if   [[ $tag = $focused ]]; then
       echo "$( beautify-active "${symbol}" )"

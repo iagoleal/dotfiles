@@ -221,8 +221,7 @@ local session_methods = {
       session:add_tag(nil, index)
     end
 
-    -- Mark this tag as the new active
-    -- and tell window manager to use it.
+    -- Mark this tag as the new active and tell window manager to use it.
     Layout.active_session = session.name
     session.active = index
     hc.use(session.active_tag)
@@ -420,13 +419,6 @@ reactions = {
     end
   end
 }
-
-local function pread(cmd, mode)
-  local pipe = io.popen(cmd)
-  local out = pipe:read(mode)
-  pipe:close()
-  return out
-end
 
 local function query_my(str)
   local tag_str = hc.query(str)

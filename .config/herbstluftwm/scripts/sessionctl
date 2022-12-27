@@ -109,6 +109,22 @@ local dispatch = {
     hc.emit_hook("session_merge", rip, focus)
   end,
 
+  -- Delete a session and all its tags.
+  -- NOTE: This deletes all tags. Even those who exist in other sessions.
+  ["kill"] = function(rip)
+    local focus = hc.query("my_session")
+
+    if rip == focus then
+      error("Tried to kill current session")
+    end
+
+    for tag in query_my_tags(rip) do
+      hc.merge_tag(tag)
+    end
+
+    hc.emit_hook("session_merge", rip, focus)
+  end,
+
   ["add-tag"] = function(session, tag, index)
     hc.emit_hook("session_tag_add", session, tag, index)
   end,
