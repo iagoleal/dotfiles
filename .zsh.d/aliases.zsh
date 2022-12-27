@@ -48,7 +48,7 @@ function update {
   echo 'Updating NeoVim...'
   local PACKER_DUMP=$(mktemp --suffix='_PACKER')
   nvim \
-    +"autocmd User PackerComplete call UpdateRemotePlugins() | sleep 1 | write $PACKER_DUMP | quitall" \
+    +"autocmd User PackerComplete call UpdateRemotePlugins() | sleep 1 | write! $PACKER_DUMP | quitall" \
     +PackerSync
   cat $PACKER_DUMP
 

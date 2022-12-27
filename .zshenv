@@ -22,6 +22,7 @@ path=("$HOME/.nix-profile/bin"
       "$HOME/bin"
       "$HOME/.bin"
       "$HOME/.local/bin"
+      "$XDG_CONFIG_HOME/herbstluftwm/scripts"
       $path)
 export PATH
 if command -v luarocks &> /dev/null; then

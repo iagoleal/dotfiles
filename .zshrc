@@ -8,7 +8,7 @@ plugin-load romkatv/zsh-defer \
             zsh-users/zsh-completions \
             spwhitt/nix-zsh-completions \
             Aloxaf/fzf-tab \
-            zdharma-continuum/fast-syntax-highlighting \
+            zsh-users/zsh-syntax-highlighting \
             junegunn/fzf-git.sh
 
 
