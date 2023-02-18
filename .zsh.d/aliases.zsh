@@ -57,6 +57,8 @@ function update {
 
   echo "\nUpdating Julia...\n"
   juliaup update
+
+  notify-send -u normal "Updated" "C'est fini"
 }
 
 function trash { mv -i $@ ~/.trash }
