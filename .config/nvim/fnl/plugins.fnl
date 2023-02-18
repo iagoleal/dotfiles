@@ -111,6 +111,13 @@
      :config #(ex source (.. (vim.fn.stdpath :config)
                              "/viml/wilder.vim")))
 
+(use "junegunn/fzf")
+(use "junegunn/fzf.vim"
+  :config #(do
+             (keymap :i "<C-x><C-k>"    "<plug>(fzf-complete-word)" :remap true)
+             (keymap :i "<C-x><C-f>"    "<plug>(fzf-complete-path)" :remap true)
+             (keymap :i "<C-x><C-l>"    "<plug>(fzf-complete-line)" :remap true)))
+
 (use "anuvyklack/hydra.nvim"
   :config #(require :plugins.hydra))
 

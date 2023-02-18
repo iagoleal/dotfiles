@@ -86,7 +86,7 @@
   (table.insert path "lua/?.lua")
   (table.insert path "lua/?/init.lua")
 
-  (lspconfig.sumneko_lua.setup
+  (lspconfig.lua_ls.setup
     {:on_attach on-attach
      :settings
        {:Lua
@@ -141,7 +141,8 @@
 
 ;;; Prose
 (lspconfig.ltex.setup
-  {:on_attach on-attach})
+  {:on_attach on-attach
+   :settings {:ltex {:additionalRules {:languageModel (.. (vim.fn.stdpath :config) "/ngrams")}}}})
 
 ; Expose local methods
 {: on-attach}

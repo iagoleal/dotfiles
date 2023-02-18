@@ -315,6 +315,17 @@
 (keymap :n "<leader>tu" "<cmd>UndotreeToggle<CR>")
 
 ;-----------------------
+;-- Commands
+;-----------------------
+
+(vim.api.nvim_create_user_command :View
+  (fn [arg]
+    (vim.cmd (.. arg.mods " new"))
+    (vim.cmd (fmt "put=execute('%s')" arg.args)))
+  {:nargs 1
+   :desc "Output ex command into new split."})
+
+;-----------------------
 ;-- Filetype Specific
 ;-----------------------
 
@@ -327,7 +338,7 @@
            #(keymap :n "<leader>hh" "<cmd>Hoogle <C-r><C-w><CR>" :buffer true))
   (autocmd :FileType
            :julia
-           "setlocal iskeyword+=!")
+           #(vim.opt_local.iskeyword:append "!"))
   (autocmd :FileType
            [:markdown :tex :latex :gitcommit]
            "setlocal spell")
@@ -336,9 +347,11 @@
            "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=0")
   (autocmd :FileType
            [:lua :fennel]
-           #(if (= (vim.fn.isdirectory "src") 1)
-                (keymap :n "<F12>" ":wa<cr>:!love --fused src &<cr>")
-                (keymap :n "<F12>" ":wa<cr>:!love --fused . &<cr>"))))
+           #(do
+             (if (= (vim.fn.isdirectory "src") 1)
+                 (keymap :n "<F12>" ":wa<cr>:!love --fuseomod src &<cr>")
+                 (keymap :n "<F12>" ":wa<cr>:!love --fused . &<cr>"))
+             (vim.opt_local.iskeyword:remove "."))))
 
 ;-----------------------------
 ;-- Disable Built-in plugins
@@ -399,4 +412,4 @@
 
 ;; Hide sponsor information from Conjure
 (augroup :ConjureRemoveSponsor
-  (autocmd :BufWinEnter "conjure-log-*" "silent s/; Sponsored by @.*//e"))
+  (autocmd :BufWinEnter "conjure-log-*" "silent s/. Sponsored by @.*//e"))
