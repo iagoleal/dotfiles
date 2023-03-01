@@ -105,11 +105,9 @@
 (use "gelguy/wilder.nvim"
      ; In case of errors, disable with "call wilder#disable()"
      :event    [:CursorHold :CmdlineEnter]
-     :rocks    ["luarocks-fetch-gitrec" "pcre2"]
      :requires ["romgrk/fzy-lua-native"]
      :run      [":call UpdateRemotePlugins()"]
-     :config #(ex source (.. (vim.fn.stdpath :config)
-                             "/viml/wilder.vim")))
+     :config #(require :plugins.wilder))
 
 (use "junegunn/fzf")
 (use "junegunn/fzf.vim"
