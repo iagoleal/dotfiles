@@ -13,7 +13,7 @@ herbstclient keybind Escape spawn sh "$normalMode"
 herbstclient keybind e           chain , spawn "$exec_on_tag" "" pcmanfm            , spawn sh "$normalMode"
 herbstclient keybind i           chain , spawn "$exec_on_tag" "" inkscape           , spawn sh "$normalMode"
 herbstclient keybind p           chain , spawn "$exec_on_tag" "" pavucontrol        , spawn sh "$normalMode"
-herbstclient keybind a           chain , spawn "$exec_on_tag" "" anki --no-sandbox  , spawn sh "$normalMode"
+herbstclient keybind a           chain , spawn "$exec_on_tag" "" anki               , spawn sh "$normalMode"
 herbstclient keybind f           chain , spawn "$exec_on_tag" "" firefox            , spawn sh "$normalMode"
 herbstclient keybind g           chain , spawn "$exec_on_tag" "" gimp               , spawn sh "$normalMode"
 herbstclient keybind h           chain , spawn "$exec_on_tag" "" $TERMINAL -e htop  , spawn sh "$normalMode"
@@ -32,7 +32,6 @@ for i in ${!tag_names[@]}; do
     '->' keybind i      chain , spawn "$exec_on_tag" "${tag_names[$i]}" inkspace           , spawn sh "$normalMode" \
     '->' keybind p      chain , spawn "$exec_on_tag" "${tag_names[$i]}" pavucontrol        , spawn sh "$normalMode" \
     '->' keybind a      chain , spawn "$exec_on_tag" "${tag_names[$i]}" anki               , spawn sh "$normalMode" \
-    '->' keybind s      chain , spawn "$exec_on_tag" "${tag_names[$i]}" spotify            , spawn sh "$normalMode" \
     '->' keybind f      chain , spawn "$exec_on_tag" "${tag_names[$i]}" firefox            , spawn sh "$normalMode" \
     '->' keybind g      chain , spawn "$exec_on_tag" "${tag_names[$i]}" gimp               , spawn sh "$normalMode" \
     '->' keybind h      chain , spawn "$exec_on_tag" "${tag_names[$i]}" $TERMINAL -e htop  , spawn sh "$normalMode" \

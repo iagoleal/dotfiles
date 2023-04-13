@@ -14,7 +14,6 @@ herbstclient keyunbind --all
 
 # Submodes
 herbstclient keybind Super-d               spawn sh "${MODES}/Launcher.sh"
-herbstclient keybind Super-Shift-e         spawn sh "${MODES}/System.sh"
 
 # Notifications
 herbstclient keybind Super-q               spawn notify -e getinfo
@@ -34,6 +33,16 @@ herbstclient keybind Super-w chain \
  . keybind r       chain , spawn wrapmenu -c TopMenu   -T 'Rename Tag'       $SCRIPTS/rename-tag            , spawn sh "$normalMode" \
  . keybind Super-w chain , spawn $SCRIPTS/show-tags , spawn sh "$normalMode" \
  . keybind e       chain , spawn $SCRIPTS/show-tags , spawn sh "$normalMode" \
+ . keybind Escape spawn bash "$normalMode"
+
+# System control
+herbstclient keybind Super-Shift-e chain \
+ . keybind 1 chain , spawn sh "$normalMode" , spawn system "lock"        \
+ . keybind 2 chain , spawn sh "$normalMode" , spawn system "suspend"     \
+ . keybind 3 chain , spawn sh "$normalMode" , spawn system "logout"      \
+ . keybind 4 chain , spawn sh "$normalMode" , spawn system "reboot"      \
+ . keybind 5 chain , spawn sh "$normalMode" , spawn system "hibernate"   \
+ . keybind 6 chain , spawn sh "$normalMode" , spawn system "poweroff"    \
  . keybind Escape spawn bash "$normalMode"
 
 # Main spawn shortcuts
@@ -62,6 +71,8 @@ herbstclient keybind XF86AudioMicMute      spawn volctl micmute
 herbstclient keybind XF86MonBrightnessUp   spawn xbacklight -inc 5
 herbstclient keybind XF86MonBrightnessDown spawn xbacklight -dec 5
 herbstclient keybind XF86Display           spawn arandr
+
+herbstclient keybind XF86Favorites         spawn passmenu
 
 # fn+4 == XF84Sleep
 
@@ -130,9 +141,13 @@ for key in {1..9} ; do
 done
 
 # Cycle through sessions
-herbstclient keybind Super-apostrophe        $SCRIPTS/sessionctl next
-herbstclient keybind Super-Shift-apostrophe  $SCRIPTS/sessionctl prev
-
+# herbstclient keybind Super-apostrophe        $SCRIPTS/sessionctl next
+# herbstclient keybind Super-Shift-apostrophe  $SCRIPTS/sessionctl prev
+# Quick look at slack tag
+herbstclient keybind Super-apostrophe        \
+  or , and . compare tags.focus.name = slack \
+           . use_previous                    \
+     ,       use slack
 
 # Cycle through tags
 herbstclient keybind Super-period  use_index +1 --skip-visible
@@ -160,8 +175,8 @@ herbstclient keybind Super-BackSpace         cycle_monitor
 herbstclient keybind Super-Tab               cycle_all +1
 herbstclient keybind Super-Shift-Tab         cycle_all -1
 
-herbstclient keybind Super-Alt-Tab          cycle_frame +1
-herbstclient keybind Super-Alt-Shift-Tab    cycle_frame -1
+herbstclient keybind Super-Alt-Tab           cycle_frame +1
+herbstclient keybind Super-Alt-Shift-Tab     cycle_frame -1
 
 herbstclient keybind Super-i                 jumpto urgent
 herbstclient keybind Super-p                 use_previous
