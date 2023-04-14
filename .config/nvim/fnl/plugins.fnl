@@ -55,9 +55,6 @@
 
 (use "neovim/nvim-lspconfig"
      :config #(require :lsp))
-; Query LSP for tag files.
-; It Allows me to use built-in tag commands with LSP.
-;; (use "weilbith/nvim-lsp-smag")
 
 ; Hook external linters/formaters into LSP
 (use "jose-elias-alvarez/null-ls.nvim"
@@ -65,6 +62,7 @@
   :config #(let [null-ls (require :null-ls)]
             (null-ls.setup
               {:sources [;null-ls.builtins.diagnostics.trail_space
+                         null_ls.builtins.code_actions.gitsigns
                          null-ls.builtins.hover.dictionary]
                :on_attach (require-use :lsp :on-attach)})))
 
@@ -99,15 +97,11 @@
 
 ;; Highly improved wildmenu.
 ;; Includes niceties such as fuzzy search.
-;; Unfortunately, it is a python remote plugin...
-;; so there is some headache when updating.
-;; TODO: I should find a substitute for this
 (use "gelguy/wilder.nvim"
      ; In case of errors, disable with "call wilder#disable()"
-     :event    [:CursorHold :CmdlineEnter]
+     :event    [:CmdlineEnter]
      :requires ["romgrk/fzy-lua-native"]
-     :run      [":call UpdateRemotePlugins()"]
-     :config #(require :plugins.wilder))
+     :config   #(require :plugins.wilder))
 
 (use "junegunn/fzf")
 (use "junegunn/fzf.vim"
@@ -131,7 +125,11 @@
 
 ; Async make      (vimscript)
 (use "tpope/vim-dispatch"
-     :cmd [:Make :Dispatch])
+  :cmd [:Make :Dispatch])
+
+; Git Integration
+(use "lewis6991/gitsigns.nvim"
+  :config #(setup :gitsigns))
 
 ;;;
 ;;; Should be built-in
@@ -185,9 +183,9 @@
      :config #(let [ccc (require :ccc)]
                 (setup :ccc
                    :outputs [ccc.output.hex
-                                 ccc.output.css_rgb
-                                 ccc.output.css_hsl
-                                 ccc.output.float])
+                             ccc.output.css_rgb
+                             ccc.output.css_hsl
+                             ccc.output.float])
                 (keymap :n "<leader>ce" "<cmd>CccPick<CR>")
                 (keymap :n "<leader>cc" "<cmd>CccHighlighterToggle<CR>")))
 
@@ -242,7 +240,6 @@
      :disable true)
 
 (use "pbrisbin/vim-colors-off")
-(use "YorickPeterse/vim-paper")
 (use "sainnhe/everforest")
 
 ;; Return packer itself to allow chaining commands

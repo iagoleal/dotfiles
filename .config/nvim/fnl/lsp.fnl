@@ -75,6 +75,14 @@
                         :update_in_insert false
                         :severity_sort    true})
 
+;; From https://www.reddit.com/r/neovim/comments/12fburw/feedback_when_lsp_dont_find_definition/
+(let [actual-handler vim.lsp.handlers.textDocument/definition]
+  (tset vim.lsp.handlers :textDocument/definition
+    (fn [err result context config]
+      (when (not result)
+        (vim.notify "Definition not found"))
+      (actual-handler err result context config))))
+
 ;;--------------------------
 ;; Server specific setups
 ;;--------------------------

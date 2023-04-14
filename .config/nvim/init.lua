@@ -1,3 +1,4 @@
+vim.loader.enable()
 require('impatient')
 
 local utils  = require "utils"

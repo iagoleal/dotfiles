@@ -178,6 +178,7 @@
 
 (keymap "" "<Space>" "<Nop>" :silent true)
 (set vim.g.mapleader " ")
+(set vim.g.maplocalleader "ç")
 
 ;;; Redefined behaviour
 ;;;---------------------
@@ -309,7 +310,7 @@
 (keymap :n "<leader>chl" "<cmd>set cursorline! cursorcolumn!<CR>")
 
 ; Easy Align
-(keymap [:n :x] "<leader>a" "<Plug>(EasyAlign)" :noremap false)
+(keymap [:n :x] "<leader>a" "<Plug>(LiveEasyAlign)" :noremap false)
 
 ; UndoTree
 (keymap :n "<leader>tu" "<cmd>UndotreeToggle<CR>")
@@ -340,11 +341,14 @@
            :julia
            #(vim.opt_local.iskeyword:append "!"))
   (autocmd :FileType
-           [:markdown :tex :latex :gitcommit]
+           [:lhaskell :markdown :tex :latex :gitcommit]
            "setlocal spell")
   (autocmd :FileType
            :make
            "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=0")
+  (autocmd :FileType
+           [:bash :zsh :sh]
+           #(vim.opt_local.iskeyword:append "$"))
   (autocmd :FileType
            [:lua :fennel]
            #(do
@@ -352,6 +356,19 @@
                  (keymap :n "<F12>" ":wa<cr>:!love --fuseomod src &<cr>")
                  (keymap :n "<F12>" ":wa<cr>:!love --fused . &<cr>"))
              (vim.opt_local.iskeyword:remove "."))))
+  ; (autocmd [:BufRead :BufNewFile]
+  ;          "*.md.lhs"
+  ;          "setlocal filetype=markdown.lhaskell"))
+
+
+; Quick access to last open files of each type
+(augroup :FiletypeMarks
+  (autocmd :BufLeave ["*.md" "*.md.lhs"]   "mark M")
+  (autocmd :BufLeave ["*.hs" "*.lhs"]      "mark H")
+  (autocmd :BufLeave ["*.lua" "*.fnl"]     "mark L")
+  (autocmd :BufLeave ["*.jl"]              "mark J")
+  (autocmd :BufLeave ["*.py"]              "mark P")
+  (autocmd :BufLeave ["*.c" "*.cpp" "*.h"] "mark C"))
 
 ;-----------------------------
 ;-- Disable Built-in plugins
@@ -385,7 +402,7 @@
 (set vim.g.netrw_liststyle 3)
 
 (viml "
-  func Thesaur(findstart, base)
+  func! Thesaur(findstart, base)
     if a:findstart
       return searchpos('\\<', 'bnW', line('.'))[1] - 1
     else
