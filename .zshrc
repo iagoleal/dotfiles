@@ -4,10 +4,11 @@
 
 source $HOME/.zsh.d/plugin-manager.zsh
 
-plugin-load romkatv/zsh-defer \
-            zsh-users/zsh-completions \
-            spwhitt/nix-zsh-completions \
-            Aloxaf/fzf-tab \
+plugin-load romkatv/zsh-defer                 \
+            zsh-users/zsh-completions         \
+            spwhitt/nix-zsh-completions       \
+            chisui/zsh-nix-shell              \
+            Aloxaf/fzf-tab                    \
             zsh-users/zsh-syntax-highlighting \
             junegunn/fzf-git.sh
 
@@ -151,4 +152,9 @@ source $HOME/.zsh.d/fzf.zsh
 # Hooks to set xterm title only on X session
 if [[ $DISPLAY ]]; then
   source $HOME/.zsh.d/wintitle.zsh
+fi
+
+# Enable direnv on interactive shells
+if hascmd direnv; then
+  eval "$(direnv hook zsh)"
 fi

@@ -25,24 +25,30 @@ function _prompt {
   # Show error msg only if return != 0
   local error_code='%(?..Exit Code: %B%F{red}%?%f%b
 )'
+  echo -n $error_code
+
+  if [[ -n $IN_NIX_SHELL ]]; then
+    echo -n "(nix)"
+  fi
+
+  # When are we in ssh?
+  if [[ -n $SSH_CLIENT ]]; then
+    echo -n "%n@%m"
+  fi
+
   # Show different symbols for normal user or root
   local user_symbol='%(?.%F{118}.%F{160})%B❯%b%f'
   local prompt_symbol="%(!.%F{red}#%f.$user_symbol) "
-  if [[ -z $SSH_CLIENT ]]; then
-    echo -n $error_code$prompt_symbol
-  else
-    echo -n $error_code"%n@%m"$prompt_symbol
-  fi
+  echo -n $prompt_symbol
 }
 
 function _rprompt {
-  # Show current directory
-  local curr_dir='%B%F{yellow}%40<...<%~%f%b'
-  # Show number of running jobs
-  local jobs_info='%(1j.[%F{blue}%j%f].)'
   # Info about git branch
-  local git_info="${vcs_info_msg_0_}"
-  echo -n $git_info$curr_dir$jobs_info
+  echo -n "${vcs_info_msg_0_}"
+  # Show current directory
+  echo -n '%B%F{yellow}%40<...<%~%f%b'
+  # Show number of running jobs
+  echo -n '%(1j. [%F{blue}%j%f].)'
 }
 
 # Export the prompt per se

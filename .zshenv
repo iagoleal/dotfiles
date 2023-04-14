@@ -8,6 +8,8 @@ export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_DATA_DIRS="/usr/local/share:/usr/share:$HOME/.local/share/applications/"
 export XDG_CONFIG_DIRS=/etc/xdg
 
+# pass should paste passwords with middle click
+export PASSWORD_STORE_X_SELECTION=primary
 
 export EDITOR="nvim -e"
 export VISUAL="nvim"

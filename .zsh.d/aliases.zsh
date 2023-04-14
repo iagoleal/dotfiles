@@ -40,6 +40,7 @@ function update {
 
   echo 'Nix Nix Nix'
   nix-channel --update
+  nix-env -i 'my-packages'
   nix-env -u '*'
 
   echo "Updating zsh..."
@@ -124,6 +125,10 @@ function rand {
   echo $[${RANDOM}%${BASE}+${OFFSET}]
 }
 
+# Create only path portion of filename
+function mkparent {
+  mkdir -p "$(dirname "$1")"
+}
 
 function timev {
   local TIMEFMT=$'command: %J
