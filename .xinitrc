@@ -44,6 +44,9 @@ fi
 
 # Turn the damm bell sound off
 xset b off
+# Set keyboard repeat rate
+# 150ms delay | 60 cps (better to be a multiple of screen refresh rate)
+xset r rate 150 60
 # Change the cursor default icon
 xsetroot -cursor_name left_ptr
 
@@ -55,6 +58,6 @@ redshift &
 fcitx &
 # Enable screen lock
 xset s 600 # lock after 10 minutes
-xss-lock -- i3lock -n &
+xss-lock -- i3lock --nofork --ignore-empty-password --show-failed-attempts &
 # Run WM
 exec herbstluftwm --locked

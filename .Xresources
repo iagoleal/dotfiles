@@ -8,7 +8,7 @@
 Xcursor.theme: Vimix-cursors
 Xcursor.size: 32
 
-dmenu.font: Source Code Pro:style:Semibold:size=14:antialias=true:hinting=false
+dmenu.font: mononoki:style:Semibold:size=14:antialias=true:hinting=false
 dmenu.background: BG
 dmenu.foreground: FG
 dmenu.selbackground: #56bb78
