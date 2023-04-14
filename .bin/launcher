@@ -12,7 +12,7 @@ list-desktops() {
 }
 
 forked-exec() {
-  while read -r command; do # We loop for the case when the user chooses multiple cmds
+  while read -r command; do # We loop for the case where the user chooses multiple cmds
     [ -z "$command" ] && continue
 
     nohup "${SHELL:-/bin/sh}" -c "$command" > /dev/null 2>&1 &

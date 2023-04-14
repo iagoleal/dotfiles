@@ -29,5 +29,4 @@ vec3="vec3($rf, $gf, $bf)"
 # As used in love2d
 love2d="{$rf, $gf, $bf}"
 
-wrapmenu -c TopMenu \
-  "echo -e '$hex\n$rgb\n$vec3\n$love2d' | fzf --border --no-info -1 --height=~40% --prompt='color> ' --layout=reverse | xclip -selection clipboard"
+echo -e "$hex\n$rgb\n$vec3\n$love2d" | dmenu -l 4 -p 'color> ' | xclip -selection clipboard

@@ -24,6 +24,10 @@ fi
 # Battery
 #------------------------
 bat_symbol='⚡'
+on_charger=$(cat /sys/class/power_supply/AC/online)
+if [ $on_charger = 1 ]; then
+  bat_symbol="<span color='yellow'>$bat_symbol</span>"
+fi
 bat0="$(cat /sys/class/power_supply/BAT0/capacity)"
 bat1="$(cat /sys/class/power_supply/BAT1/capacity)"
 bat="$bat_symbol 0: ${bat0}% 1: ${bat1}%"
