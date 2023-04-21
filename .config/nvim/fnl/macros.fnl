@@ -26,7 +26,7 @@
   (let [cfg [...]
           out {}]
     (assert (= 0 (math.fmod (length cfg) 2))
-            "Expected even number of keywords/values pairs.")
+            (fmt "Expected even number of keywords/values pairs. %d given" (length cfg)))
     (for [i 1 (length cfg) 2]
       (tset out (. cfg i) (. cfg (+ i 1))))
     out))
@@ -119,23 +119,9 @@
     "*" "<f-args>"
     "+" "<f-args>"))
 
-(fn M.def-command [name args ...]
-  ;; Begin with some checks
-  (when (not (sym? name))
-    (error "Name of command must be a symbol!"))
-  (when (not (sequence? args))
-    (error "Commands need a sequence of arguments!"))
-  (let [fnl-func `(fn ,args ,...) ; Generate a function from macro's body
-        nargs    (build-nargs args)
-        arg-pass (build-passing-style nargs)
-        command-ex (string.format "command! -nargs=%s %s lua %%s(%s)"
-                                  nargs
-                                  (tostring name)
-                                  arg-pass)]
-
-    `(let [cmd# ((. (require :futils) :save-function-as-global) ,fnl-func)
-           exstring# (string.format ,command-ex cmd#)]
-       (vim.cmd exstring#))))
+(fn M.def-command [name f ...]
+  (let [opts (vararg-to-opts ...)]
+    `(vim.api.nvim_create_user_command ,name ,f ,opts)))
 
 ;;; Vimscript
 (fn M.ex [command args]
@@ -147,38 +133,6 @@
 
 (fn M.viml [str]
   `(vim.api.nvim_exec ,str true))
-
-;-----------------------------------
-;;; Access lua functions from viml
-;-----------------------------------
-
-;; Put Unique Global
-;;
-;; (val :any prefix? :string) -> (uuid :string)
-;;
-;; Takes any given value, generates a unique name (with optional prefix)
-;; and inserts value into _G. Returns unique name.
-(fn M.pug [val prefix?]
-  ;; gensym will generate a unique id across a compile pass, but hotpot may compile
-  ;; files in separate passes as they are modified, so symbols may collide
-  ;; you can avoid this by passing a unique prefix per-file or using something
-  ;; like the "uid" below, based on compile time
-  (default-value! _G._mapped_functions {})
-  (local inter-compile-uid (_G.os.date "%s"))
-  (local name (if prefix?
-                (.. (tostring (gensym prefix?)) inter-compile-uid)
-                (.. (tostring (gensym :pug)) inter-compile-uid)))
-
-  `(do
-     (tset _G._mapped_functions ,name ,val)
-     (.. "_mapped_functions." ,name)))
-
-;;; Wrap given value in v:lua x pug call
-(fn M.vlua [what prefix?]
-  `(.. "v:lua." ,(M.pug what prefix?) "()"))
-
-(fn M.vlua-fmt [str f]
-  `(string.format ,str ,(M.vlua f)))
 
 ;-------------------
 ;; Package manager

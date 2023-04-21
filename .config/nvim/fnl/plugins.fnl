@@ -34,9 +34,10 @@
 ;; Cache lua modules
 (use "lewis6991/impatient.nvim")
 
-;;;
+
+;;;-------------------------------------
 ;;; Treesitter
-;;;
+;;;-------------------------------------
 
 (use "nvim-treesitter/nvim-treesitter"
       :run    ":TSUpdate"
@@ -49,9 +50,9 @@
 (use "RRethy/nvim-treesitter-textsubjects"
      :requires "nvim-treesitter/nvim-treesitter")
 
-;;;
+;;;-------------------------------------
 ;;; Language Server Protocol
-;;;
+;;;-------------------------------------
 
 (use "neovim/nvim-lspconfig"
      :config #(require :lsp))
@@ -63,8 +64,7 @@
             (null-ls.setup
               {:sources [;null-ls.builtins.diagnostics.trail_space
                          null_ls.builtins.code_actions.gitsigns
-                         null-ls.builtins.hover.dictionary]
-               :on_attach (require-use :lsp :on-attach)})))
+                         null-ls.builtins.hover.dictionary]})))
 
 ;;;
 ;;; Utilities
@@ -85,10 +85,12 @@
                (tset vim.g :conjure#highlight#enabled                  true)
                (tset vim.g :conjure#log#hud#border                     "double")
                (tset vim.g :conjure#highlight#enabled                  :IncSearch)
-               ; scheme
+               ;; scheme
+               (tset vim.g :conjure#filetype#scheme "conjure.client.guile.socket")
                (tset vim.g :conjure#client#scheme#stdio#command        "racket -il scheme")
                (tset vim.g :conjure#client#scheme#stdio#prompt_pattern "\n?[\"%w%-./_]*> ")
-               ; fennel
+               (tset vim.g :conjure#client#guile#socket#pipename "/tmp/guile-repl.socket")
+               ;; fennel
                (tset vim.g :conjure#filetype#fennel                    "conjure.client.fennel.stdio")
                (tset vim.g :conjure#client#fennel#stdio#command        "fennel")))
 
@@ -104,6 +106,7 @@
      :config   #(require :plugins.wilder))
 
 (use "junegunn/fzf")
+
 (use "junegunn/fzf.vim"
   :config #(do
              (keymap :i "<C-x><C-k>"    "<plug>(fzf-complete-word)" :remap true)
@@ -111,6 +114,7 @@
              (keymap :i "<C-x><C-l>"    "<plug>(fzf-complete-line)" :remap true)))
 
 (use "anuvyklack/hydra.nvim"
+  :disable true
   :config #(require :plugins.hydra))
 
 ; Tree view buffer for undo history
@@ -175,11 +179,14 @@
                      "r" {:pattern "{\\|}\\|,"     ; Lua / Haskell style Records
                           :delimiter_align :r}}))
 
+
 ;-------------------------
 ;;; Colors
 ;-------------------------
 
 (use "uga-rosa/ccc.nvim"
+     :opt true
+     :cmd [:CccPick :CccHighlighterToggle]
      :config #(let [ccc (require :ccc)]
                 (setup :ccc
                    :outputs [ccc.output.hex
@@ -220,8 +227,6 @@
                 (set vim.g.haskell_indent_do               3)
                 (set vim.g.haskell_indent_in               0)
                 (set vim.g.haskell_indent_guard            2)))
-
-;; (use "JuliaEditorSupport/julia-vim")
 
 (use "bakpakin/fennel.vim"
      :ft :fennel)

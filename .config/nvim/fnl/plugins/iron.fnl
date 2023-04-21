@@ -87,14 +87,6 @@
        (set-forcibly! repl (. repls choice))))
     (iron.core.set_config {:preferred {ft repl}})))
 
-; (fn hidden [bufid showfn]
-;   (var was-hidden false)
-;   (var window (vim.fn.bufwinnr bufid))
-;   (when (= window -1)
-;     (set was-hidden true)
-;     (set window (vim.fn.win_id2win (showfn))))
-;   (values window was-hidden))
-
 (fn hidden [bufid showfn]
   (let [window (vim.fn.bufwinnr bufid)]
     (if (= window -1)
@@ -102,13 +94,13 @@
         (values window false))))
 
 (fn visibility.blink [bufid showfn]
-  (var (window was-hidden) (hidden bufid showfn))
+  (local (window was-hidden) (hidden bufid showfn))
   (if (not was-hidden)
       (do
-        (vim.cmd (.. window "wincmd c"))
-        (local repl-winnr (vim.fn.win_id2win (showfn)))
-        (vim.cmd (.. repl-winnr "wincmd p")))
-      (vim.cmd (.. window "wincmd p"))))
+        (vim.cmd.wincmd {:args ["c"] :count window})
+        (let [repl-winnr (vim.fn.win_id2win (showfn))]
+          (vim.cmd.wincmd {:args ["p"] :count repl-winnr})))
+      (vim.cmd.wincmd {:args ["p"] :count window})))
 
 (global-fn iron-split-open [orientation]
   (let [old-config iron.config.repl_open_cmd]
@@ -124,23 +116,25 @@
 ;;; Editor Commands
 ;---------------------
 
-(def-command IronSetPreferred [...]
-  (iron-set-preferred ...))
+(def-command :IronSetPreferred
+  #(iron-set-preferred (unpack $1.fargs))
+  :nargs :?)
+
 ;---------------------
 ;; Mappings
 ;---------------------
 ;; REPL
-(keymap :n :<leader>it       "<Plug>(iron-send-motion)"   :noremap false)
-(keymap :v :<leader>i<Space> "<Plug>(iron-visual-send)"   :noremap false)
-(keymap :n :<leader>i.       "<Plug>(iron-repeat-cmd)"    :noremap false)
-(keymap :n :<leader>i<Space> "<Plug>(iron-send-line)"     :noremap false)
-(keymap :n :<leader>ii       "<Plug>(iron-send-line)"     :noremap false)
-(keymap :n :<leader>i<CR>    "<Plug>(iron-cr)"            :noremap false)
-(keymap :n :<leader>ic       "<Plug>(iron-interrupt)"     :noremap false)
-(keymap :n :<leader>iq       "<Plug>(iron-exit)"          :noremap false)
-(keymap :n :<leader>il       "<Plug>(iron-clear)"         :noremap false)
-(keymap :n :<leader>ip       "<Plug>(iron-send-motion)ip" :noremap false)
-(keymap :n :<leader>ir       ":IronRestart<CR>")
+(keymap :n "<leader>it"       "<Plug>(iron-send-motion)"   :noremap false)
+(keymap :v "<leader>i<Space>" "<Plug>(iron-visual-send)"   :noremap false)
+(keymap :n "<leader>i."       "<Plug>(iron-repeat-cmd)"    :noremap false)
+(keymap :n "<leader>i<Space>" "<Plug>(iron-send-line)"     :noremap false)
+(keymap :n "<leader>ii"       "<Plug>(iron-send-line)"     :noremap false)
+(keymap :n "<leader>i<CR>"    "<Plug>(iron-cr)"            :noremap false)
+(keymap :n "<leader>ic"       "<Plug>(iron-interrupt)"     :noremap false)
+(keymap :n "<leader>iq"       "<Plug>(iron-exit)"          :noremap false)
+(keymap :n "<leader>il"       "<Plug>(iron-clear)"         :noremap false)
+(keymap :n "<leader>ip"       "<Plug>(iron-send-motion)ip" :noremap false)
+(keymap :n "<leader>ir"       ":IronRestart<CR>")
 
 ;; Open REPL on bottom split
 (keymap :n :<leader>is #(iron-split-open "botright   12 split"))

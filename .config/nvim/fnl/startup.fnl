@@ -23,16 +23,18 @@
 
 ;;; Lazy load packer on file change.
 ;; Adapt the built-in packer commands to use my plugin file.
-(def-command PackerInstall [] ((require-use :plugins :install)))
-(def-command PackerUpdate  [] ((require-use :plugins :update)))
-(def-command PackerClean   [] ((require-use :plugins :clean)))
-(def-command PackerStatus  [] ((require-use :plugins :status)))
-(def-command PackerProfile [] ((require-use :plugins :profile_output)))
-(def-command PackerSync    [] ((require-use :plugins :sync)))
+(def-command :PackerInstall #((require-use :plugins :install)))
+(def-command :PackerUpdate  #((require-use :plugins :update)))
+(def-command :PackerClean   #((require-use :plugins :clean)))
+(def-command :PackerStatus  #((require-use :plugins :status)))
+(def-command :PackerProfile #((require-use :plugins :profile_output)))
+(def-command :PackerSync    #((require-use :plugins :sync)))
 
-(def-command PackerCompile [?x]
-  (let [compiler (. (force_require :plugins) :compile)]
-    (compiler ?x)))
+(def-command :PackerCompile
+  (fn [arg]
+    (let [compiler (. (force_require :plugins) :compile)]
+     (compiler arg.args)))
+  :nargs :?)
 
 (viml "command! -nargs=+ -complete=customlist,v:lua.require'packer'.loader_complete PackerLoad lua require('plugins').loader(<q-args>)")
 
@@ -94,12 +96,6 @@
                     :extends  "⟩"
                     :precedes "⟨"})
 
-(option :number)             ; show line numbers
-(option :relativenumber)     ; Show line numbers relative to current line
-
-(option :numberwidth 2)      ; set minimum width of numbers bar
-(option :signcolumn :number) ; show (lsp) signs over number bar
-
 (option :showmatch)          ; highlight matching parentheses (useful as hell)
 
 (option :formatoptions remove [:o :c :r])  ; Don't auto insert comments
@@ -111,6 +107,14 @@
 ; Highlight text on yank
 (augroup :Yank
   (autocmd :TextYankPost "*" #(vim.highlight.on_yank {:higroup "IncSearch" :timeout 150 :on_visual false})))
+
+
+;; Configure diagnostics (for all servers)
+(vim.diagnostic.config {:virtual_text     false
+                        :signs            true
+                        :underline        false
+                        :update_in_insert false
+                        :severity_sort    true})
 
 ;-------------------------
 ;-- MISC options
@@ -142,8 +146,10 @@
   (set vim.opt.expandtab   true))
 
 ;; Expose it as a command
-(def-command SpacesPerTab [n]
-  (set-spaces-per-tab (tonumber n)))
+(def-command :SpacesPerTab
+  #(set-spaces-per-tab (tonumber $1.args))
+  :nargs 1
+  :desc "Define how many spaces a <tab> represents")
 
 
 ; By default, use 2 spaces to indent
@@ -164,7 +170,7 @@
 
 
 (option :dictionary append "/usr/share/dict/words")
-(option :thesaurus  append (.. (vim.fn.stdpath :config)
+(option :thesaurus  append (.. (vim.fn.stdpath :data)
                                "/thesaurus/mthesaur.txt"))
 
 ;; Use ripgrep for :grep if possible
@@ -172,13 +178,19 @@
   (option :grepprg    "rg --vimgrep --no-heading")
   (option :grepformat "%f:%l:%c:%m,%f:%l:%m"))
 
-;---------------------
-;-- Keymaps
-;---------------------
 
-(keymap "" "<Space>" "<Nop>" :silent true)
-(set vim.g.mapleader " ")
+;====================================
+;            Keymaps
+;====================================
+
+(set vim.g.mapleader      " ")
 (set vim.g.maplocalleader "ç")
+
+;;; Disable behaviour
+;;;---------------------
+(each [_ key (ipairs ["<Up>" "<Down>" "<Left>" "<Right>" "<Space>"])]
+  (keymap ["" "v"] key "<Nop>"))
+
 
 ;;; Redefined behaviour
 ;;;---------------------
@@ -194,12 +206,9 @@
 (keymap :x "<" "<gv")
 (keymap :x ">" ">gv")
 
+
 ;;; Additional behaviour
 ;;;---------------------
-
-; All this ctrl-w bla is making my pinky sore...
-; Let's try using a leader key instead in order to move the hard work to the thumb.
-(keymap :n "<leader>w" "<C-w>" :remap true)
 
 ; Zoom window at new tab
 (keymap :n "<leader>tz" "<cmd>tab split<CR>")
@@ -235,8 +244,10 @@
 (global toggle-locationlist
   (toggle-*list :loclist  "lopen" "lclose"))
 
+
 (keymap :n "<leader>q" toggle-quickfix)
 (keymap :n "<leader>Q" toggle-locationlist)
+
 
 ;;;; Navigation
 (fn unimpaired [key cmd]
@@ -245,9 +256,10 @@
   (keymap :n (.. "[" (key:upper)) (fmt ":<C-U>exe v:count1 '%sfirst'<CR>"    cmd))
   (keymap :n (.. "]" (key:upper)) (fmt ":<C-U>exe v:count1 '%slast'<CR>"     cmd)))
 
-(unimpaired :q :c) ; Quickfix
-(unimpaired :l :l) ; Location list
-(unimpaired :b :b) ; Buffers
+(unimpaired :q :c)   ; Quickfix
+(unimpaired :l :l)   ; Location list
+(unimpaired :b :b)   ; Buffers
+(unimpaired :t :tab) ; Tabs
 
 ;; Open :ptag on a vertical split (Like "<C-w>}")
 (fn ptag-vertical []
@@ -266,15 +278,10 @@
 (keymap :n "<C-w>{" ptag-vertical)
 
 ;; Scroll the preview window
-(keymap :n "<M-e>" (.. "'<C-w>P' . v:count1 . '<C-e><C-w>p'")
+(keymap :n "<M-e>" "'<C-w>P' . v:count1 . '<C-e><C-w>p'"
         :expr true)
-(keymap :n "<M-y>" (.. "'<C-w>P' . v:count1 . '<C-y><C-w>p'")
+(keymap :n "<M-y>" "'<C-w>P' . v:count1 . '<C-y><C-w>p'"
         :expr true)
-
-;; Disable arrows
-(each [_ key (ipairs ["<Up>" "<Down>" "<Left>" "<Right>"])]
-  (keymap ["" "v"] key ""))
-
 
 ; Spell check previous mistake and correct to first suggestion
 (keymap :i "<C-l>" "<c-g>u<Esc>[s1z=`]a<c-g>u")
@@ -293,7 +300,22 @@
 
 (keymap :i "<C-r>" "<C-g>u<C-r>")
 
+;--------------------------
+;;; LSP
+;--------------------------
 
+;; Diagnostics
+(keymap :n "<leader>e"  vim.diagnostic.open_float
+  :desc "Open diagnostics popup")
+(keymap :n "[d"         vim.diagnostic.goto_prev
+  :desc "Previous diagnostic")
+(keymap :n "]d"         vim.diagnostic.goto_next
+  :desc "Next diagnostic")
+(keymap :n "<leader>dq" vim.diagnostic.setloclist
+  :desc "Put diagnostics on location list")
+
+
+;--------------------------
 ;;; Plugin related
 ;--------------------------
 
@@ -319,12 +341,12 @@
 ;-- Commands
 ;-----------------------
 
-(vim.api.nvim_create_user_command :View
+(def-command :View
   (fn [arg]
     (vim.cmd (.. arg.mods " new"))
     (vim.cmd (fmt "put=execute('%s')" arg.args)))
-  {:nargs 1
-   :desc "Output ex command into new split."})
+  :nargs 1
+  :desc  "Output ex command into new split.")
 
 ;-----------------------
 ;-- Filetype Specific
@@ -356,9 +378,6 @@
                  (keymap :n "<F12>" ":wa<cr>:!love --fuseomod src &<cr>")
                  (keymap :n "<F12>" ":wa<cr>:!love --fused . &<cr>"))
              (vim.opt_local.iskeyword:remove "."))))
-  ; (autocmd [:BufRead :BufNewFile]
-  ;          "*.md.lhs"
-  ;          "setlocal filetype=markdown.lhaskell"))
 
 
 ; Quick access to last open files of each type

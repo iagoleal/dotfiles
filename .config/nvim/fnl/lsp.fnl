@@ -2,17 +2,20 @@
 (local {: keymap : autocmd}  (require :futils))
 (local util lspconfig.util)
 
-(import-macros {: augroup} :macros)
-
-(macro require-use [pkg ...]
-  `(. (require ,pkg) ,...))
-
 (fn capable? [client capability]
   (. client.server_capabilities capability))
 
-;;; Only map keybinds after attaching LSP
-(fn on-attach [client bufnr]
-  (let [bmap (fn [mode keys cmd ...]
+
+;;--------------------------------------------------
+;; Per buffer settings
+;;--------------------------------------------------
+
+(vim.api.nvim_create_augroup :GenLspConfig {:clear true})
+
+(fn on-attach [ev]
+  (let [bufnr  ev.buf
+        client (vim.lsp.get_client_by_id ev.data.client_id)
+        bmap (fn [mode keys cmd ...]
                (keymap mode keys cmd :buffer bufnr :silent true ...))]
 
     ; Use lsp omnifunc for completion
@@ -24,8 +27,10 @@
     (when (capable? client :signatureHelpProvider)
       (bmap :n "<C-k>"      vim.lsp.buf.signature_help))
 
-    (bmap :n "gr"         vim.lsp.buf.references)
-    (bmap :n "<leader>rn" vim.lsp.buf.rename)
+    (when (capable? client :referencesProvider)
+      (bmap :n "<leader>re" vim.lsp.buf.references))
+    (when (capable? client :renameProvider)
+      (bmap :n "<leader>rn" vim.lsp.buf.rename))
 
     (bmap :n "<leader>wa" vim.lsp.buf.add_workspace_folder)
     (bmap :n "<leader>wr" vim.lsp.buf.remove_workspace_folder)
@@ -44,36 +49,27 @@
       (bmap :n "g<C-d>"     vim.lsp.buf.implementation
         :desc "Go to implementation"))
 
-    ;; Set some keybinds conditional on server capabilities
-    (bmap :n "<leader>=" #(vim.lsp.buf.format {:async true}))
-
     (when (capable? client :codeActionProvider)
       (bmap :n "<leader>ca" vim.lsp.buf.code_action
         :desc "Execute Code Action under cursor"))
 
     (when (capable? client :codeLensProvider)
-      (bmap :n "<leader>cl" vim.lsp.codelens.run)
-      (augroup :LspCodeLens
-        (autocmd [:BufEnter :CursorHold :InsertLeave] "<buffer>" vim.lsp.codelens.refresh
-          :desc "Execute Code Lens under cursor")))))
+      (bmap :n "<leader>cl" vim.lsp.codelens.run
+          :desc "Execute Code Lens under cursor")
+      (vim.api.nvim_create_autocmd [:BufEnter :CursorHold :InsertLeave]
+        {:group    :GenLspConfig
+         :callback vim.lsp.codelens.refresh
+         :buffer   0
+         :desc     "Refresh all Code Lenses"}))))
+
+(vim.api.nvim_create_autocmd :LspAttach
+  {:group    :GenLspConfig
+   :callback on-attach})
 
 
-;; Diagnostics
-(keymap :n "<leader>e"  vim.diagnostic.open_float
-  :desc "Open diagnostics popup")
-(keymap :n "[d"         vim.diagnostic.goto_prev
-  :desc "Previous diagnostic")
-(keymap :n "]d"         vim.diagnostic.goto_next
-  :desc "Next diagnostic")
-(keymap :n "<leader>dq" vim.diagnostic.setloclist
-  :desc "Put diagnostics on location list")
-
-;; Configure diagnostics (for all servers)
-(vim.diagnostic.config {:virtual_text     false
-                        :signs            true
-                        :underline        false
-                        :update_in_insert false
-                        :severity_sort    true})
+;;--------------------------------------------------
+;; Handlers with improved functionality
+;;--------------------------------------------------
 
 ;; From https://www.reddit.com/r/neovim/comments/12fburw/feedback_when_lsp_dont_find_definition/
 (let [actual-handler vim.lsp.handlers.textDocument/definition]
@@ -83,25 +79,24 @@
         (vim.notify "Definition not found"))
       (actual-handler err result context config))))
 
-;;--------------------------
+
+;;--------------------------------------------------
 ;; Server specific setups
-;;--------------------------
+;;--------------------------------------------------
 
 
 ;;; Lua
 ;; set the path to the sumneko installation;
-(let [path (vim.split package.path ";")]
-  (table.insert path "lua/?.lua")
-  (table.insert path "lua/?/init.lua")
-
+(let [lpath (vim.split package.path ";")]
+  (table.insert lpath "lua/?.lua")
+  (table.insert lpath "lua/?/init.lua")
   (lspconfig.lua_ls.setup
-    {:on_attach on-attach
-     :settings
+    {:settings
        {:Lua
          {:runtime
             {:version "LuaJIT"
              ; Setup lua path
-             :path    path}
+             :path    lpath}
           :diagnostics {:globals [:vim :love]
                         :disable [:lowercase-global]}
           :workspace
@@ -119,10 +114,8 @@
 
 ;;; Haskell
 (lspconfig.hls.setup
-  {:on_attach on-attach
-   :root_dir (fn [fname]
-               (local util lspconfig.util)
-               ((util.root_pattern :*.cabal :stack.yaml :cabal.project :package.yaml :hie.yaml :*.hs) fname))
+  {:root_dir (fn [fname]
+              ((util.root_pattern :*.cabal :stack.yaml :cabal.project :package.yaml :hie.yaml :*.hs) fname))
    :settings
      {:haskell
         {:plugin
@@ -132,8 +125,7 @@
 
 ;;; Julia
 (lspconfig.julials.setup
-  {:on_attach on-attach
-   :autostart true
+  {:autostart true
    :root_dir (fn [fname]
                (or ((lspconfig.util.root_pattern "Project.toml") fname)
                    (util.find_git_ancestor fname)))
@@ -142,15 +134,17 @@
 
 
 ;;; Python
-(lspconfig.pyright.setup {:on_attach on-attach})
+(lspconfig.pyright.setup {})
+
 
 ;;; C / C++
-(lspconfig.ccls.setup {:on_attach on-attach})
+(lspconfig.ccls.setup {})
+
+
+;;; Bash
+(lspconfig.bashls.setup {})
+
 
 ;;; Prose
 (lspconfig.ltex.setup
-  {:on_attach on-attach
-   :settings {:ltex {:additionalRules {:languageModel (.. (vim.fn.stdpath :config) "/ngrams")}}}})
-
-; Expose local methods
-{: on-attach}
+  {:settings {:ltex {:additionalRules {:languageModel (.. (vim.fn.stdpath :data) "/ngrams")}}}})
