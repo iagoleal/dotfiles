@@ -20,8 +20,9 @@
 (packer.init config)
 (packer.reset)
 
-;;;; Add and manage packages
-;;;; Here we load all packages of interest.
+;;;--------------------------------------------------------------------------
+;;; Bootstrapped behaviour
+;;;--------------------------------------------------------------------------
 
 ;; The plugin manager itself
 (use "wbthomason/packer.nvim"
@@ -35,9 +36,9 @@
 (use "lewis6991/impatient.nvim")
 
 
-;;;-------------------------------------
+;;;--------------------------------------------------------------------------
 ;;; Treesitter
-;;;-------------------------------------
+;;;--------------------------------------------------------------------------
 
 (use "nvim-treesitter/nvim-treesitter"
       :run    ":TSUpdate"
@@ -47,12 +48,12 @@
 (use "nvim-treesitter/nvim-treesitter-textobjects"
      :requires "nvim-treesitter/nvim-treesitter")
 
-(use "RRethy/nvim-treesitter-textsubjects"
+(use "nvim-treesitter/playground"
      :requires "nvim-treesitter/nvim-treesitter")
 
-;;;-------------------------------------
+;;;--------------------------------------------------------------------------
 ;;; Language Server Protocol
-;;;-------------------------------------
+;;;--------------------------------------------------------------------------
 
 (use "neovim/nvim-lspconfig"
      :config #(require :lsp))
@@ -66,78 +67,10 @@
                          null_ls.builtins.code_actions.gitsigns
                          null-ls.builtins.hover.dictionary]})))
 
-;;;
-;;; Utilities
-;;;
 
-;; Manage REPLs
-(use "hkupty/iron.nvim"
-     :commit "bc9c596d6a97955f0306d2abcc10d9c35bbe2f5b"
-     :config (fn []
-               (set vim.g.iron_map_defaults 0)
-               (set vim.g.iron_map_extended 0)
-               (require :plugins.iron)))
-
-;; Better REPL management for Lisps
-(use "Olical/conjure"
-     :config (fn []
-               (tset vim.g :conjure#extract#tree_sitter#enabled        true)
-               (tset vim.g :conjure#highlight#enabled                  true)
-               (tset vim.g :conjure#log#hud#border                     "double")
-               (tset vim.g :conjure#highlight#enabled                  :IncSearch)
-               ;; scheme
-               (tset vim.g :conjure#filetype#scheme "conjure.client.guile.socket")
-               (tset vim.g :conjure#client#scheme#stdio#command        "racket -il scheme")
-               (tset vim.g :conjure#client#scheme#stdio#prompt_pattern "\n?[\"%w%-./_]*> ")
-               (tset vim.g :conjure#client#guile#socket#pipename "/tmp/guile-repl.socket")
-               ;; fennel
-               (tset vim.g :conjure#filetype#fennel                    "conjure.client.fennel.stdio")
-               (tset vim.g :conjure#client#fennel#stdio#command        "fennel")))
-
-; Auto-layouting for Lisp parentheses
-(use "gpanders/nvim-parinfer")
-
-;; Highly improved wildmenu.
-;; Includes niceties such as fuzzy search.
-(use "gelguy/wilder.nvim"
-     ; In case of errors, disable with "call wilder#disable()"
-     :event    [:CmdlineEnter]
-     :requires ["romgrk/fzy-lua-native"]
-     :config   #(require :plugins.wilder))
-
-(use "junegunn/fzf")
-
-(use "junegunn/fzf.vim"
-  :config #(do
-             (keymap :i "<C-x><C-k>"    "<plug>(fzf-complete-word)" :remap true)
-             (keymap :i "<C-x><C-f>"    "<plug>(fzf-complete-path)" :remap true)
-             (keymap :i "<C-x><C-l>"    "<plug>(fzf-complete-line)" :remap true)))
-
-(use "anuvyklack/hydra.nvim"
-  :disable true
-  :config #(require :plugins.hydra))
-
-; Tree view buffer for undo history
-(use "mbbill/undotree")
-
-; Diff mode for directories
-(use "cossonleo/dirdiff.nvim")
-
-(use "NMAC427/guess-indent.nvim"
-  :disable true
-  :config #(setup :guess-indent))
-
-; Async make      (vimscript)
-(use "tpope/vim-dispatch"
-  :cmd [:Make :Dispatch])
-
-; Git Integration
-(use "lewis6991/gitsigns.nvim"
-  :config #(setup :gitsigns))
-
-;;;
+;;;--------------------------------------------------------------------------
 ;;; Should be built-in
-;;;
+;;;--------------------------------------------------------------------------
 
 ; Title case operator
 (use "christoomey/vim-titlecase")
@@ -151,7 +84,6 @@
 
 ; Additional text operators
 (use "wellle/targets.vim")
-
 
 ; Improved matchparen and matchit
 (use "andymass/vim-matchup"
@@ -180,10 +112,84 @@
                           :delimiter_align :r}}))
 
 
-;-------------------------
-;;; Colors
-;-------------------------
+;;;--------------------------------------------------------------------------
+;;; Extra functionalities
+;;;--------------------------------------------------------------------------
 
+;; Manage REPLs
+(use "hkupty/iron.nvim"
+     :commit "bc9c596d6a97955f0306d2abcc10d9c35bbe2f5b"
+     :config (fn []
+               (set vim.g.iron_map_defaults 0)
+               (set vim.g.iron_map_extended 0)
+               (require :plugins.iron)))
+
+;; Better REPL management for Lisps
+(use "Olical/conjure"
+     :ft [:fennel :racket :scheme :lisp]
+     :config (fn []
+               (tset vim.g :conjure#extract#tree_sitter#enabled        true)
+               (tset vim.g :conjure#highlight#enabled                  true)
+               (tset vim.g :conjure#log#hud#border                     "double")
+               (tset vim.g :conjure#highlight#enabled                  :IncSearch)
+               ;; scheme
+               (tset vim.g :conjure#filetype#scheme "conjure.client.guile.socket")
+               (tset vim.g :conjure#client#scheme#stdio#command        "racket -il scheme")
+               (tset vim.g :conjure#client#scheme#stdio#prompt_pattern "\n?[\"%w%-./_]*> ")
+               (tset vim.g :conjure#client#guile#socket#pipename "/tmp/guile-repl.socket")
+               ;; fennel
+               (tset vim.g :conjure#filetype#fennel                    "conjure.client.fennel.stdio")
+               (tset vim.g :conjure#client#fennel#stdio#command        "fennel")))
+
+; Auto-layouting for Lisp parentheses
+(use "gpanders/nvim-parinfer")
+
+;; Highly improved wildmenu.
+;; Includes niceties such as fuzzy search.
+(use "gelguy/wilder.nvim"
+     ; In case of errors, disable with "call wilder#disable()"
+     :event    [:CmdlineEnter]
+     :requires ["romgrk/fzy-lua-native"]
+     :config   #(require :plugins.wilder))
+
+;; Search everythin with fzf
+(use "junegunn/fzf.vim"
+  :requires ["junegunn/fzf"]
+  :config #(do
+             (keymap :i "<C-x><C-k>"    "<plug>(fzf-complete-word)" :remap true)
+             (keymap :i "<C-x><C-f>"    "<plug>(fzf-complete-path)" :remap true)
+             (keymap :i "<C-x><C-l>"    "<plug>(fzf-complete-line)" :remap true)))
+
+; View **undo history** as a nice tree (with diffs!)
+(use "mbbill/undotree")
+
+; Diff mode for directories
+(use "cossonleo/dirdiff.nvim")
+
+(use "NMAC427/guess-indent.nvim"
+  :disable true
+  :config #(setup :guess-indent))
+
+; Async make      (vimscript)
+(use "tpope/vim-dispatch"
+  :cmd [:Make :Dispatch])
+
+; Git Integration
+(use "lewis6991/gitsigns.nvim"
+  :config #(setup :gitsigns
+            :sign_priority 1
+            :worktrees [{:toplevel   vim.env.HOME
+                         :gitdir     (.. vim.env.HOME "/.dotfiles-gitdir")}]
+            :on_attach #(let [gs package.loaded.gitsigns]
+                          (keymap :n "<leader>gb" #(gs.blame_line {:full true}))
+                          (keymap :n "<leader>gB" #(gs.toggle_current_line_blame)))))
+
+
+;;;--------------------------------------------------------------------------
+;;; Colors
+;;;--------------------------------------------------------------------------
+
+;; Highlighting and color manipulation
 (use "uga-rosa/ccc.nvim"
      :opt true
      :cmd [:CccPick :CccHighlighterToggle]
@@ -196,9 +202,25 @@
                 (keymap :n "<leader>ce" "<cmd>CccPick<CR>")
                 (keymap :n "<leader>cc" "<cmd>CccHighlighterToggle<CR>")))
 
-;-------------------------
+;; I like my colorschemes green and warm
+(use "sainnhe/everforest"
+  :config #(do
+             (set vim.g.everforest_disable_italic_comment 1)
+             (set vim.g.everforest_better_performance     1)
+             (set vim.g.everforest_spell_foreground       1)
+             (set vim.g.everforest_sign_column_background 1)))
+
+
+
+(use "rktjmp/lush.nvim"
+     :disable true)
+
+(use "pbrisbin/vim-colors-off")
+
+
+;;;--------------------------------------------------------------------------
 ;;; Filetype specific
-;-------------------------
+;;;--------------------------------------------------------------------------
 
 (use "lervag/vimtex"
      :config #(do (set vim.g.tex_flavor :latex)
@@ -238,14 +260,6 @@
 
 (use "edwinb/idris2-vim")
 
-;;;
-;;; Themes
-;;;
-(use "rktjmp/lush.nvim"
-     :disable true)
-
-(use "pbrisbin/vim-colors-off")
-(use "sainnhe/everforest")
 
 ;; Return packer itself to allow chaining commands
 packer

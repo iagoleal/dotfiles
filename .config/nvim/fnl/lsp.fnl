@@ -40,13 +40,13 @@
       (bmap :n "gd"         vim.lsp.buf.definition
         :desc "Go to definition"))
     (when (capable? client :typeDefinitionProvider)
-      (bmap :n "<leader>D" vim.lsp.buf.type_definition
+      (bmap :n "gy" vim.lsp.buf.type_definition
         :desc "Go to type definition"))
     (when (capable? client :declarationProvider)
       (bmap :n "gD"         vim.lsp.buf.declaration
         :desc "Go to declaration"))
     (when (capable? client :implementationProvider)
-      (bmap :n "g<C-d>"     vim.lsp.buf.implementation
+      (bmap :n "gI"     vim.lsp.buf.implementation
         :desc "Go to implementation"))
 
     (when (capable? client :codeActionProvider)

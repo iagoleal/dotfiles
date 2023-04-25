@@ -33,4 +33,4 @@ map <A-o> exec 'zathura "$FILE" -P "$PAGE"'
 
 # Enable synctex
 set synctex true
-set synctex-editor-command 'nvr --remote +"%line" "%file"'
+set synctex-editor-command 'nvim --headless -c "VimtexInverseSearch %l \'%f\'"'

@@ -188,7 +188,7 @@
 
 ;;; Disable behaviour
 ;;;---------------------
-(each [_ key (ipairs ["<Up>" "<Down>" "<Left>" "<Right>" "<Space>"])]
+(each [_ key (ipairs ["<Up>" "<Down>" "<Left>" "<Right>" "<Space>" "ZZ" "ZQ"])]
   (keymap ["" "v"] key "<Nop>"))
 
 
@@ -226,27 +226,12 @@
 ; Search visual selection text on whole project
 (keymap :v "<M-*>" "y:grep '<C-R>=escape(@\",'/\\')<CR>' **/*")
 
-;;; Helper function for toggling a list
-(fn toggle-*list [win-type cmd-open cmd-close]
-  #(let [tabnr   (vim.fn.tabpagenr)
-         windows (. (vim.fn.gettabinfo tabnr) 1 :windows)]
-    (each [_ winid (pairs windows)]
-      (local win (. (vim.fn.getwininfo winid) 1))
-      (when (= (. win win-type) 1)
-        (vim.cmd cmd-close)
-        (lua "return nil")))
-    (vim.cmd cmd-open)))
-
 ; Toggle quickfix window on the bottom of screen
-(global toggle-quickfix
-  (toggle-*list :quickfix "botright copen" "cclose"))
+(keymap :n "<leader>q" "empty(filter(getwininfo(), 'v:val.quickfix')) ? ':botright copen<CR>' : ':cclose<CR>'"
+  :expr true)
 ; Toggle locationlist window on the bottom of buffer
-(global toggle-locationlist
-  (toggle-*list :loclist  "lopen" "lclose"))
-
-
-(keymap :n "<leader>q" toggle-quickfix)
-(keymap :n "<leader>Q" toggle-locationlist)
+(keymap :n "<leader>Q" "empty(filter(getwininfo(), 'v:val.loclist')) ? ':lopen<CR>' : ':lclose<CR>'"
+  :expr true)
 
 
 ;;;; Navigation
