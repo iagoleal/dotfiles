@@ -1,6 +1,3 @@
--- require "statusline" -- Needed for highlight groups
-local utils = require 'utils'
-
 -- Buffer name or default
 local function buffername(bufnr)
   local name = vim.fn.fnamemodify(vim.fn.bufname(bufnr), ':t')
@@ -92,11 +89,15 @@ function tabname(tabnr, name)
 end
 
 -- Use same colors as statusline
-utils.hi_link("TabLine",         "StatusLine",     { default = true })
-utils.hi_link("TabLineFill",     "StatusLine",     { default = true })
-utils.hi_link("TabLineSel",      "StatusLang",     { default = true })
-utils.hi_link("TabLineMixed",    "StatusMixed",    { default = true })
-utils.hi_link("TabLineModified", "StatusModified", { default = true })
+do
+  local hi_link = require("futils")["hi-link"]
+
+  hi_link("TabLine",         "StatusLine",     true)
+  hi_link("TabLineFill",     "StatusLine",     true)
+  hi_link("TabLineSel",      "StatusLang",     true)
+  hi_link("TabLineMixed",    "StatusMixed",    true)
+  hi_link("TabLineModified", "StatusModified", true)
+end
 
 vim.api.nvim_command [[command! -nargs=? -count=0 -addr=tabs TabName :call v:lua.tabname(<count>, <f-args>)]]
 vim.g.showtabline = 1

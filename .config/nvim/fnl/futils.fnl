@@ -1,5 +1,4 @@
 (local M {})
-(local utils (require :utils))
 (local fmt string.format)
 
 (fn table.pack [...]
@@ -46,10 +45,10 @@
 ;;; If the argument is a table, add its elements to the global environment.
 ;;; If the argument is a string, require the module and add its elements to the global environment.
 (fn M.using [pkg-name env]
+  (default-value! env (getfenv 0))
   (let [pkg (match (type pkg-name)
-              :string (require pkgname)
-              :table  pkgname)
-        env (or env (getfenv 0))]
+              :string (require pkg-name)
+              :table  pkg-name)]
     (each [k v (pairs pkg)]
       (tset env k v))
     env))
@@ -152,11 +151,13 @@
 
 (fn M.colorscheme [c]
   "Set nvim colorscheme."
-  (vim.cmd (.. "colorscheme " c)))
+  (vim.cmd.colorscheme c))
 
-(fn M.highlight [name ...]
-  (let [keys/values (paired-sequence-to-table [...])]
-    (vim.api.nvim_set_hl 0 name keys/values)))
+(fn M.highlight [name keys/values]
+    (vim.api.nvim_set_hl 0 name keys/values))
+
+(fn M.hi-link [from link default]
+  (vim.api.nvim_set_hl 0 from {: link : default}))
 
 
 ;; Export

@@ -1,5 +1,3 @@
-local utils = require "utils"
-
 --  Get/Set option value for the buffer where the statusline is being drawn
 local sl_buf = setmetatable({},
   { __index =  function(_, option)
@@ -132,25 +130,27 @@ end
 
 -- Generate the statusline
 do
-  vim.cmd [[
-  ]]
-  utils.highlight("StatusModeNormal",                { gui = "bold", guifg = "Black", guibg = "White"   })
-  utils.highlight("StatusModeVisual",                { gui = "bold", guifg = "Black", guibg = "#81A3FA" })
-  utils.highlight("StatusModeSelect",                { gui = "bold", guifg = "Black", guibg = "#FF6B6B" })
-  utils.highlight("StatusModeInsert",                { gui = "bold", guifg = "Black", guibg = "#7CF682" })
-  utils.highlight("StatusModeReplace",               { gui = "bold", guifg = "Black", guibg = "#FADE3D" })
-  utils.highlight("StatusModeCommand",               { gui = "bold", guifg = "Black", guibg = "#FCC068" })
-  utils.hi_link("StatusModeTerminal", "StatusModeInsert", {default = true})
+  local highlight = require("futils").highlight
+  local hi_link   = require("futils")["hi-link"]
 
-  utils.highlight("StatusLang",                      { gui = "bold", guifg = "Black", guibg = "#81A3FA" })
-  utils.highlight("StatusModified",                  { gui = "bold", guifg = "Black", guibg = "#FF6B6B" })
-  utils.highlight("StatusUnmodifiable",              { gui = "bold", guifg = "Black", guibg = "#C4CBCF" })
-  utils.hi_link("StatusReadonly", "StatusUnmodifiable", {default = true})
-  utils.highlight("StatusMixed",                     { gui = "bold", guifg = "Black", guibg = "#A36BF0" })
-  utils.highlight("StatusLspDiagnosticsError",       { gui = "bold", guifg = "Black", guibg = "#CC2A1F" })
-  utils.highlight("StatusLspDiagnosticsWarning",     { gui = "bold", guifg = "Black", guibg = "#EF981C" })
-  utils.highlight("StatusLspDiagnosticsInformation", { gui = "bold", guifg = "Black", guibg = "#93DCF4" })
-  utils.highlight("StatusLspDiagnosticsHint",        { gui = "bold", guifg = "Black", guibg = "#E2E5E6" })
+  highlight("StatusModeNormal",                { bold = true, fg = "Black", bg = "White"   })
+  highlight("StatusModeVisual",                { bold = true, fg = "Black", bg = "#81A3FA" })
+  highlight("StatusModeSelect",                { bold = true, fg = "Black", bg = "#FF6B6B" })
+  highlight("StatusModeInsert",                { bold = true, fg = "Black", bg = "#7CF682" })
+  highlight("StatusModeReplace",               { bold = true, fg = "Black", bg = "#FADE3D" })
+  highlight("StatusModeCommand",               { bold = true, fg = "Black", bg = "#FCC068" })
+  hi_link("StatusModeTerminal", "StatusModeInsert", true)
+
+  highlight("StatusLang",                      { bold = true, fg = "Black", bg = "#81A3FA" })
+  highlight("StatusModified",                  { bold = true, fg = "Black", bg = "#FF6B6B" })
+  highlight("StatusUnmodifiable",              { bold = true, fg = "Black", bg = "#C4CBCF" })
+  hi_link("StatusReadonly", "StatusUnmodifiable", true)
+
+  highlight("StatusMixed",                     { bold = true, fg = "Black", bg = "#A36BF0" })
+  highlight("StatusLspDiagnosticsError",       { bold = true, fg = "Black", bg = "#CC2A1F" })
+  highlight("StatusLspDiagnosticsWarning",     { bold = true, fg = "Black", bg = "#EF981C" })
+  highlight("StatusLspDiagnosticsInformation", { bold = true, fg = "Black", bg = "#93DCF4" })
+  highlight("StatusLspDiagnosticsHint",        { bold = true, fg = "Black", bg = "#E2E5E6" })
 
   vim.o.laststatus = 2
   vim.o.showmode   = true
