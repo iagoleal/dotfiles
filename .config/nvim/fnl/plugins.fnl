@@ -63,8 +63,7 @@
   :requires "nvim-lua/plenary.nvim"
   :config #(let [null-ls (require :null-ls)]
             (null-ls.setup
-              {:sources [;null-ls.builtins.diagnostics.trail_space
-                         null_ls.builtins.code_actions.gitsigns
+              {:sources [null-ls.builtins.code_actions.gitsigns
                          null-ls.builtins.hover.dictionary]})))
 
 
@@ -176,13 +175,7 @@
 
 ; Git Integration
 (use "lewis6991/gitsigns.nvim"
-  :config #(setup :gitsigns
-            :sign_priority 1
-            :worktrees [{:toplevel   vim.env.HOME
-                         :gitdir     (.. vim.env.HOME "/.dotfiles-gitdir")}]
-            :on_attach #(let [gs package.loaded.gitsigns]
-                          (keymap :n "<leader>gb" #(gs.blame_line {:full true}))
-                          (keymap :n "<leader>gB" #(gs.toggle_current_line_blame)))))
+  :config #(require :plugins.gitsigns))
 
 
 ;;;--------------------------------------------------------------------------
