@@ -41,22 +41,6 @@
                 (and mt mt.__call))
     _         false))
 
-;;; Require a package and pollute the global environment with it
-;;; If the argument is a table, add its elements to the global environment.
-;;; If the argument is a string, require the module and add its elements to the global environment.
-(fn M.using [pkg-name env]
-  (default-value! env (getfenv 0))
-  (let [pkg (match (type pkg-name)
-              :string (require pkg-name)
-              :table  pkg-name)]
-    (each [k v (pairs pkg)]
-      (tset env k v))
-    env))
-
-(fn M.force-require [pkg-name]
-  (tset package.loaded pkg-name nil)
-  (require pkg-name))
-
 ;----------------------------
 ; Autocommands
 ;----------------------------
@@ -85,29 +69,26 @@
 ; Keymaps
 ;-------------------
 
-(fn M.keymap [mode keys cmd ...]
-  "Set a keymap on global scope."
-  (let [opts (paired-sequence-to-table [...])]
-    (vim.keymap.set mode keys cmd opts)))
+;; Set a keymap on global scope.
+(set M.keymap vim.keymap.set)
+
+(fn M.keymap/buffer [bufnr]
+  "Create a function that sets a keymap for a specific buffer."
+  (let [extra {:buffer bufnr :silent true}]
+    (fn [mode keys cmd ?opts]
+      (vim.keymap.set mode keys cmd (vim.tbl_extend :keep (or ?opts {}) extra)))))
 
 
-(fn M.keymap-buffer [buf mode keys cmd ...]
-  "Set a keymap on buffer scope."
-  (let [opts (paired-sequence-to-table [...])
-        cmd  (process-rhs/keymap cmd)]
-    ; Better to be non-recursive by default
-    (default-value! opts.noremap true)
-    (vim.api.nvim_buf_set_keymap buf mode keys cmd opts)))
-
-
-;-------------------
-; Vim tests
-;-------------------
+;;;-------------------
+;;; Vim tests
+;;;-------------------
+;; Here we use proper booleans, not 0~1
 
 (fn predicate#one-to-true-based [f]
   "Convert an one based predicate (such as vim's) to a boolean based one."
-  #(or (= (f $...) 1)
-       (= (f $...) true)))
+  #(let [result (f $...)]
+     (or (= result 1)
+         (= result true))))
 
 ; Check whether this version of nvim has a certain feature
 (fn M.has? [feature]
@@ -115,6 +96,10 @@
 
 (fn M.executable-exists? [name]
   (let [test (predicate#one-to-true-based vim.fn.executable)]
+    (test name)))
+
+(fn M.directory? [name]
+  (let [test (predicate#one-to-true-based vim.fn.isdirectory)]
     (test name)))
 
 ;-------------------
@@ -149,14 +134,12 @@
 ; Colorscheme and highlights
 ;-----------------------------
 
-(fn M.colorscheme [c]
-  "Set nvim colorscheme."
-  (vim.cmd.colorscheme c))
-
 (fn M.highlight [name keys/values]
-    (vim.api.nvim_set_hl 0 name keys/values))
+  "Setup a highlight group."
+  (vim.api.nvim_set_hl 0 name keys/values))
 
 (fn M.hi-link [from link default]
+  "Link two highlight groups."
   (vim.api.nvim_set_hl 0 from {: link : default}))
 
 

@@ -90,7 +90,7 @@ end
 
 -- Use same colors as statusline
 do
-  local hi_link = require("futils")["hi-link"]
+  local hi_link = require("editor")["hi-link"]
 
   hi_link("TabLine",         "StatusLine",     true)
   hi_link("TabLineFill",     "StatusLine",     true)

@@ -64,8 +64,14 @@
 ;;; Keymap
 
 (fn M.keymap [mode keys cmd ...]
-  (let [opts (vararg-to-opts ...)]
-    `(vim.keymap.set ,mode ,keys ,cmd ,opts)))
+  "Create a global keymap.
+   Differently from the function version, this one allows
+   both a table and a sequence of pairs for option arguments."
+  (let [[head]  [...]
+        options (match (get-literal-type head)
+                  :string (vararg-to-opts ...)
+                  _       head)]
+    `(vim.keymap.set ,mode ,keys ,cmd ,options)))
 
 (fn M.highlight [group ...]
   (let [opts (vararg-to-opts ...)]
@@ -80,44 +86,12 @@
                 (vim.cmd ,opening)
                 (vim.cmd "autocmd!")
                 ,...))
-  (table.insert cmds '(vim.cmd "augroup END"))
+  (table.insert cmds `(vim.cmd "augroup END"))
   cmds)
 
 ;;;
 ;;; Define commands
 ;;;
-
-
-(fn has-vararg? [seq]
-  (fn loop [seq idx]
-    (match (get-literal-type (. seq idx))
-      :nil    false
-      :vararg true
-      _       (loop seq (+ idx 1))))
-  (loop seq 1))
-
-(fn optional-arg? [x]
-  (= (string.sub (tostring x) 1 1) "?"))
-
-(fn build-nargs [seq]
-  (match (values (length seq)
-                 (has-vararg? seq)
-                 (optional-arg? (. seq 1)))
-    (0 _     _)     "0" ; No arguments
-    (1 false true)  "?" ; Only a named argument like '?x'
-    (1 false false) "1" ; Only a normal named argument
-    (1 true  _)     "*" ; Only a vararg
-    ;; Length greater than 1
-    (_ _ true)  "*"     ; Many arguments, first is optional
-    (_ _  _)    "+"))   ; Many arguments, no optional
-
-(fn build-passing-style [narg]
-  (match narg
-    "0" ""
-    "1" "<q-args>"
-    "?" "<q-args>"
-    "*" "<f-args>"
-    "+" "<f-args>"))
 
 (fn M.def-command [name f ...]
   (let [opts (vararg-to-opts ...)]

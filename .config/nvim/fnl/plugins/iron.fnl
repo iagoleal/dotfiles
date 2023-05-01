@@ -1,4 +1,4 @@
-(import-macros {: viml : keymap : global-fn : def-command} :macros)
+(import-macros {: keymap : global-fn : def-command} :macros)
 
 ;--------------------------
 ;;;; Configure Iron REPL
@@ -124,16 +124,16 @@
 ;; Mappings
 ;---------------------
 ;; REPL
-(keymap :n "<leader>it"       "<Plug>(iron-send-motion)"   :noremap false)
-(keymap :v "<leader>i<Space>" "<Plug>(iron-visual-send)"   :noremap false)
-(keymap :n "<leader>i."       "<Plug>(iron-repeat-cmd)"    :noremap false)
-(keymap :n "<leader>i<Space>" "<Plug>(iron-send-line)"     :noremap false)
-(keymap :n "<leader>ii"       "<Plug>(iron-send-line)"     :noremap false)
-(keymap :n "<leader>i<CR>"    "<Plug>(iron-cr)"            :noremap false)
-(keymap :n "<leader>ic"       "<Plug>(iron-interrupt)"     :noremap false)
-(keymap :n "<leader>iq"       "<Plug>(iron-exit)"          :noremap false)
-(keymap :n "<leader>il"       "<Plug>(iron-clear)"         :noremap false)
-(keymap :n "<leader>ip"       "<Plug>(iron-send-motion)ip" :noremap false)
+(keymap :n "<leader>it"       "<Plug>(iron-send-motion)"   {:remap true})
+(keymap :v "<leader>i<Space>" "<Plug>(iron-visual-send)"   {:remap true})
+(keymap :n "<leader>i."       "<Plug>(iron-repeat-cmd)"    {:remap true})
+(keymap :n "<leader>i<Space>" "<Plug>(iron-send-line)"     {:remap true})
+(keymap :n "<leader>ii"       "<Plug>(iron-send-line)"     {:remap true})
+(keymap :n "<leader>i<CR>"    "<Plug>(iron-cr)"            {:remap true})
+(keymap :n "<leader>ic"       "<Plug>(iron-interrupt)"     {:remap true})
+(keymap :n "<leader>iq"       "<Plug>(iron-exit)"          {:remap true})
+(keymap :n "<leader>il"       "<Plug>(iron-clear)"         {:remap true})
+(keymap :n "<leader>ip"       "<Plug>(iron-send-motion)ip" {:remap true})
 (keymap :n "<leader>ir"       ":IronRestart<CR>")
 
 ;; Open REPL on bottom split

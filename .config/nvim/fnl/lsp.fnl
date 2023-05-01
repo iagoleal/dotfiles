@@ -1,10 +1,9 @@
 (local lspconfig (require :lspconfig))
-(local {: keymap : autocmd}  (require :futils))
+(local {: keymap/buffer}  (require :editor))
 (local util lspconfig.util)
 
 (fn capable? [client capability]
   (. client.server_capabilities capability))
-
 
 ;;--------------------------------------------------
 ;; Per buffer settings
@@ -15,9 +14,7 @@
 (fn on-attach [ev]
   (let [bufnr  ev.buf
         client (vim.lsp.get_client_by_id ev.data.client_id)
-        bmap (fn [mode keys cmd ...]
-               (keymap mode keys cmd :buffer bufnr :silent true ...))]
-
+        bmap   (keymap/buffer bufnr)]
     ; Use lsp omnifunc for completion
     (tset vim.bo bufnr :omnifunc "v:lua.vim.lsp.omnifunc")
 
@@ -38,24 +35,24 @@
 
     (when (capable? client :definitionProvider)
       (bmap :n "gd"         vim.lsp.buf.definition
-        :desc "Go to definition"))
+        {:desc "Go to definition"}))
     (when (capable? client :typeDefinitionProvider)
       (bmap :n "gy" vim.lsp.buf.type_definition
-        :desc "Go to type definition"))
+        {:desc "Go to type definition"}))
     (when (capable? client :declarationProvider)
       (bmap :n "gD"         vim.lsp.buf.declaration
-        :desc "Go to declaration"))
+        {:desc "Go to declaration"}))
     (when (capable? client :implementationProvider)
       (bmap :n "gI"     vim.lsp.buf.implementation
-        :desc "Go to implementation"))
+        {:desc "Go to implementation"}))
 
     (when (capable? client :codeActionProvider)
       (bmap :n "<leader>ca" vim.lsp.buf.code_action
-        :desc "Execute Code Action under cursor"))
+        {:desc "Execute Code Action under cursor"}))
 
     (when (capable? client :codeLensProvider)
       (bmap :n "<leader>cl" vim.lsp.codelens.run
-          :desc "Execute Code Lens under cursor")
+          {:desc "Execute Code Lens under cursor"})
       (vim.api.nvim_create_autocmd [:BufEnter :CursorHold :InsertLeave]
         {:group    :GenLspConfig
          :callback vim.lsp.codelens.refresh

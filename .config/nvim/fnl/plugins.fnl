@@ -1,7 +1,7 @@
 ; Macros and utilities
 (import-macros {:packer-use use :require-setup setup
-                : keymap : augroup : ex} :macros)
-(local {: autocmd : executable-exists?} (require :futils))
+                : augroup : ex} :macros)
+(local {: autocmd : executable-exists?} (require :editor))
 
 ;; Plugin management
 (vim.cmd "packadd packer.nvim")
@@ -49,6 +49,7 @@
      :requires "nvim-treesitter/nvim-treesitter")
 
 (use "nvim-treesitter/playground"
+     :cmd      :TSPlaygroundToggle
      :requires "nvim-treesitter/nvim-treesitter")
 
 ;;;--------------------------------------------------------------------------
@@ -71,20 +72,27 @@
 ;;; Should be built-in
 ;;;--------------------------------------------------------------------------
 
-; Title case operator
+
+; Allow writing file with sudo
+; even if I open nvim as a normal user
+(when (executable-exists? "sudo")
+  (use "lambdalisue/suda.vim"
+    :cmd [:SudaRead :SudaWrite]))
+
+;; Title case operator
 (use "christoomey/vim-titlecase")
 
-; Add commands to (un)comment text objects
+;; Add commands to (un)comment text objects
 (use "numToStr/Comment.nvim"
      :config #(setup :Comment :ignore "^$"))
 
-; Edit surrounding objects
+;; Edit surrounding objects
 (use "tpope/vim-surround")
 
-; Additional text operators
+;; Additional text operators
 (use "wellle/targets.vim")
 
-; Improved matchparen and matchit
+;; Improved matchparen and matchit
 (use "andymass/vim-matchup"
      :config (fn []
                (set vim.g.loaded_matchit 1)
@@ -94,21 +102,18 @@
                (set vim.g.matchup_override_vimtex 0)
                (set vim.g.matchup_matchpref {:html {:tagnameonly 1}})))
 
-; Allow writing file with sudo
-; even if I open nvim as a normal user
-(when (executable-exists? "sudo")
-  (use "lambdalisue/suda.vim"
-       :cmd [:SudaRead :SudaWrite]))
-
 ; Alignment utils (vimscript)
 (use "junegunn/vim-easy-align"
-      :config #(set vim.g.easy_align_delimiters
-                    {">" {:pattern "=>\\|->\\|>\\|→"
-                          :delimiter_align :r}
-                     "<" {:pattern "<-\\|<=\\|<\\|←"
-                          :delimiter_align :l}
-                     "r" {:pattern "{\\|}\\|,"     ; Lua / Haskell style Records
-                          :delimiter_align :r}}))
+  :config (fn []
+            (vim.keymap.set [:n :x] "<leader>a" "<Plug>(LiveEasyAlign)"
+              {:remap true})
+            (set vim.g.easy_align_delimiters
+              {">" {:pattern "=>\\|->\\|>\\|→"
+                    :delimiter_align :r}
+               "<" {:pattern "<-\\|<=\\|<\\|←"
+                    :delimiter_align :l}
+               "r" {:pattern "{\\|}\\|,"     ; Lua / Haskell style Records
+                    :delimiter_align :r}})))
 
 
 ;;;--------------------------------------------------------------------------
@@ -117,66 +122,66 @@
 
 ;; Manage REPLs
 (use "hkupty/iron.nvim"
-     :commit "bc9c596d6a97955f0306d2abcc10d9c35bbe2f5b"
-     :config (fn []
-               (set vim.g.iron_map_defaults 0)
-               (set vim.g.iron_map_extended 0)
-               (require :plugins.iron)))
+  :commit "bc9c596d6a97955f0306d2abcc10d9c35bbe2f5b"
+  :config (fn []
+            (set vim.g.iron_map_defaults 0)
+            (set vim.g.iron_map_extended 0)
+            (require :plugins.iron)))
 
 ;; Better REPL management for Lisps
 (use "Olical/conjure"
-     :ft [:fennel :racket :scheme :lisp]
-     :config (fn []
-               (tset vim.g :conjure#extract#tree_sitter#enabled        true)
-               (tset vim.g :conjure#highlight#enabled                  true)
-               (tset vim.g :conjure#log#hud#border                     "double")
-               (tset vim.g :conjure#highlight#enabled                  :IncSearch)
-               ;; scheme
-               (tset vim.g :conjure#filetype#scheme "conjure.client.guile.socket")
-               (tset vim.g :conjure#client#scheme#stdio#command        "racket -il scheme")
-               (tset vim.g :conjure#client#scheme#stdio#prompt_pattern "\n?[\"%w%-./_]*> ")
-               (tset vim.g :conjure#client#guile#socket#pipename "/tmp/guile-repl.socket")
-               ;; fennel
-               (tset vim.g :conjure#filetype#fennel                    "conjure.client.fennel.stdio")
-               (tset vim.g :conjure#client#fennel#stdio#command        "fennel")))
+  :ft [:fennel :racket :scheme :lisp]
+  :config (fn []
+            (tset vim.g :conjure#extract#tree_sitter#enabled        true)
+            (tset vim.g :conjure#highlight#enabled                  true)
+            (tset vim.g :conjure#log#hud#border                     "double")
+            (tset vim.g :conjure#highlight#enabled                  :IncSearch)
+            ;; scheme
+            (tset vim.g :conjure#filetype#scheme "conjure.client.guile.socket")
+            (tset vim.g :conjure#client#scheme#stdio#command        "racket -il scheme")
+            (tset vim.g :conjure#client#scheme#stdio#prompt_pattern "\n?[\"%w%-./_]*> ")
+            (tset vim.g :conjure#client#guile#socket#pipename "/tmp/guile-repl.socket")
+            ;; fennel
+            (tset vim.g :conjure#filetype#fennel                    "conjure.client.fennel.stdio")
+            (tset vim.g :conjure#client#fennel#stdio#command        "fennel")))
 
 ; Auto-layouting for Lisp parentheses
-(use "gpanders/nvim-parinfer")
+(use "gpanders/nvim-parinfer"
+  :config #(set vim.g.parinfer_no_maps 1))
 
 ;; Highly improved wildmenu.
 ;; Includes niceties such as fuzzy search.
 (use "gelguy/wilder.nvim"
      ; In case of errors, disable with "call wilder#disable()"
-     :event    [:CmdlineEnter]
-     :requires ["romgrk/fzy-lua-native"]
-     :config   #(require :plugins.wilder))
+  :event    [:CmdlineEnter]
+  :requires ["romgrk/fzy-lua-native"]
+  :config   #(require :plugins.wilder))
 
 ;; Search everythin with fzf
 (use "junegunn/fzf.vim"
   :requires ["junegunn/fzf"]
-  :config #(do
-             (keymap :i "<C-x><C-k>"    "<plug>(fzf-complete-word)" :remap true)
-             (keymap :i "<C-x><C-f>"    "<plug>(fzf-complete-path)" :remap true)
-             (keymap :i "<C-x><C-l>"    "<plug>(fzf-complete-line)" :remap true)))
-
-; View **undo history** as a nice tree (with diffs!)
-(use "mbbill/undotree")
-
-; Diff mode for directories
-(use "cossonleo/dirdiff.nvim")
-
-(use "NMAC427/guess-indent.nvim"
-  :disable true
-  :config #(setup :guess-indent))
-
-; Async make      (vimscript)
-(use "tpope/vim-dispatch"
-  :cmd [:Make :Dispatch])
+  :config (fn []
+            (vim.keymap.set :i "<C-x><C-k>" "<plug>(fzf-complete-word)" {:remap true})
+            (vim.keymap.set :i "<C-x><C-f>" "<plug>(fzf-complete-path)" {:remap true})
+            (vim.keymap.set :i "<C-x><C-l>" "<plug>(fzf-complete-line)" {:remap true})))
 
 ; Git Integration
 (use "lewis6991/gitsigns.nvim"
   :config #(require :plugins.gitsigns))
 
+; Async make      (vimscript)
+(use "tpope/vim-dispatch"
+  :cmd [:Make :Dispatch])
+
+; View **undo history** as a nice tree (with diffs!)
+(use "mbbill/undotree")
+
+;; Diff mode for directories
+(use "cossonleo/dirdiff.nvim")
+
+(use "NMAC427/guess-indent.nvim"
+  :disable true
+  :config #(setup :guess-indent))
 
 ;;;--------------------------------------------------------------------------
 ;;; Colors
@@ -184,16 +189,16 @@
 
 ;; Highlighting and color manipulation
 (use "uga-rosa/ccc.nvim"
-     :opt true
-     :cmd [:CccPick :CccHighlighterToggle]
-     :config #(let [ccc (require :ccc)]
-                (setup :ccc
-                   :outputs [ccc.output.hex
-                             ccc.output.css_rgb
-                             ccc.output.css_hsl
-                             ccc.output.float])
-                (keymap :n "<leader>ce" "<cmd>CccPick<CR>")
-                (keymap :n "<leader>cc" "<cmd>CccHighlighterToggle<CR>")))
+  :opt true
+  :cmd [:CccPick :CccHighlighterToggle]
+  :config #(let [ccc (require :ccc)]
+             (setup :ccc
+                :outputs [ccc.output.hex
+                          ccc.output.css_rgb
+                          ccc.output.css_hsl
+                          ccc.output.float])
+             (vim.keymap.set :n "<leader>ce" "<cmd>CccPick<CR>")
+             (vim.keymap.set :n "<leader>cc" "<cmd>CccHighlighterToggle<CR>")))
 
 ;; I like my colorschemes green and warm
 (use "sainnhe/everforest"
@@ -206,7 +211,7 @@
 
 
 (use "rktjmp/lush.nvim"
-     :disable true)
+  :disable true)
 
 (use "pbrisbin/vim-colors-off")
 
@@ -244,12 +249,12 @@
                 (set vim.g.haskell_indent_guard            2)))
 
 (use "bakpakin/fennel.vim"
-     :ft :fennel)
+  :ft :fennel)
 
 (use "wlangstroth/vim-racket")
 
 (use "tikhomirov/vim-glsl"
-     :ft :glsl)
+  :ft :glsl)
 
 (use "edwinb/idris2-vim")
 

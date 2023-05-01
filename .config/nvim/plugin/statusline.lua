@@ -130,8 +130,8 @@ end
 
 -- Generate the statusline
 do
-  local highlight = require("futils").highlight
-  local hi_link   = require("futils")["hi-link"]
+  local highlight = require("editor").highlight
+  local hi_link   = require("editor")["hi-link"]
 
   highlight("StatusModeNormal",                { bold = true, fg = "Black", bg = "White"   })
   highlight("StatusModeVisual",                { bold = true, fg = "Black", bg = "#81A3FA" })

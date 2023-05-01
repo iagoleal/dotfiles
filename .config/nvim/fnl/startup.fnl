@@ -2,23 +2,22 @@
 (local fmt string.format)
 
 (local {: autocmd
-        : colorscheme
         : executable-exists?
         : has?
-        &as ut} (require :futils))
+        : keymap
+        &as ed} (require :editor))
 
 (import-macros {: option
                 : ex
                 : viml
-                : keymap
                 : augroup
                 : def-command
                 : highlight
                 : require-use}
                :macros)
 
-(tset _G :dump ut.dump)
-(tset _G :force_require ut.force-require)
+(tset _G :dump ed.dump)
+(tset _G :force_require (require-use :core :force-require))
 
 
 ;;; Lazy load packer on file change.
@@ -80,7 +79,7 @@
 (when (has? :termguicolors)
   (option :termguicolors)
   (option :background :dark)
-  (colorscheme :everforest))
+  (vim.cmd.colorscheme :everforest))
 
 ;------------------------
 ; Theme Options
@@ -228,10 +227,10 @@
 
 ; Toggle quickfix window on the bottom of screen
 (keymap :n "<leader>q" "empty(filter(getwininfo(), 'v:val.quickfix')) ? ':botright copen<CR>' : ':cclose<CR>'"
-  :expr true)
+  {:expr true})
 ; Toggle locationlist window on the bottom of buffer
 (keymap :n "<leader>Q" "empty(filter(getwininfo(), 'v:val.loclist')) ? ':lopen<CR>' : ':lclose<CR>'"
-  :expr true)
+  {:expr true})
 
 
 ;;;; Navigation
@@ -264,9 +263,9 @@
 
 ;; Scroll the preview window
 (keymap :n "<M-e>" "'<C-w>P' . v:count1 . '<C-e><C-w>p'"
-        :expr true)
+  {:expr true})
 (keymap :n "<M-y>" "'<C-w>P' . v:count1 . '<C-y><C-w>p'"
-        :expr true)
+  {:expr true})
 
 ; Spell check previous mistake and correct to first suggestion
 (keymap :i "<C-l>" "<c-g>u<Esc>[s1z=`]a<c-g>u")
@@ -281,7 +280,7 @@
 
 ; Enter path to current file on command mode
 (keymap :c "<M-x>p" "getcmdtype() == ':' ? expand('%:h').'/' : ''"
-        :expr true)
+  {:expr true})
 
 (keymap :i "<C-r>" "<C-g>u<C-r>")
 
@@ -291,13 +290,13 @@
 
 ;; Diagnostics
 (keymap :n "<leader>e"  vim.diagnostic.open_float
-  :desc "Open diagnostics popup")
+  {:desc "Open diagnostics popup"})
 (keymap :n "[d"         vim.diagnostic.goto_prev
-  :desc "Previous diagnostic")
+  {:desc "Previous diagnostic"})
 (keymap :n "]d"         vim.diagnostic.goto_next
-  :desc "Next diagnostic")
+  {:desc "Next diagnostic"})
 (keymap :n "<leader>dq" vim.diagnostic.setloclist
-  :desc "Put diagnostics on location list")
+  {:desc "Put diagnostics on location list"})
 
 
 ;--------------------------
@@ -315,9 +314,6 @@
 
 ; Highlight cross around cursor
 (keymap :n "<leader>chl" "<cmd>set cursorline! cursorcolumn!<CR>")
-
-; Easy Align
-(keymap [:n :x] "<leader>a" "<Plug>(LiveEasyAlign)" :noremap false)
 
 ; UndoTree
 (keymap :n "<leader>tu" "<cmd>UndotreeToggle<CR>")
@@ -343,7 +339,7 @@
            "setlocal tabstop=2 softtabstop=2 shiftwidth=2 lisp autoindent")
   (autocmd :FileType
            :haskell
-           #(keymap :n "<leader>hh" "<cmd>Hoogle <C-r><C-w><CR>" :buffer true))
+           #(keymap :n "<leader>hh" "<cmd>Hoogle <C-r><C-w><CR>" {:buffer true}))
   (autocmd :FileType
            :julia
            #(vim.opt_local.iskeyword:append "!"))
@@ -359,7 +355,7 @@
   (autocmd :FileType
            [:lua :fennel]
            #(do
-             (if (= (vim.fn.isdirectory "src") 1)
+             (if (ed.directory? "src")
                  (keymap :n "<F12>" ":wa<cr>:!love --fuseomod src &<cr>")
                  (keymap :n "<F12>" ":wa<cr>:!love --fused . &<cr>"))
              (vim.opt_local.iskeyword:remove "."))))
