@@ -1,4 +1,4 @@
-pcall(require, "impatient")
+-- Caching of lua modules
 vim.loader.enable()
 
 -- Ensure that a given package is installed and loaded
@@ -28,7 +28,6 @@ end
 
 -- Ensure base packages are installed
 bootstrap("packer.nvim",    "https://github.com/wbthomason/packer.nvim", true)
-bootstrap("impatient.nvim", "https://github.com/lewis6991/impatient.nvim")
 bootstrap("hotpot.nvim",    "https://github.com/rktjmp/hotpot.nvim")
 
 -- Load real config written in Fennel
@@ -43,4 +42,5 @@ require("hotpot").setup({
     },
   },
 })
+
 require "startup"

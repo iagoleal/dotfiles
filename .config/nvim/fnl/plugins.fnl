@@ -32,9 +32,6 @@
 (use "rktjmp/hotpot.nvim"
       :config #(require :hotpot))
 
-;; Cache lua modules
-(use "lewis6991/impatient.nvim")
-
 
 ;;;--------------------------------------------------------------------------
 ;;; Treesitter
@@ -52,6 +49,7 @@
      :cmd      :TSPlaygroundToggle
      :requires "nvim-treesitter/nvim-treesitter")
 
+
 ;;;--------------------------------------------------------------------------
 ;;; Language Server Protocol
 ;;;--------------------------------------------------------------------------
@@ -65,7 +63,8 @@
   :config #(let [null-ls (require :null-ls)]
             (null-ls.setup
               {:sources [null-ls.builtins.code_actions.gitsigns
-                         null-ls.builtins.hover.dictionary]})))
+                         null-ls.builtins.hover.dictionary
+                         null-ls.builtins.hover.printenv]})))
 
 
 ;;;--------------------------------------------------------------------------
