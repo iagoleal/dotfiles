@@ -12,17 +12,6 @@ fzf-history-widget-accept() {
 zle     -N     fzf-history-widget-accept
 bindkey '^X^R' fzf-history-widget-accept
 
-# Preview directory on M-c
-export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
-
-# Default options
-export FZF_DEFAULT_OPTS='-m --cycle --bind=alt-e:preview-down --bind=alt-y:preview-up'
-
-# Use rg as grep tool
-if command -v rg &> /dev/null; then
-  export FZF_DEFAULT_COMMAND='rg --files'
-fi
-
 bindkey '^[[Z' $fzf_default_completion # bind Shift-Tab
 
 zstyle ':completion:*:descriptions' format '[%d]'

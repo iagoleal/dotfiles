@@ -12,9 +12,11 @@ plugin-load romkatv/zsh-defer                 \
             zsh-users/zsh-syntax-highlighting \
             junegunn/fzf-git.sh
 
+# Should only exist on interactive shells and their offspring
+export RUNRC=1
 
 #----------------------------
-# Set Options & Env Variables
+# Options
 #----------------------------
 
 #turn this damn thing off
@@ -108,10 +110,10 @@ zle -N go-to-fg
 bindkey '^z' go-to-fg
 
 
-
 #----------------------------
 # Autocompletion
 #----------------------------
+
 autoload -Uz compinit
 if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
   compinit;
@@ -135,13 +137,14 @@ autoload -Uz promptinit
 promptinit
 
 #----------------------------
-# Make the cursor blink
+# Cursor shape (block blink)
 #----------------------------
-echo -e -n "\x1b[\x33 q"
+echo -e -n "\x1b[\x32 q"
 
 #----------------------------
 # Source additional configs
 #----------------------------
+
 # Custom aliases and functions
 source $HOME/.zsh.d/aliases.zsh
 # Prompt customization
