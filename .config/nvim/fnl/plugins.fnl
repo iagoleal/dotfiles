@@ -93,13 +93,13 @@
 
 ;; Improved matchparen and matchit
 (use "andymass/vim-matchup"
-     :config (fn []
-               (set vim.g.loaded_matchit 1)
-               (set vim.g.matchup_matchparen_offscreen {:method :popup})
-               (set vim.g.matchup_matchparen_hi_surround_always 1)
-               (set vim.g.matchup_matchparen_deferred_show_delay 150)
-               (set vim.g.matchup_override_vimtex 0)
-               (set vim.g.matchup_matchpref {:html {:tagnameonly 1}})))
+  :config (fn []
+           (set vim.g.loaded_matchit 1)
+           (set vim.g.matchup_matchparen_offscreen {:method :popup})
+           (set vim.g.matchup_matchparen_hi_surround_always 1)
+           (set vim.g.matchup_matchparen_deferred_show_delay 150)
+           (set vim.g.matchup_override_vimtex 0)
+           (set vim.g.matchup_matchpref {:html {:tagnameonly 1}})))
 
 ; Alignment utils (vimscript)
 (use "junegunn/vim-easy-align"
@@ -156,13 +156,18 @@
   :requires ["romgrk/fzy-lua-native"]
   :config   #(require :plugins.wilder))
 
-;; Search everythin with fzf
-(use "junegunn/fzf.vim"
-  :requires ["junegunn/fzf"]
+; (use "junegunn/fzf.vim"
+;   :requires ["junegunn/fzf"]
+;   :config (fn []
+;             (vim.keymap.set :i "<C-x><C-k>" "<plug>(fzf-complete-word)" {:remap true})
+;             (vim.keymap.set :i "<C-x><C-f>" "<plug>(fzf-complete-path)" {:remap true})
+;             (vim.keymap.set :i "<C-x><C-l>" "<plug>(fzf-complete-line)" {:remap true})))
+
+;; Search everything with fzf
+(use "ibhagwan/fzf-lua"
   :config (fn []
-            (vim.keymap.set :i "<C-x><C-k>" "<plug>(fzf-complete-word)" {:remap true})
-            (vim.keymap.set :i "<C-x><C-f>" "<plug>(fzf-complete-path)" {:remap true})
-            (vim.keymap.set :i "<C-x><C-l>" "<plug>(fzf-complete-line)" {:remap true})))
+            (vim.keymap.set :i "<C-x><C-f>" (require-use :fzf-lua :complete_path))
+            (vim.keymap.set :i "<C-x><C-l>" (require-use :fzf-lua :complete_line))))
 
 ; Git Integration
 (use "lewis6991/gitsigns.nvim"
@@ -227,25 +232,25 @@
   (use "monkoose/fzf-hoogle.vim"))
 
 (use "neovimhaskell/haskell-vim"
-      :ft :haskell
-      :config (fn []
-                (set vim.g.haskell_enable_quantification   1)  ; enable highlighting of `forall`
-                (set vim.g.haskell_enable_recursivedo      1)  ; enable highlighting of `mdo` and `rec`
-                (set vim.g.haskell_enable_arrowsyntax      1)  ; enable highlighting of `proc`
-                (set vim.g.haskell_enable_pattern_synonyms 1)  ; enable highlighting of `pattern`
-                (set vim.g.haskell_enable_typeroles        1)  ; enable highlighting of type roles
-                (set vim.g.haskell_enable_static_pointers  1)  ; enable highlighting of `static`
-                (set vim.g.haskell_backpack                1)  ; enable highlighting of backpack keywords
-                (set vim.g.haskell_indent_case_alternative 1)
-                (set vim.g.haskell_indent_if               1)
-                (set vim.g.haskell_indent_case             2)
-                (set vim.g.haskell_indent_let              4)
-                (set vim.g.haskell_indent_where            10)
-                (set vim.g.haskell_indent_before_where     1)
-                (set vim.g.haskell_indent_after_bare_where 1)
-                (set vim.g.haskell_indent_do               3)
-                (set vim.g.haskell_indent_in               0)
-                (set vim.g.haskell_indent_guard            2)))
+  :ft :haskell
+  :config (fn []
+            (set vim.g.haskell_enable_quantification   1)  ; enable highlighting of `forall`
+            (set vim.g.haskell_enable_recursivedo      1)  ; enable highlighting of `mdo` and `rec`
+            (set vim.g.haskell_enable_arrowsyntax      1)  ; enable highlighting of `proc`
+            (set vim.g.haskell_enable_pattern_synonyms 1)  ; enable highlighting of `pattern`
+            (set vim.g.haskell_enable_typeroles        1)  ; enable highlighting of type roles
+            (set vim.g.haskell_enable_static_pointers  1)  ; enable highlighting of `static`
+            (set vim.g.haskell_backpack                1)  ; enable highlighting of backpack keywords
+            (set vim.g.haskell_indent_case_alternative 1)
+            (set vim.g.haskell_indent_if               1)
+            (set vim.g.haskell_indent_case             2)
+            (set vim.g.haskell_indent_let              4)
+            (set vim.g.haskell_indent_where            10)
+            (set vim.g.haskell_indent_before_where     1)
+            (set vim.g.haskell_indent_after_bare_where 1)
+            (set vim.g.haskell_indent_do               3)
+            (set vim.g.haskell_indent_in               0)
+            (set vim.g.haskell_indent_guard            2)))
 
 (use "bakpakin/fennel.vim"
   :ft :fennel)

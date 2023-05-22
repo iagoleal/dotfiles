@@ -124,7 +124,7 @@
 (lspconfig.julials.setup
   {:autostart true
    :root_dir (fn [fname]
-               (or ((lspconfig.util.root_pattern "Project.toml") fname)
+               (or ((util.root_pattern "Project.toml") fname)
                    (util.find_git_ancestor fname)))
    :single_file_support true
    :filetypes [:julia]})

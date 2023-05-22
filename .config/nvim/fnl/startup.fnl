@@ -322,12 +322,22 @@
 ;-- Commands
 ;-----------------------
 
+(fn make-scratch-buffer [mods]
+  "Create a new scratch buffer in a split window."
+  (vim.cmd (.. mods " new"))
+  (set vim.bo.buftype   :nofile)
+  (set vim.bo.bufhidden :wipe)
+  (set vim.bo.buflisted :false)
+  (set vim.bo.swapfile  false))
+
 (def-command :View
-  (fn [arg]
-    (vim.cmd (.. arg.mods " new"))
+  (fn [ang]
+    (make-scratch-buffer arg.mods)
     (vim.cmd (fmt "put=execute('%s')" arg.args)))
-  :nargs 1
-  :desc  "Output ex command into new split.")
+  :nargs    :*
+  :complete :command
+  :desc     "Output ex command into new split.")
+
 
 ;-----------------------
 ;-- Filetype Specific
