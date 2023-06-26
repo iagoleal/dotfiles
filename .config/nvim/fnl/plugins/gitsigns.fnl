@@ -5,6 +5,8 @@
 (local dotfiles-worktree {:toplevel vim.env.HOME
                           :gitdir   (.. vim.env.HOME "/.dotfiles-gitdir")})
 
+(local sign-bar "▌")
+
 (fn on-attach [bufnr]
   (let [bmap (keymap/buffer bufnr)]
     ;; Blaming

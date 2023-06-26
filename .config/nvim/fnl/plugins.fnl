@@ -38,16 +38,16 @@
 ;;;--------------------------------------------------------------------------
 
 (use "nvim-treesitter/nvim-treesitter"
-      :run    ":TSUpdate"
-      :config #(require :plugins.treesitter))
+  :run    ":TSUpdate"
+  :config #(require :plugins.treesitter))
 
 ; Semantically based text objects (such as functions, classes etc.)
 (use "nvim-treesitter/nvim-treesitter-textobjects"
-     :requires "nvim-treesitter/nvim-treesitter")
+  :requires "nvim-treesitter/nvim-treesitter")
 
 (use "nvim-treesitter/playground"
-     :cmd      :TSPlaygroundToggle
-     :requires "nvim-treesitter/nvim-treesitter")
+  :cmd      :TSPlaygroundToggle
+  :requires "nvim-treesitter/nvim-treesitter")
 
 
 ;;;--------------------------------------------------------------------------
@@ -83,7 +83,7 @@
 
 ;; Add commands to (un)comment text objects
 (use "numToStr/Comment.nvim"
-     :config #(setup :Comment :ignore "^$"))
+  :config #(setup :Comment :ignore "^$"))
 
 ;; Edit surrounding objects
 (use "tpope/vim-surround")
@@ -136,10 +136,10 @@
             (tset vim.g :conjure#log#hud#border                     "double")
             (tset vim.g :conjure#highlight#enabled                  :IncSearch)
             ;; scheme
-            (tset vim.g :conjure#filetype#scheme "conjure.client.guile.socket")
+            (tset vim.g :conjure#filetype#scheme                    "conjure.client.guile.socket")
             (tset vim.g :conjure#client#scheme#stdio#command        "racket -il scheme")
             (tset vim.g :conjure#client#scheme#stdio#prompt_pattern "\n?[\"%w%-./_]*> ")
-            (tset vim.g :conjure#client#guile#socket#pipename "/tmp/guile-repl.socket")
+            (tset vim.g :conjure#client#guile#socket#pipename       "/tmp/guile-repl.socket")
             ;; fennel
             (tset vim.g :conjure#filetype#fennel                    "conjure.client.fennel.stdio")
             (tset vim.g :conjure#client#fennel#stdio#command        "fennel")))
@@ -155,13 +155,6 @@
   :event    [:CmdlineEnter]
   :requires ["romgrk/fzy-lua-native"]
   :config   #(require :plugins.wilder))
-
-; (use "junegunn/fzf.vim"
-;   :requires ["junegunn/fzf"]
-;   :config (fn []
-;             (vim.keymap.set :i "<C-x><C-k>" "<plug>(fzf-complete-word)" {:remap true})
-;             (vim.keymap.set :i "<C-x><C-f>" "<plug>(fzf-complete-path)" {:remap true})
-;             (vim.keymap.set :i "<C-x><C-l>" "<plug>(fzf-complete-line)" {:remap true})))
 
 ;; Search everything with fzf
 (use "ibhagwan/fzf-lua"
@@ -184,8 +177,16 @@
 (use "cossonleo/dirdiff.nvim")
 
 (use "NMAC427/guess-indent.nvim"
-  :disable true
+  :opt true
   :config #(setup :guess-indent))
+
+;; Auto-close hidden / unedited buffers
+(use "axkirillov/hbac.nvim")
+
+(use "jinh0/eyeliner.nvim"
+  :config #(setup :eyeliner
+            :highlight_on_key true
+            :dim              true))
 
 ;;;--------------------------------------------------------------------------
 ;;; Colors
@@ -193,7 +194,6 @@
 
 ;; Highlighting and color manipulation
 (use "uga-rosa/ccc.nvim"
-  :opt true
   :cmd [:CccPick :CccHighlighterToggle]
   :config #(let [ccc (require :ccc)]
              (setup :ccc
@@ -211,7 +211,6 @@
              (set vim.g.everforest_better_performance     1)
              (set vim.g.everforest_spell_foreground       1)
              (set vim.g.everforest_sign_column_background 1)))
-
 
 
 (use "rktjmp/lush.nvim"

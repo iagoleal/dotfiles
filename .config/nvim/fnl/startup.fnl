@@ -4,6 +4,7 @@
 (local {: autocmd
         : executable-exists?
         : has?
+        : hi-link
         : keymap
         &as ed} (require :editor))
 
@@ -67,7 +68,15 @@
              :fg        "Orange"
              :sp        "Orange"
              :underline true)
-  (vim.cmd "highlight link LspCodeLens WarningMsg")
+  ;; For plugins
+  (highlight :EyelinerPrimary
+             :fg        "Orange"
+             :sp        "Orange"
+             :bold      true)
+  (highlight :EyelinerSecondary
+             :fg        "#5ae271"
+             :bold      true)
+  (hi-link :LspCodeLens :WarningMsg)
   ;; Reload color dependent files
   (ex runtime! "plugin/statusline.lua")
   (ex runtime! "plugin/tabline.lua"))
