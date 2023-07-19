@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+WIDTH=230
+HEIGHT=40
+OFFSET_X=0
+OFFSET_Y=0
+
+EMULATOR=xterm
+TERM_CLASS=FloatMenu
+TERM_TITLE=fzfmenu
+
+GEOMETRY=$WIDTH"x"$HEIGHT+$OFFSET_X+$OFFSET_Y
+
+# Output all arguments with proper quotation marks
+function properly-quote() {
+  for arg; do
+    printf ' "%s"' "${arg//\"/\\\"}"
+  done
+}
+
+# My own version of getopts because I need optional options
+while true; do
+  case $1 in
+    -C | -T)
+      OPT="$1"
+      shift
+      case $1 in
+        -* | "")
+          echo "$0: Option $OPT takes an argument" >&2
+          exit 2
+          ;;
+        *)
+          if [ $OPT = -C ] ; then
+            TERM_CLASS="$1"
+          else
+            TERM_TITLE="$1"
+          fi
+          shift
+          ;;
+      esac
+      ;;
+      *) break
+      ;;
+  esac
+done
+
+# This variable is set on my .zshrc,
+# and thus only exists for shells that sourced that file.
+if test -z $RUNRC; then
+
+  exec xterm                \
+    -class    "$TERM_CLASS" \
+    -geometry "$GEOMETRY"   \
+    -T        "$TERM_TITLE" \
+    -e bash \
+    -c "fzf $(properly-quote "$@") < /proc/$$/fd/0 > /proc/$$/fd/1" 2>/tmp/log
+
+elif [ -n $DISPLAY ] ; then
+  fzf "$@"
+else
+  echo "No interactive session" >&2
+  exit 1
+fi
