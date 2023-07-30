@@ -25,6 +25,10 @@ herbstclient keybind Super-n chain \
  . keybind Escape spawn sh "$normalMode"
 
 # Session management
+herbstclient keybind Super-a       spawn $SCRIPTS/window-switcher
+herbstclient keybind Super-Shift-s spawn $SCRIPTS/tag-switcher
+herbstclient keybind Super-s       spawn $SCRIPTS/tag-switcher sessions
+
 herbstclient keybind Super-w chain \
  . keyunbind --all \
  . keybind w       chain , spawn wrapmenu -c FloatMenu -T 'Window Switcher'  $SCRIPTS/window-switcher       , spawn sh "$normalMode" \

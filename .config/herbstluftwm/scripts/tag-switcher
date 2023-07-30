@@ -6,19 +6,24 @@ function sessionctl() {
 #
 
 function session-finder() {
-  fzf --border --prompt='=> ' --info=inline \
-      --header=$'~:~ Session Selection ~:~' \
-      --cycle \
-      --header-lines=1 \
-      --preview="sessionctl query tags {2}" \
-      --expect='alt-Q,alt-t'
+  fzfmenu -C FloatMenu -T 'Session Switcher' \
+    --border --prompt='=> ' --info=inline \
+    --header=$'~:~ Session Selection ~:~' \
+    --cycle \
+    --header-lines=1 \
+    --preview="sessionctl query tags {2}" \
+    --select-1 \
+    --bind 'one:accept' \
+    --expect='alt-Q,alt-t'
 }
 
 function tag-finder() {
-  fzf --border --prompt='=> ' --info=inline \
-      --header=$'~:~ Session Selection ~:~' \
-      --cycle --multi --nth=1 \
-      --expect='alt-Q,alt-bspace'
+  fzfmenu -C FloatMenu -T 'Tag Switcher' \
+    --border --prompt='=> ' --info=inline \
+    --header=$'~:~ Tag Selection ~:~' \
+    --cycle --multi --nth=1 \
+    --bind 'one:accept' \
+    --expect='alt-Q,alt-bspace'
 }
 
 function list-tags() {
