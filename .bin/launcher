@@ -19,6 +19,4 @@ forked-exec() {
   done
 }
 
-list-commands | fzf --prompt="$ " --info=inline --border --reverse --multi | sort -u | forked-exec
-
-exec xdotool getactivewindow windowunmap
+list-commands | fzfmenu -C TopMenu -T 'Program Launcher'  --prompt="$ " --info=inline --border --reverse --multi | sort -u | forked-exec

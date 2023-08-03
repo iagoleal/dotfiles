@@ -31,10 +31,10 @@ herbstclient keybind Super-s       spawn $SCRIPTS/tag-switcher sessions
 
 herbstclient keybind Super-w chain \
  . keyunbind --all \
- . keybind w       chain , spawn wrapmenu -c FloatMenu -T 'Window Switcher'  $SCRIPTS/window-switcher       , spawn sh "$normalMode" \
- . keybind Shift-s chain , spawn wrapmenu -c FloatMenu -T 'Tag Switcher'     $SCRIPTS/tag-switcher          , spawn sh "$normalMode" \
- . keybind s       chain , spawn wrapmenu -c FloatMenu -T 'Session Switcher' $SCRIPTS/tag-switcher sessions , spawn sh "$normalMode" \
- . keybind r       chain , spawn wrapmenu -c TopMenu   -T 'Rename Tag'       $SCRIPTS/rename-tag            , spawn sh "$normalMode" \
+ . keybind w       chain , spawn $SCRIPTS/window-switcher       , spawn sh "$normalMode" \
+ . keybind Shift-s chain , spawn $SCRIPTS/tag-switcher          , spawn sh "$normalMode" \
+ . keybind s       chain , spawn $SCRIPTS/tag-switcher sessions , spawn sh "$normalMode" \
+ . keybind r       chain , spawn $SCRIPTS/rename-tag            , spawn sh "$normalMode" \
  . keybind Super-w chain , spawn $SCRIPTS/show-tags , spawn sh "$normalMode" \
  . keybind e       chain , spawn $SCRIPTS/show-tags , spawn sh "$normalMode" \
  . keybind Escape spawn bash "$normalMode"
@@ -54,9 +54,9 @@ herbstclient keybind Super-Return          spawn $TERMINAL
 herbstclient keybind Super-Shift-Escape    spawn $TERMINAL -e htop
 
 # Menus
-herbstclient keybind Super-Shift-d         spawn wrapmenu -c TopMenu   -T 'Program Launcher' launcher
-herbstclient keybind Super-b               spawn wrapmenu -c FloatMenu -T 'Book Searcher'    searcher "$HOME/Books"
-herbstclient keybind XF86Tools             spawn wrapmenu -c TopMenu   -T 'Config Chooser'   $SCRIPTS/open-config-files
+herbstclient keybind Super-Shift-d         spawn launcher
+herbstclient keybind Super-b               spawn wrapmenu -c FloatMenu -T 'Book Searcher' searcher "$HOME/Books/"
+herbstclient keybind XF86Tools             spawn $SCRIPTS/open-config-files
 
 # Screenshots
 herbstclient keybind Print                 spawn flameshot gui

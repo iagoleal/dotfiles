@@ -3,7 +3,12 @@
 # List of avaiable options
 cfgs="Neovim\nHerbstluftwm\nNix\nPulseaudio\nzsh"
 
-choose="$( echo -e "$cfgs" | fzf --no-info -1 --height=~40% --prompt '% ' --no-multi --layout=reverse )"
+finder() {
+  fzfmenu -C TopMenu -T 'Config Chooser' \
+    --no-info -1 --height=~40% --prompt '% ' --no-multi --layout=reverse
+}
+
+choose="$( echo -e "$cfgs" | finder)"
 
 case "${choose}" in
   Neovim)
