@@ -36,7 +36,6 @@
               :include_surrounding_whitespace
                 #($1.query_string:find "outer")}
 
-
      :move {:enable    true
             :set_jumps true
             :goto_next_start

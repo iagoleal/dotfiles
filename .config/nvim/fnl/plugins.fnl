@@ -45,11 +45,6 @@
 (use "nvim-treesitter/nvim-treesitter-textobjects"
   :requires "nvim-treesitter/nvim-treesitter")
 
-(use "nvim-treesitter/playground"
-  :cmd      :TSPlaygroundToggle
-  :requires "nvim-treesitter/nvim-treesitter")
-
-
 ;;;--------------------------------------------------------------------------
 ;;; Language Server Protocol
 ;;;--------------------------------------------------------------------------
@@ -187,6 +182,9 @@
   :config #(setup :eyeliner
             :highlight_on_key true
             :dim              true))
+
+(use "https://gitlab.com/yorickpeterse/nvim-pqf"
+  :config #(setup :pqf))
 
 ;;;--------------------------------------------------------------------------
 ;;; Colors
