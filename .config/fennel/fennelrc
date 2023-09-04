@@ -1,0 +1,9 @@
+; persist repl history
+(local rl package.loaded.readline)
+
+(when rl
+  (rl.set_options {:histfile  "~/.local/state/fennel/history" ; default:"" (don't save)
+                   :keeplines 1000})              ; default:1000
+  (rl.set_readline_name "fennel"))
+
+;; ex: set ft=fennel : ;;
