@@ -59,9 +59,9 @@ month=$(date +'%m')
 day=$(date +'%d')
 if [ $month -ge 11 -a $day -ge 15 ] || [ $month -ge 12 ] || [ $month -le 1 -a $day -le 6 ]
 then
-    feh --bg-scale ~/Pictures/Wallpapers/xmas/duck_xmas.png
+    feh --no-fehbg --bg-scale '/home/iago/vault/media/Wallpapers/xmas/duck_xmas.png'
 else
-    feh --bg-scale ~/Pictures/Wallpapers/duck.jpg
+    feh --no-fehbg --bg-scale '/home/iago/vault/media/Wallpapers/duck.jpg'
 fi
 
 # unlock, just to be sure
