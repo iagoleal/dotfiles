@@ -23,7 +23,7 @@ export RUNRC=1
 unsetopt beep
 
 # History related
-HISTFILE=~/.histfile
+HISTFILE="${XDG_STATE_HOME}"/zsh/history
 HISTSIZE=1000
 SAVEHIST=1000
 
@@ -114,12 +114,12 @@ bindkey '^z' go-to-fg
 # Autocompletion
 #----------------------------
 
+ZSH_COMPDUMP="${XDG_CACHE_HOME}/zcompdump"
 autoload -Uz compinit
-if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
-  compinit;
-else
-  compinit -C;
-fi;
+for dump in "$ZSH_COMPDUMP"; do
+  compinit -d "$ZSH_COMPDUMP"
+done
+compinit -d "$ZSH_COMPDUMP" -C
 
 # Informative completion to kill command
 zstyle ':completion:*:processes' command "ps -u $USER -o pid,stat,%cpu,%mem,cputime,command"
@@ -128,7 +128,8 @@ zstyle ':completion:*:processes' command "ps -u $USER -o pid,stat,%cpu,%mem,cput
 zstyle ':completion:*:processes-names' command 'ps c -u ${USER} -o command | uniq'
 
 # Path for completion files
-# fpath=(~/.zsh.d/comp $fpath)
+# Completion cache should follow XDG
+zstyle ':completion:*' cache-path "$XDG_CACHE_HOME"/
 
 #----------------------------
 # Enable prompt theme system

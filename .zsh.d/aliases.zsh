@@ -62,10 +62,10 @@ function update {
   notify-send -u normal "Updated" "C'est fini"
 }
 
-function trash { mv -i $@ ~/.trash }
+function trash { mv -i $@ ~/${XDG_DATA_HOME:-$HOME/.local/share}/Trash }
 
 function doi2bib {
-  curl -LH "Accept: text/bibliography; style=bibtex" "http://dx.doi.org/$@" | sed -r -e '1s/, /,\n  /' -e 's/}, /},\n  /g' -e '$s/}}/}\n}/' -e '1s/^[[:space:]]*//'
+  curl -sLH "Accept: application/x-bibtex" "https://dx.doi.org/$@" | sed -r -e '1s/, /,\n  /' -e 's/}, /},\n  /g' -e '$s/}}/}\n}/' -e '1s/^[[:space:]]*//'
 }
 
 # Convert a mac address to corresponding local ip
