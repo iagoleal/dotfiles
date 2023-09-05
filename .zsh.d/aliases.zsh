@@ -8,7 +8,7 @@ alias vi=nvim
 alias hc=herbstclient
 
 # Git command to manage dotfiles
-alias dotfiles='git --git-dir=$HOME/.dotfiles-gitdir/ --work-tree=$HOME'
+alias dotfiles='git --git-dir="${XDG_DATA_HOME:-$HOME/.local/state}/dotfiles-gitdir/" --work-tree=$HOME'
 alias dtf=dotfiles
 
 alias nix-reload='nix-env -riA nixpkgs.myPackages'
