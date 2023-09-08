@@ -1,29 +1,54 @@
+#----------------------------
 # XDG compliance
-export HISTFILE="${XDG_STATE_HOME}"/bash/history
+#----------------------------
 
+# The XDG paths themselves
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+export XDG_DATA_DIRS="/usr/local/share:/usr/share:$HOME/.local/share/applications/"
+export XDG_CONFIG_DIRS=/etc/xdg
+
+# history for many applications
+export HISTFILE="${XDG_STATE_HOME}/bash/history"
+export LESSHISTFILE="${XDG_STATE_HOME}/less/history"
+export SQLITE_HISTORY="${XDG_STATE_HOME}/sqlite/history"
+
+#haskell
+export GHCUP_USE_XDG_DIRS=true
 export CABAL_CONFIG="$XDG_CONFIG_HOME"/cabal/config
 export CABAL_DIR="$XDG_DATA_HOME"/cabal
-
-export GHCUP_USE_XDG_DIRS=true
+export STACK_XDG=1
 
 export GTK2_RC_FILES="$XDG_CONFIG_HOME"/gtk-2.0/gtkrc
 
 export JUPYTER_CONFIG_DIR="$XDG_CONFIG_HOME"/jupyter
 
-export LESSHISTFILE="$XDG_STATE_HOME"/less/history
-
 export NODE_REPL_HISTORY="$XDG_DATA_HOME"/node_repl_history
 
+# readline
 export INPUTRC="$XDG_CONFIG_HOME"/readline/inputrc
 
- export SQLITE_HISTORY="$XDG_CACHE_HOME"/sqlite_history
-
-export STACK_XDG=1
-
+# tex
 export TEXMFVAR="$XDG_CACHE_HOME"/texlive/texmf-var
 
 export W3M_DIR="$XDG_DATA_HOME"/w3m
 
+# pass
+export PASSWORD_STORE_DIR="$XDG_DATA_HOME"/pass
+
 export XCURSOR_PATH=/usr/share/icons:$XDG_DATA_HOME/icons
 
-export PASSWORD_STORE_DIR="$XDG_DATA_HOME"/pass
+#----------------------------
+# For Package Managers
+#----------------------------
+
+# Nix needs this to find the proper locale
+export LOCALE_ARCHIVE=/usr/lib/locale/locale-archive
+
+GUIX_PROFILE="$HOME/.guix-profile"
+. "$GUIX_PROFILE/etc/profile"
+
+GUIX_PROFILE="$HOME/.config/guix/current"
+. "$GUIX_PROFILE/etc/profile"

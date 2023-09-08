@@ -38,10 +38,18 @@ function update {
     return
   fi
 
-  echo 'Nix Nix Nix'
-  nix-channel --update
-  nix-env -i 'my-packages'
-  nix-env -u '*'
+  if hascmd nix; then
+    echo 'Nix Nix Nix'
+    nix-channel --update
+    nix-env -i 'my-packages'
+    nix-env -u '*'
+  fi
+
+  if hascmd guix; then
+    echo 'Guix Guix Guix'
+    guix pull
+    guix upgrade
+  fi
 
   echo "Updating zsh..."
   plugin-update

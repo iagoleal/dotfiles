@@ -31,6 +31,10 @@ function _prompt {
     echo -n "(nix)"
   fi
 
+  if [ -n "$GUIX_ENVIRONMENT" ]; then
+    echo -n "(guix)"
+  fi
+
   # When are we in ssh?
   if [[ -n $SSH_CLIENT ]]; then
     echo -n "%n@%m"
