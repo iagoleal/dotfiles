@@ -20,9 +20,9 @@
 (packer.init config)
 (packer.reset)
 
-;;;--------------------------------------------------------------------------
+;;;----------------------------------------------------------------------------
 ;;; Bootstrapped behaviour
-;;;--------------------------------------------------------------------------
+;;;----------------------------------------------------------------------------
 
 ;; The plugin manager itself
 (use "wbthomason/packer.nvim"
@@ -33,21 +33,25 @@
       :config #(require :hotpot))
 
 
-;;;--------------------------------------------------------------------------
+;;;----------------------------------------------------------------------------
 ;;; Treesitter
-;;;--------------------------------------------------------------------------
+;;;----------------------------------------------------------------------------
 
 (use "nvim-treesitter/nvim-treesitter"
   :run    ":TSUpdate"
   :config #(require :plugins.treesitter))
 
-; Semantically based text objects (such as functions, classes etc.)
+;; Semantically based text objects (such as functions, classes etc.)
 (use "nvim-treesitter/nvim-treesitter-textobjects"
   :requires "nvim-treesitter/nvim-treesitter")
 
-;;;--------------------------------------------------------------------------
+;; Highlight scopes, uses etc.
+(use "nvim-treesitter/nvim-treesitter-refactor"
+  :requires "nvim-treesitter/nvim-treesitter")
+
+;;;----------------------------------------------------------------------------
 ;;; Language Server Protocol
-;;;--------------------------------------------------------------------------
+;;;----------------------------------------------------------------------------
 
 (use "neovim/nvim-lspconfig"
      :config #(require :lsp))
@@ -62,9 +66,9 @@
                          null-ls.builtins.hover.printenv]})))
 
 
-;;;--------------------------------------------------------------------------
+;;;----------------------------------------------------------------------------
 ;;; Should be built-in
-;;;--------------------------------------------------------------------------
+;;;----------------------------------------------------------------------------
 
 
 ; Allow writing file with sudo
@@ -81,7 +85,8 @@
   :config #(setup :Comment :ignore "^$"))
 
 ;; Edit surrounding objects
-(use "tpope/vim-surround")
+(use "kylechui/nvim-surround"
+  :config #(setup :nvim-surround))
 
 ;; Additional text operators
 (use "wellle/targets.vim")
@@ -109,10 +114,13 @@
                "r" {:pattern "{\\|}\\|,"     ; Lua / Haskell style Records
                     :delimiter_align :r}})))
 
+; Better marks management
+(use "chentoast/marks.nvim"
+  :config #(setup :marks))
 
-;;;--------------------------------------------------------------------------
+;;;----------------------------------------------------------------------------
 ;;; Extra functionalities
-;;;--------------------------------------------------------------------------
+;;;----------------------------------------------------------------------------
 
 ;; Manage REPLs
 (use "hkupty/iron.nvim"
@@ -157,10 +165,6 @@
             (vim.keymap.set :i "<C-x><C-f>" (require-use :fzf-lua :complete_path))
             (vim.keymap.set :i "<C-x><C-l>" (require-use :fzf-lua :complete_line))))
 
-; Git Integration
-(use "lewis6991/gitsigns.nvim"
-  :config #(require :plugins.gitsigns))
-
 ; Async make      (vimscript)
 (use "tpope/vim-dispatch"
   :cmd [:Make :Dispatch])
@@ -186,9 +190,17 @@
 (use "https://gitlab.com/yorickpeterse/nvim-pqf"
   :config #(setup :pqf))
 
-;;;--------------------------------------------------------------------------
+;;;----------------------------------------------------------------------------
+;;; External Integrations
+;;;----------------------------------------------------------------------------
+
+; Git Integration
+(use "lewis6991/gitsigns.nvim"
+  :config #(require :plugins.gitsigns))
+
+;;;----------------------------------------------------------------------------
 ;;; Colors
-;;;--------------------------------------------------------------------------
+;;;----------------------------------------------------------------------------
 
 ;; Highlighting and color manipulation
 (use "uga-rosa/ccc.nvim"
@@ -217,13 +229,13 @@
 (use "pbrisbin/vim-colors-off")
 
 
-;;;--------------------------------------------------------------------------
+;;;----------------------------------------------------------------------------
 ;;; Filetype specific
-;;;--------------------------------------------------------------------------
+;;;----------------------------------------------------------------------------
 
 (use "lervag/vimtex"
      :config #(do (set vim.g.tex_flavor :latex)
-                  (set vim.g.vimtex_view_method :zathura)))
+                  (set vim.g.vimtex_view_method :sioyek)))
 
 (when (executable-exists? "jq")
   (use "monkoose/fzf-hoogle.vim"))
@@ -248,6 +260,11 @@
             (set vim.g.haskell_indent_do               3)
             (set vim.g.haskell_indent_in               0)
             (set vim.g.haskell_indent_guard            2)))
+
+(use "mrcjkb/haskell-tools.nvim"
+  :disable true
+  :requires "nvim-lua/plenary.nvim"
+  :ft [:haskell :lhaskell :cabal :cabalproject])
 
 (use "bakpakin/fennel.vim"
   :ft :fennel)

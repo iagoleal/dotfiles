@@ -96,6 +96,7 @@
 
 (option :synmaxcol 179)
 (option :wrap false)
+(option :linebreak true)
 
 (option :list) ; Show trailing {spaces, tabs}
 (option :listchars {:tab      "├─"
@@ -192,9 +193,9 @@
 ;====================================
 
 (set vim.g.mapleader      " ")
-(set vim.g.maplocalleader "ç")
+(set vim.g.maplocalleader "ç")    ; br-abnt2
 
-;;; Disable behaviour
+;;; Disable undesirable behaviour
 ;;;---------------------
 (each [_ key (ipairs ["<Up>" "<Down>" "<Left>" "<Right>" "<Space>" "ZZ" "ZQ"])]
   (keymap ["" "v"] key "<Nop>"))
@@ -279,6 +280,16 @@
 ; Spell check previous mistake and correct to first suggestion
 (keymap :i "<C-l>" "<c-g>u<Esc>[s1z=`]a<c-g>u")
 
+; Add semicolon to end of line iff it's not already there
+(keymap :i "<A-;>"
+  #(let [current (vim.fn.getline ".")]
+     (when (~= (current:sub -1) ";")
+       (vim.fn.setline "." (.. current ";"))))
+  {:desc "Append semicolon to end of current line if it is not already there"})
+
+;; Save insert mode undo history before pasting something
+(keymap :i "<C-r>" "<C-g>u<C-r>")
+
 ;;; Make life easier on command mode
 
 ;; Emacs-like keybindings for cmd mode
@@ -290,8 +301,6 @@
 ; Enter path to current file on command mode
 (keymap :c "<M-x>p" "getcmdtype() == ':' ? expand('%:h').'/' : ''"
   {:expr true})
-
-(keymap :i "<C-r>" "<C-g>u<C-r>")
 
 ;--------------------------
 ;;; LSP
@@ -317,9 +326,6 @@
 ;; Building keymaps
 (keymap :n "<leader>m" ":Dispatch<CR>")
 (keymap :n "<leader>M" ":Dispatch!<CR>")
-
-; Convert from rgb to float
-(keymap :n "<leader>cf" (require-use :color :inplace#hex->float))
 
 ; Highlight cross around cursor
 (keymap :n "<leader>chl" "<cmd>set cursorline! cursorcolumn!<CR>")

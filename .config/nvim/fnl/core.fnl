@@ -1,6 +1,12 @@
 (local M {})
 (local fmt string.format)
 
+;;; Set a default value to a variable
+(macro default-value! [variable default]
+  `(set-forcibly! ,variable
+                  (if (= ,variable nil)
+                      ,default
+                      ,variable)))
 (set table.pack
   #(let [t [$...]]
      (tset t :n (select :# $...))
@@ -31,6 +37,13 @@
   (tset package.loaded pkg-name nil)
   (require pkg-name))
 
+(fn M.first [t]
+  "First element of a list."
+  (. t 1))
+
+(fn M.last [t]
+  "last element of a list or string."
+  (. t (length t)))
 
 ;; Export
 M

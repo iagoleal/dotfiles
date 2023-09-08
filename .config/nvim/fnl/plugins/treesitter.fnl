@@ -18,10 +18,13 @@
   :indent {:enable true}
 
   ;;; External plugins
-  :playground {:enable true}
+  ;;;-----------------
 
   :matchup
     {:enable false} ; This causes extreme lag, disable by now
+
+  :refactor
+    {:highlight_current_scope {:enable true}}
 
   ;; Custom semantically based text objects and operations on them
   :textobjects

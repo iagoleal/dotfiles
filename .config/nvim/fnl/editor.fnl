@@ -92,13 +92,16 @@
 
 ; Check whether this version of nvim has a certain feature
 (fn M.has? [feature]
+  "Fennel version of vimscript `has`"
   ((predicate#one-to-true-based vim.fn.has) feature))
 
 (fn M.executable-exists? [name]
+  "Fennel version of vimscript `executable`"
   (let [test (predicate#one-to-true-based vim.fn.executable)]
     (test name)))
 
 (fn M.directory? [name]
+  "Fennel version of vimscript `isdirectory`"
   (let [test (predicate#one-to-true-based vim.fn.isdirectory)]
     (test name)))
 
