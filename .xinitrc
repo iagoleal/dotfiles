@@ -45,8 +45,8 @@ fi
 # Turn the damm bell sound off
 xset b off
 # Set keyboard repeat rate
-# 150ms delay | 60 cps (better to be a multiple of screen refresh rate)
-xset r rate 150 60
+# 150ms delay | 90 cps (better to be a multiple of screen refresh rate)
+xset r rate 150 90
 # Change the cursor default icon
 xsetroot -cursor_name left_ptr
 
