@@ -45,9 +45,13 @@
 (use "nvim-treesitter/nvim-treesitter-textobjects"
   :requires "nvim-treesitter/nvim-treesitter")
 
-;; Highlight scopes, uses etc.
-(use "nvim-treesitter/nvim-treesitter-refactor"
-  :requires "nvim-treesitter/nvim-treesitter")
+;; Split and join nodes treesitter
+(use "Wansmer/treesj"
+  :config #(do
+            (setup :treesj
+              :use_default_keymaps false)
+            (vim.keymap.set :n "<space>sj" (require-use :treesj :toggle))))
+
 
 ;;;----------------------------------------------------------------------------
 ;;; Language Server Protocol
@@ -65,11 +69,9 @@
                          null-ls.builtins.hover.dictionary
                          null-ls.builtins.hover.printenv]})))
 
-
 ;;;----------------------------------------------------------------------------
 ;;; Should be built-in
 ;;;----------------------------------------------------------------------------
-
 
 ; Allow writing file with sudo
 ; even if I open nvim as a normal user
@@ -162,6 +164,9 @@
 ;; Search everything with fzf
 (use "ibhagwan/fzf-lua"
   :config (fn []
+            (vim.keymap.set :n "<leader>ff" (require-use :fzf-lua :files))
+            (vim.keymap.set :n "<leader>fb" (require-use :fzf-lua :buffers))
+            (vim.keymap.set :n "<leader>fh" (require-use :fzf-lua :help_tags))
             (vim.keymap.set :i "<C-x><C-f>" (require-use :fzf-lua :complete_path))
             (vim.keymap.set :i "<C-x><C-l>" (require-use :fzf-lua :complete_line))))
 
@@ -182,21 +187,37 @@
 ;; Auto-close hidden / unedited buffers
 (use "axkirillov/hbac.nvim")
 
-(use "jinh0/eyeliner.nvim"
-  :config #(setup :eyeliner
-            :highlight_on_key true
-            :dim              true))
-
-(use "https://gitlab.com/yorickpeterse/nvim-pqf"
-  :config #(setup :pqf))
+;; File explorer (netrw substitute)
+(use "stevearc/oil.nvim"
+  :config #(setup :oil
+            :columns [:icon :permission :size :mtime]))
 
 ;;;----------------------------------------------------------------------------
 ;;; External Integrations
 ;;;----------------------------------------------------------------------------
 
-; Git Integration
+;; Git
 (use "lewis6991/gitsigns.nvim"
   :config #(require :plugins.gitsigns))
+
+;; Google translate
+
+(use "uga-rosa/translate.nvim")
+
+;;;----------------------------------------------------------------------------
+;;; Prettier
+;;;----------------------------------------------------------------------------
+
+;; Align quickfix
+(use "https://gitlab.com/yorickpeterse/nvim-pqf"
+  :config #(setup :pqf))
+
+;; Hints for f/t
+(use "jinh0/eyeliner.nvim"
+  :config #(setup :eyeliner
+            :highlight_on_key true
+            :dim              true))
+
 
 ;;;----------------------------------------------------------------------------
 ;;; Colors
@@ -227,7 +248,6 @@
   :disable true)
 
 (use "pbrisbin/vim-colors-off")
-
 
 ;;;----------------------------------------------------------------------------
 ;;; Filetype specific

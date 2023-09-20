@@ -81,7 +81,6 @@
 ;; Server specific setups
 ;;--------------------------------------------------
 
-
 ;;; Lua
 ;; set the path to the sumneko installation;
 (let [lpath (vim.split package.path ";")]
@@ -140,6 +139,10 @@
 
 ;;; Bash
 (lspconfig.bashls.setup {})
+
+
+;;; Javascript / Typescript
+(lspconfig.tsserver.setup {})
 
 
 ;;; Prose

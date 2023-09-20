@@ -3,7 +3,7 @@
 
 ;; My Dotfiles worktree
 (local dotfiles-worktree {:toplevel vim.env.HOME
-                          :gitdir   (.. vim.env.HOME "/.dotfiles-gitdir")})
+                          :gitdir   (.. vim.env.HOME "/.local/share/dotfiles-gitdir")})
 
 (local sign-bar "▌")
 
