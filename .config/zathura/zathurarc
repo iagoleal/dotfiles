@@ -23,6 +23,9 @@ set font "mononoki normal 14"
 set default-bg "#ededed"
 set default-fg "#dddddd"
 
+set recolor-lightcolor "#2f383e"
+set recolor-darkcolor  "#dfd6c2"
+
 # Rebind zoom keys
 map - zoom out
 unmap =
@@ -33,4 +36,4 @@ map <A-o> exec 'zathura "$FILE" -P "$PAGE"'
 
 # Enable synctex
 set synctex true
-set synctex-editor-command 'nvim --headless -c "VimtexInverseSearch %l \'%f\'"'
+set synctex-editor-command "nvim --headless -c VimtexInverseSearch\ %l\ '%f'"
