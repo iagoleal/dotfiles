@@ -18,6 +18,7 @@
         ripgrep
         ueberzug
         w3m
+        cloc       # count lines of source code (better than wc)
         direnv     # Allows activation of of an environment per dir (e.g., auto nix-shell)
         nix-direnv # Better direnv integration with nix (includes caching)
 
@@ -30,6 +31,7 @@
         pyright                      # Python
         ltex-ls                      # Text: Latex, Markdown, txt
         nodePackages.bash-language-server
+        nodePackages.typescript-language-server
 
         # ~ Graphics ~ #
         darktable
