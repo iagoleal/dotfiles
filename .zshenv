@@ -36,4 +36,8 @@ if command -v luarocks &> /dev/null; then
 fi
 
 # Haskell packages
-[ -f "/home/iago/.ghcup/env" ] && source "/home/iago/.ghcup/env" # ghcup-env
+if [ -f "${XDG_CONFIG_DATA}/.ghcup/env" ]; then
+  source "${XDG_CONFIG_DATA}/.ghcup/env"
+elif [ -f "$HOME/.ghcup/env" ]; then
+  source "$HOME/.ghcup/env" # ghcup-env
+fi
