@@ -395,6 +395,9 @@
   (autocmd :BufLeave ["*.py"]              "mark P")
   (autocmd :BufLeave ["*.c" "*.cpp" "*.h"] "mark C"))
 
+;; Control built-in ftplugins
+(set vim.g.markdown_recommended_style 0)
+
 ;-----------------------------
 ;-- Disable Built-in plugins
 ;-----------------------------

@@ -11,7 +11,7 @@
 
 (fn strip-atx [str]
   "Remove any ATX markup to turn argument into a common line."
-  (let [(header title) (str:match "^(%#*)%s+([^%s].*)%s*$")]
+  (let [(header title) (str:match "^(%#*)%s*([^%s].*)%s*$")]
     (values title (or header ""))))
 
 (fn atx-header? [str]
@@ -28,14 +28,13 @@
 ;;; Buffer manipulation methods
 ;;;
 
-(fn M.to-setext-header [depth line]
+(fn M.to-setext-header [depth line-number]
   "Convert a line in the buffer to a markdown Setext style header."
-  (let [
-        header-char       (match depth
-                            1 "="
-                            2 "-"
-                            _ (error "Setext header is only defined for levels 1 and 2."))
-        line              (vim.fn.line ".")
+  (let [header-char       (match depth
+                           1 "="
+                           2 "-"
+                           _ (error "Setext header is only defined for levels 1 and 2."))
+        line              (vim.fn.line line-number)
         text              (strip-atx (vim.fn.getline line))
         next-text         (vim.fn.getline (+ line 1))
         header-decoration (string.rep header-char (length text))]

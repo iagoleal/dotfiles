@@ -52,6 +52,12 @@
               :use_default_keymaps false)
             (vim.keymap.set :n "<space>sj" (require-use :treesj :toggle))))
 
+(use "danymat/neogen"
+  :config #(do
+             (setup :neogen)
+             (vim.keymap.set :n "<space>gd" (require-use :neogen :generate)))
+  :requires "nvim-treesitter/nvim-treesitter")
+
 
 ;;;----------------------------------------------------------------------------
 ;;; Language Server Protocol
