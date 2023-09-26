@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+function sessionctl() {
+  $(dirname "$0")/sessionctl "$@"
+}
+
 function hc() {
   herbstclient "$@"
 }

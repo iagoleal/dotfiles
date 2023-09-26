@@ -55,8 +55,7 @@ herbstclient keybind Super-Shift-Escape    spawn $TERMINAL -e htop
 
 # Menus
 herbstclient keybind Super-Shift-d         spawn launcher
-herbstclient keybind Super-b               spawn wrapmenu -c FloatMenu -T 'Book Searcher' searcher "$HOME/Books/"
-herbstclient keybind XF86Tools             spawn $SCRIPTS/open-config-files
+herbstclient keybind Super-b               spawn wrapmenu -c FloatMenu -T 'Book Searcher' searcher "$HOME/vault/media/Books/"
 
 # Screenshots
 herbstclient keybind Print                 spawn flameshot gui
@@ -76,6 +75,7 @@ herbstclient keybind XF86MonBrightnessUp   spawn xbacklight -inc 5
 herbstclient keybind XF86MonBrightnessDown spawn xbacklight -dec 5
 herbstclient keybind XF86Display           spawn arandr
 
+herbstclient keybind XF86Tools             spawn $SCRIPTS/open-config-files
 herbstclient keybind XF86Favorites         spawn passmenu
 
 # fn+4 == XF84Sleep

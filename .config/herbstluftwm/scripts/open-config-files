@@ -1,29 +1,36 @@
 #!/bin/sh
 
-# List of avaiable options
-cfgs="Neovim\nHerbstluftwm\nNix\nPulseaudio\nzsh"
-
 finder() {
   fzfmenu -C TopMenu -T 'Config Chooser' \
-    --no-info -1 --height=~40% --prompt '% ' --no-multi --layout=reverse
+    --no-info -1 --height=~40% --prompt '% ' --no-multi --layout=reverse \
+    --bind 'one:accept'
 }
 
-choose="$( echo -e "$cfgs" | finder)"
+listconfigs() {
+  find "${XDG_CONFIG_HOME:-$HOME/.config}" -mindepth 1 -maxdepth 1 -printf "%f\n"
+  echo -e "zsh"
+  echo -e "pulseaudio"
+}
+
+choose="$(listconfigs | finder)"
 
 case "${choose}" in
-  Neovim)
-    herbstclient spawn xterm -e sh -c 'cd ~/.config/nvim && nvim fnl/startup.fnl'
+  nvim)
+    herbstclient spawn xterm -e sh -c 'cd ~/.config/nvim && nvim -O fnl/startup.fnl fnl/plugins.fnl'
     ;;
-  Nix)
+  nix)
     herbstclient spawn xterm -e sh -c 'cd ~/.config/nixpkgs && nvim config.nix'
     ;;
-  Herbstluftwm)
+  herbstluftwm)
     herbstclient spawn xterm -e sh -c 'cd ~/.config/herbstluftwm && nvim -O autostart keybindings.sh'
     ;;
- Pulseaudio)
+ pulseaudio)
     herbstclient spawn pavucontrol
     ;;
   zsh)
     herbstclient spawn xterm -e sh -c 'cd ~/.zsh.d/ && nvim ~/.zshrc *'
+    ;;
+  *)
+    herbstclient spawn xterm -e sh -c "cd ${XDG_CONFIG_HOME}/$choose && vi ."
     ;;
 esac
