@@ -10,10 +10,11 @@ export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_DATA_DIRS="/usr/local/share:/usr/share:$HOME/.local/share/applications/"
 export XDG_CONFIG_DIRS=/etc/xdg
 
-# history for many applications
+# History files
 export HISTFILE="${XDG_STATE_HOME}/bash/history"
 export LESSHISTFILE="${XDG_STATE_HOME}/less/history"
 export SQLITE_HISTORY="${XDG_STATE_HOME}/sqlite/history"
+export NODE_REPL_HISTORY="${XDG_STATE_HOME}/node/history"
 
 #haskell
 export GHCUP_USE_XDG_DIRS=true
@@ -25,7 +26,6 @@ export GTK2_RC_FILES="$XDG_CONFIG_HOME"/gtk-2.0/gtkrc
 
 export JUPYTER_CONFIG_DIR="$XDG_CONFIG_HOME"/jupyter
 
-export NODE_REPL_HISTORY="$XDG_DATA_HOME"/node_repl_history
 
 # readline
 export INPUTRC="$XDG_CONFIG_HOME"/readline/inputrc
