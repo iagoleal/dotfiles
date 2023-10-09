@@ -39,14 +39,14 @@ function update {
   fi
 
   if hascmd nix; then
-    echo 'Nix Nix Nix'
+    echo '\n\nNix Nix Nix\n\n'
     nix-channel --update
     nix-env -i 'my-packages'
     nix-env -u '*'
   fi
 
   if hascmd guix; then
-    echo 'Guix Guix Guix'
+    echo '\n\nGuix Guix Guix\n\n'
     guix pull
     guix upgrade
   fi

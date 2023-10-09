@@ -1,1 +1,1 @@
-source $HOME/.nix-profile/share/nix-direnv/direnvrc
+source $XDG_STATE_HOME/nix/profile/share/nix-direnv/direnvrc

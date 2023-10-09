@@ -16,7 +16,10 @@ export LESSHISTFILE="${XDG_STATE_HOME}/less/history"
 export SQLITE_HISTORY="${XDG_STATE_HOME}/sqlite/history"
 export NODE_REPL_HISTORY="${XDG_STATE_HOME}/node/history"
 
-#haskell
+# Nix
+export NIX_PATH="${XDG_STATE_HOME}/nix/defexpr/channels:${NIX_PATH}"
+
+# Haskell
 export GHCUP_USE_XDG_DIRS=true
 export CABAL_CONFIG="$XDG_CONFIG_HOME"/cabal/config
 export CABAL_DIR="$XDG_DATA_HOME"/cabal
@@ -30,8 +33,10 @@ export JUPYTER_CONFIG_DIR="$XDG_CONFIG_HOME"/jupyter
 # readline
 export INPUTRC="$XDG_CONFIG_HOME"/readline/inputrc
 
-# tex
-export TEXMFVAR="$XDG_CACHE_HOME"/texlive/texmf-var
+# TeX
+export TEXMFHOME="$XDG_DATA_HOME/texmf"
+export TEXMFVAR="$XDG_CACHE_HOME/texlive/texmf-var"
+export TEXMFCONFIG="$XDG_CONFIG_HOME/texlive/texmf-config"
 
 export W3M_DIR="$XDG_DATA_HOME"/w3m
 
