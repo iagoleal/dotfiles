@@ -13,15 +13,14 @@ local function bootstrap(name, repo, opt)
 
   if vim.fn.empty(vim.fn.glob(pack_path)) > 0 then
     local answer = vim.fn.input(string.format("Package %s not found, do you want to load it? [Y/n]", name))
-
     if answer:match "^[nN]" then
-      echohl("\nCloning aborted!", "WarningMsg")
+      vim.notify("Cloning aborted!", vim.log.levels.WARN)
     else
-      echohl(string.format("\nCloning package '%s' as <<%s>> plugin", name, pack_type))
+      vim.notify(string.format("\nCloning package '%s' as <<%s>> plugin", name, pack_type))
       vim.fn.system {'git', 'clone', repo, pack_path}
       vim.cmd.packadd(name)
 
-      echohl(string.format('\nSucceded at cloning package %s.', name))
+      vim.notify(string.format('\nSucceded at cloning package %s.', name))
     end
   end
 end

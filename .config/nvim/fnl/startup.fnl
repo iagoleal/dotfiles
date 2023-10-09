@@ -321,8 +321,6 @@
 ;;; Plugin related
 ;--------------------------
 
-(keymap :n "gx" "<cmd>call netrw#BrowseX(expand((exists(\"g:netrw_gx\")? g:netrw_gx : '<cfile>')),netrw#CheckIfRemote())<cr>")
-
 ;; Building keymaps
 (keymap :n "<leader>m" ":Dispatch<CR>")
 (keymap :n "<leader>M" ":Dispatch!<CR>")
@@ -352,6 +350,16 @@
   :nargs    :*
   :complete :command
   :desc     "Output ex command into new split.")
+
+(def-command :Skeleton
+  (fn [arg]
+    (let [line (- (vim.fn.line ".") 1)
+          ft   (or (. arg.fargs 1) vim.bo.filetype)]
+      (vim.cmd.read {:args  [(.. (vim.fn.stdpath :config) "/skeleton/" ft)]
+                     :range [line]})))
+  :nargs    :?
+  :complete :filetype
+  :desc     "Load skeleton template for a given filetype (current by default).")
 
 
 ;-----------------------

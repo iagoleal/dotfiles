@@ -60,17 +60,17 @@ function M.find_required_path(module)
   -- Properly change '.' to separator (probably '/' on *nix and '\' on Windows)
   local fname = vim.fn.substitute(module, "\\.", sep, "g")
   local f
-  ---- First search for lua modules
-  f = include_paths(fname, 'lua')
-  if f then return f end
-  -- This part is just for nvim modules
-  f = include_rtpaths(fname, 'lua')
-  if f then return f end
-  ---- Now search for Fennel modules
+  ---- First search for Fennel modules
   f = include_paths(fname, 'fnl')
   if f then return f end
   -- This part is just for nvim modules
   f = include_rtpaths(fname, 'fnl')
+  if f then return f end
+  ---- Now search for lua modules
+  f = include_paths(fname, 'lua')
+  if f then return f end
+  -- This part is just for nvim modules
+  f = include_rtpaths(fname, 'lua')
   if f then return f end
 end
 
