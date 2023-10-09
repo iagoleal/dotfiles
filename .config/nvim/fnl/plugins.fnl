@@ -218,13 +218,6 @@
 (use "https://gitlab.com/yorickpeterse/nvim-pqf"
   :config #(setup :pqf))
 
-;; Hints for f/t
-(use "jinh0/eyeliner.nvim"
-  :config #(setup :eyeliner
-            :highlight_on_key true
-            :dim              true))
-
-
 ;;;----------------------------------------------------------------------------
 ;;; Colors
 ;;;----------------------------------------------------------------------------
