@@ -5,16 +5,13 @@
 # To remove deleted files from backup, use --delete
 
 # Cummulative backup
-rsync -avP ~/Videos/ /media/Elements/Videos/
-# rsync -avP ~/Music/ /media/Elements/Music/
-rsync -avP ~/Pictures/ /media/Elements/Pictures/
-rsync -avP --delete ~/Books/ /media/Elements/Books/
-
-rsync -avP ~/Documents/ /media/Elements/Documents/
-rsync -avP ~/Zotero/ /media/Elements/Zotero/
+rsync -avP --copy-links ~/vault/   /media/Elements/vault/
+rsync -avP ~/self/    /media/Elements/self/
+rsync -avP ~/art/     /media/Elements/art/
+rsync -avP ~/code/    /media/Elements/code/
+rsync -avP ~/Zotero/  /media/Elements/Zotero/
 
 # Non-cumulative backup
-rsync -avP --delete ~/Code/ /media/Elements/Code/
 
 # List of installed packages
 yay -Qe > /media/Elements/pacman-installed.txt

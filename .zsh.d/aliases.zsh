@@ -71,7 +71,7 @@ function update {
   notify-send -u normal "Updated" "C'est fini"
 }
 
-function trash { mv -i $@ ~/${XDG_DATA_HOME:-$HOME/.local/share}/Trash }
+function trash { mv -i $@ ${XDG_DATA_HOME:-$HOME/.local/share}/Trash }
 
 function doi2bib {
   curl -sLH "Accept: application/x-bibtex" "https://dx.doi.org/$@" | sed -r -e '1s/, /,\n  /' -e 's/}, /},\n  /g' -e '$s/}}/}\n}/' -e '1s/^[[:space:]]*//'
