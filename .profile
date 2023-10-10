@@ -43,7 +43,13 @@ export W3M_DIR="$XDG_DATA_HOME"/w3m
 # pass
 export PASSWORD_STORE_DIR="$XDG_DATA_HOME"/pass
 
+# X11
 export XCURSOR_PATH=/usr/share/icons:$XDG_DATA_HOME/icons
+export XAUTHORITY="$XDG_RUNTIME_DIR"/Xauthority
+export XINITRC="$XDG_CONFIG_HOME"/X11/xinitrc
+export XSERVERRC="$XDG_CONFIG_HOME"/X11/xserverrc
+export XCOMPOSEFILE="$XDG_CONFIG_HOME"/X11/Xcompose
+export XCOMPOSECACHE="$XDG_CACHE_HOME"/X11/Xcompose
 
 #----------------------------
 # For Package Managers
