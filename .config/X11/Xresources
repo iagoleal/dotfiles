@@ -8,7 +8,7 @@
 Xcursor.theme: Vimix-cursors
 Xcursor.size: 32
 
-dmenu.font: mononoki:style:Semibold:size=14:antialias=true:hinting=false
+dmenu.font: mononoki:style:Semibold:size=14:antialias=false:hinting=false
 dmenu.background: BG
 dmenu.foreground: FG
 dmenu.selbackground: #56bb78
@@ -16,7 +16,7 @@ dmenu.selforeground: BG
 
 !! Xterm config
 xterm*termName: xterm-256color
-xterm*faceName: xft:mononoki::antialias=true:hinting=false
+xterm*faceName: xft:mononoki::antialias=false:hinting=false
 xterm*faceSize: 15
 xterm*renderFont: true
 xterm*locale: true
