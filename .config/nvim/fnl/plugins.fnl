@@ -126,6 +126,11 @@
 (use "chentoast/marks.nvim"
   :config #(setup :marks))
 
+; Open links without netrw
+(use "chrishrb/gx.nvim"
+  :requires "nvim-lua/plenary.nvim"
+  :config #(setup :gx))
+
 ;;;----------------------------------------------------------------------------
 ;;; Extra functionalities
 ;;;----------------------------------------------------------------------------

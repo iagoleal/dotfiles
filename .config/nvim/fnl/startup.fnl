@@ -424,11 +424,11 @@
                            :rrhelper
                            :spellfile_plugin
                            :matchit
-                           :matchparen])
-                           ; :netrw
-                           ; :netrwPlugin
-                           ; :netrwSettings
-                           ; :netrwFileHandlers
+                           :matchparen
+                           :netrw
+                           :netrwPlugin
+                           :netrwSettings
+                           :netrwFileHandlers])
 
 (each [_ plugin (ipairs disabled-built-ins)]
   (tset vim.g (.. "loaded_" plugin) 1))
