@@ -3,7 +3,7 @@
 FOLDER="$(realpath "$1")"
 
 finder() {
- fzf-ueberzogen.sh --prompt="β " --scheme=path --info=inline --no-multi --preview 'fzf-preview.sh {}'
+ fzf-ueberzogen.sh --prompt="β " --scheme=path --info=inline --preview 'fzf-preview.sh {}'
 }
 
 spawn() {

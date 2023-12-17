@@ -15,6 +15,7 @@ fi
 
 # Create shared tmux session
 tmux -S "$tmux_file" new-session -s "$tmux_session" -d
+tmux -S "$tmux_file" server-access -a "$frienduser"
 # Assign right permissions to group
 chgrp $tmux_group "$tmux_file"
 chmod g+rw "$tmux_file"

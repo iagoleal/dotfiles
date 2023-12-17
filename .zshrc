@@ -84,8 +84,8 @@ zle -N edit-command-line
 bindkey '' edit-command-line
 bindkey -M vicmd '' edit-command-line
 
-# # When going over history,
-# # only consider commands which match the written characters until now
+# When going over history,
+# only consider commands which match the written characters until now.
 autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
@@ -94,7 +94,7 @@ bindkey '^[[B' history-beginning-search-forward  # arrow down
 
 # Restore last background job to foreground.
 # Useful in order to hit C-z twice to quickly see the alternate screen.
-# This was adpated from grml zsh confg.
+# Adapted from grml zsh confg.
 function go-to-fg {
   if (( ${#jobstates} )); then
     zle .push-input

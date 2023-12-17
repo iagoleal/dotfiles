@@ -7,7 +7,7 @@ echo \
 
 Flag options:
 -d : direction of notification on screen
-     Avaiable: northeast.
+     Available: northeast.
 -e : argument is script name. Pipes result instead of text;
 -s : Notification summary. Default is 'Notification'."
 }
