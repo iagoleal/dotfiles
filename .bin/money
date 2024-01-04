@@ -1,0 +1,16 @@
+#!/bin/sh
+
+SESSION_NAME=money
+PROJ_PATH="$HOME/self/finance"
+
+if ! tmux has-session -t "$SESSION_NAME"; then
+  # Create session with initial window
+  tmux new-session   -s "$SESSION_NAME" -c "$PROJ_PATH" -d -n ed
+  # Open editor
+  tmux send-keys     -t "$SESSION_NAME" "vi current.journal" Enter
+  # Another window for terminal work
+  tmux split-window  -t "$SESSION_NAME" -c "$PROJ_PATH"
+  tmux select-pane   -t 1
+fi
+
+tmux attach -t "$SESSION_NAME"

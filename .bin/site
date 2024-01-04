@@ -1,0 +1,20 @@
+#!/bin/sh
+
+SESSION_NAME=site
+SITE_PATH="$HOME/self/site"
+
+if ! tmux has-session -t "$SESSION_NAME"; then
+  # Create session with initial window
+  tmux new-session   -s "$SESSION_NAME" -c "$SITE_PATH" -d -n ed
+
+  # Start server on another window
+  tmux new-window    -t "$SESSION_NAME" -c "$SITE_PATH" -n watch
+  tmux send-keys     -t "$SESSION_NAME" "make serve" Enter
+
+  # Watch and remake pages
+  tmux split-window  -t "$SESSION_NAME" -c "$SITE_PATH"
+  tmux send-keys     -t "$SESSION_NAME" "make watch" Enter
+  tmux select-window -t "${SESSION_NAME}:1"
+fi
+
+tmux attach -t "$SESSION_NAME"
