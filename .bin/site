@@ -17,4 +17,9 @@ if ! tmux has-session -t "$SESSION_NAME"; then
   tmux select-window -t "${SESSION_NAME}:1"
 fi
 
-tmux attach -t "$SESSION_NAME"
+# Tmux uses different commands to attach from within a client or not
+if [[ -z "$TMUX" ]]; then
+  tmux attach -t "$SESSION_NAME"
+else
+  tmux switch-client -t "$SESSION_NAME"
+fi
