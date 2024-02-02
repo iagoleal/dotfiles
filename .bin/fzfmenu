@@ -47,14 +47,18 @@ done
 # This variable is set on my .zshrc,
 # and thus only exists for shells that sourced that file.
 if test -z $RUNRC; then
+  statusfile=$(mktemp)
+  trap "rm $statusfile" EXIT
 
-  exec xterm                \
+  xterm                     \
     -class    "$TERM_CLASS" \
     -geometry "$GEOMETRY"   \
     -T        "$TERM_TITLE" \
     -e bash \
-    -c "fzf $(properly-quote "$@") < /proc/$$/fd/0 > /proc/$$/fd/1" 2>/tmp/log
+    -c "fzf $(properly-quote "$@") < /proc/$$/fd/0 > /proc/$$/fd/1 ; echo \$? > $statusfile " 2>/tmp/log
 
+  status=$(cat $statusfile)
+  exit $status
 elif [ -n $DISPLAY ] ; then
   fzf "$@"
 else

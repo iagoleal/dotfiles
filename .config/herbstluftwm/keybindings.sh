@@ -55,11 +55,11 @@ herbstclient keybind Super-Shift-Escape    spawn $TERMINAL -e htop
 
 # Menus
 herbstclient keybind Super-Shift-d         spawn launcher
-herbstclient keybind Super-b               spawn wrapmenu -c FloatMenu -T 'Book Searcher' searcher "$HOME/vault/media/Books/"
+herbstclient keybind Super-b               spawn searcher "$HOME/vault/media/Books/"
 
 # Screenshots
 herbstclient keybind Print                 spawn flameshot gui
-herbstclient keybind Super-Print           spawn flameshot full -c -p "$HOME/Pictures/Screenshots"
+herbstclient keybind Super-Print           spawn flameshot full -c -p "$HOME/vault/Pictures/Screenshots"
 herbstclient keybind Super-Shift-Print     spawn flameshot full -c
 herbstclient keybind Control-Print         spawn pickcolor
 

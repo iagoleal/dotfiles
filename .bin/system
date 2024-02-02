@@ -2,8 +2,8 @@
 alias locker='i3lock'
 
 case $1 in
-    "lock")
-        locker
+    "lock") # Switch off backlight and (automatically) lock screen
+        xset dpms force off
         ;;
     "suspend")
         systemctl suspend-then-hibernate

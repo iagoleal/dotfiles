@@ -18,13 +18,10 @@ case "${choose}" in
   nvim)
     herbstclient spawn xterm -e sh -c 'cd ~/.config/nvim && nvim -O fnl/startup.fnl fnl/plugins.fnl'
     ;;
-  nix)
-    herbstclient spawn xterm -e sh -c 'cd ~/.config/nixpkgs && nvim config.nix'
-    ;;
   herbstluftwm)
     herbstclient spawn xterm -e sh -c 'cd ~/.config/herbstluftwm && nvim -O autostart keybindings.sh'
     ;;
- pulseaudio)
+  pulseaudio)
     herbstclient spawn pavucontrol
     ;;
   zsh)

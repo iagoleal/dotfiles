@@ -1,6 +1,6 @@
 #!/bin/bash
 
-screenshotsFolder="$HOME/Pictures/Screenshots"
+screenshotsFolder="$HOME/vault/Pictures/Screenshots"
 
 while getopts 'cwf:' flag; do
     case $flag in
