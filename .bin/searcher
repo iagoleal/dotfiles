@@ -3,9 +3,11 @@
 FOLDER="$(realpath "$1")"
 
 finder() {
-  fzfmenu -T 'Book Searcher' \
+  fzfmenu -T 'Searcher' \
           -C 'FloatMenu'    \
-    --prompt="β " --scheme=path --info=inline
+    --prompt="β " --scheme=path --info=inline \
+    --border  --border-label="Searcher" \
+    --bind 'ctrl-r:reload:cd "$(dirname {})" && rg --files'
 }
 
 spawn() {
@@ -16,7 +18,7 @@ item=$(cd "$FOLDER" && rg --files | sed "s:^\./::g" | finder)
 exit_code=$?
 item_path="$FOLDER/$item"
 
-if [ $exit_code == 0 ]; then
+if [ $exit_code == 0 -a -n "$item" ]; then
   spawn "$item_path"
 else
   exit "$exit_code"

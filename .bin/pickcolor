@@ -5,7 +5,7 @@ function extract_channel() {
 }
 
 function int2float() {
-  echo $((${1}/256.0))
+  echo $((${1}/255.0))
 }
 
 # The color in hexadecimal representation

@@ -3,7 +3,7 @@
 SESSION_NAME=site
 SITE_PATH="$HOME/self/site"
 
-if ! tmux has-session -t "$SESSION_NAME"; then
+if ! tmux has-session -t "$SESSION_NAME" >/dev/null 2>&1 ; then
   # Create session with initial window
   tmux new-session   -s "$SESSION_NAME" -c "$SITE_PATH" -d -n ed
 
@@ -18,7 +18,7 @@ if ! tmux has-session -t "$SESSION_NAME"; then
 fi
 
 # Tmux uses different commands to attach from within a client or not
-if [[ -z "$TMUX" ]]; then
+if [ -z "$TMUX" ]; then
   tmux attach -t "$SESSION_NAME"
 else
   tmux switch-client -t "$SESSION_NAME"
