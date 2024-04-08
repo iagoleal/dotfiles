@@ -4,17 +4,16 @@ alias ls='ls --color=auto -F'
 # Editor
 alias vi=nvim
 
-# herbstclient is too big to keep writing...
+# Smaller versions of commands with big names
 alias hc=herbstclient
+alias zth='zathura --fork'
+alias hl='hledger --infer-market-prices --infer-equity'
 
 # Git command to manage dotfiles
 alias dotfiles='git --git-dir="${XDG_DATA_HOME:-$HOME/.local/state}/dotfiles-gitdir/" --work-tree=$HOME'
 alias dtf=dotfiles
 
 alias nix-reload='nix-env -riA nixpkgs.myPackages'
-
-# Open pdf or ebook files
-alias zth='zathura --fork'
 
 # Get weather information
 function weather { curl wttr.in/"$*"; }
@@ -45,11 +44,11 @@ function update {
     nix-env -u '*'
   fi
 
-  if hascmd guix; then
-    echo '\n\nGuix Guix Guix\n\n'
-    guix pull
-    guix upgrade
-  fi
+  # if hascmd guix; then
+  #   echo '\n\nGuix Guix Guix\n\n'
+  #   guix pull
+  #   guix upgrade
+  # fi
 
   echo "Updating zsh..."
   plugin-update

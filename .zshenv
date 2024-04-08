@@ -15,7 +15,10 @@ export JULIA_NUM_THREADS=8
 # Preview directory on M-c
 export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 # Default options
-export FZF_DEFAULT_OPTS='-m --cycle --bind=alt-e:preview-down --bind=alt-y:preview-up'
+export FZF_DEFAULT_OPTS='-m --cycle
+  --bind=f4:toggle-preview
+  --bind=alt-e:preview-down
+  --bind=alt-y:preview-up'
 # Use rg as grep tool
 if command -v rg &> /dev/null; then
   export FZF_DEFAULT_COMMAND='rg --files'

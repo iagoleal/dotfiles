@@ -15,6 +15,7 @@ export HISTFILE="${XDG_STATE_HOME}/bash/history"
 export LESSHISTFILE="${XDG_STATE_HOME}/less/history"
 export SQLITE_HISTORY="${XDG_STATE_HOME}/sqlite/history"
 export NODE_REPL_HISTORY="${XDG_STATE_HOME}/node/history"
+export PYTHON_HISTORY="${XDG_STATE_HOME}/python/history"
 
 # Nix
 export NIX_PATH="${XDG_STATE_HOME}/nix/defexpr/channels:${NIX_PATH}"
