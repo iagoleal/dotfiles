@@ -1,6 +1,10 @@
 ; Macros and utilities
-(import-macros {:packer-use use :require-setup setup
-                : augroup : ex} :macros)
+(import-macros {:packer-use use
+                :require-setup setup
+                : require-use
+                : augroup
+                : ex}
+               :macros)
 (local {: autocmd : executable-exists?} (require :editor))
 
 ;; Plugin management
@@ -49,15 +53,15 @@
 (use "Wansmer/treesj"
   :config #(do
             (setup :treesj
-              :use_default_keymaps false)
-            (vim.keymap.set :n "<space>sj" (require-use :treesj :toggle))))
+              :use_default_keymaps false
+              :max_join_length     140)
+            (vim.keymap.set :n "<space>j" (require-use :treesj :toggle))))
 
 (use "danymat/neogen"
   :config #(do
              (setup :neogen)
              (vim.keymap.set :n "<space>gd" (require-use :neogen :generate)))
   :requires "nvim-treesitter/nvim-treesitter")
-
 
 ;;;----------------------------------------------------------------------------
 ;;; Language Server Protocol
@@ -67,7 +71,7 @@
      :config #(require :lsp))
 
 ; Hook external linters/formaters into LSP
-(use "jose-elias-alvarez/null-ls.nvim"
+(use "nvimtools/none-ls.nvim"
   :requires "nvim-lua/plenary.nvim"
   :config #(let [null-ls (require :null-ls)]
             (null-ls.setup
@@ -115,7 +119,9 @@
             (vim.keymap.set [:n :x] "<leader>a" "<Plug>(LiveEasyAlign)"
               {:remap true})
             (set vim.g.easy_align_delimiters
-              {">" {:pattern "=>\\|->\\|>\\|→"
+              {";" {:pattern ";"
+                    :delimiter_align :l}
+               ">" {:pattern "=>\\|->\\|>\\|→"
                     :delimiter_align :r}
                "<" {:pattern "<-\\|<=\\|<\\|←"
                     :delimiter_align :l}
@@ -185,6 +191,8 @@
 (use "tpope/vim-dispatch"
   :cmd [:Make :Dispatch])
 
+(use "tpope/vim-abolish")
+
 ; View **undo history** as a nice tree (with diffs!)
 (use "mbbill/undotree")
 
@@ -200,8 +208,32 @@
 
 ;; File explorer (netrw substitute)
 (use "stevearc/oil.nvim"
-  :config #(setup :oil
-            :columns [:icon :permission :size :mtime]))
+  :config #(do
+             (setup :oil
+               :columns [:icon :permission :size :mtime])
+             (vim.keymap.set :n "-" "<CMD>Oil<CR>"
+               {:desc "Open parent directory"})))
+
+(use "nat-418/boole.nvim"
+  :config #(setup :boole
+            :mappings {:increment "<C-a>"
+                       :decrement "<C-x"}
+            :additions
+              [["LT" "EQ" "GT"]]
+              [[">"  "<"]]
+              [[">=" "<="]]))
+
+(use "rgroli/other.nvim"
+  :config #(setup :other-nvim
+            :mappings
+              ["golang"
+               ; Site
+               { :pattern "content/(.-)%..+$"
+                :target
+                  [{:target  "build/%1/index.html"
+                    :context "build"}
+                   {:target  "static/%1/figures.js"
+                    :context "js"}]}]))
 
 ;;;----------------------------------------------------------------------------
 ;;; External Integrations
@@ -259,7 +291,7 @@
 
 (use "lervag/vimtex"
      :config #(do (set vim.g.tex_flavor :latex)
-                  (set vim.g.vimtex_view_method :sioyek)))
+                  (set vim.g.vimtex_view_method :zathura)))
 
 (when (executable-exists? "jq")
   (use "monkoose/fzf-hoogle.vim"))
@@ -300,6 +332,15 @@
 
 (use "edwinb/idris2-vim")
 
+(use "ledger/vim-ledger"
+  :config (fn []
+            (set vim.g.ledger_bin             :hledger)
+            (set vim.g.ledger_is_hledger      true)
+            (set vim.g.ledger_date_format     "%Y-%m-%d")
+            (set vim.g.ledger_align_commodity 1)
+            (set vim.g.ledger_commodity_sep   " ")
+            (set vim.g.ledger_extra_options   "--strict ordereddates payees uniqueleafnames")
+            (vim.keymap.set :n "<leader>dd" "<CMD>call ledger#transaction_date_set(line('.'), 'primary')<CR>")))
 
 ;; Return packer itself to allow chaining commands
 packer

@@ -6,6 +6,7 @@
         : has?
         : hi-link
         : keymap
+        : api
         &as ed} (require :editor))
 
 (import-macros {: option
@@ -215,6 +216,11 @@
 (keymap :x "<" "<gv")
 (keymap :x ">" ">gv")
 
+; Only save on register if line is not empty
+(keymap :n "dd" #(if (string.match (api.get-current-line) "^%s*$")
+                     "\"_dd"
+                     "dd")
+  {:expr true})
 
 ;;; Additional behaviour
 ;;;---------------------
@@ -255,21 +261,26 @@
 (unimpaired :b :b)   ; Buffers
 (unimpaired :t :tab) ; Tabs
 
+(macro with-backup [variable ...]
+  `(let [backup-var# ,variable]
+     (do ,...)
+     (set ,variable backup-var#)))
+
 ;; Open :ptag on a vertical split (Like "<C-w>}")
 (fn ptag-vertical []
-  (let [backup-previewheight vim.o.previewheight        ; The current/default previewheight
-        window-width         (vim.fn.winwidth 0)        ; The current window's width
+  (let [window-width         (vim.fn.winwidth 0)        ; The current window's width
         current-word         (vim.fn.expand "<cword>")] ; The word under the cursor
-    ; Divide the current window in half
-    (set vim.o.previewheight (math.floor (/ window-width 2)))
-    ; Open tag on vertical preview window
-    (vim.cmd (fmt "vert ptag %s" current-word))
-    ; Restore option to default
-    (set vim.o.previewheight backup-previewheight)))
+    (with-backup vim.o.previewheight
+      ; Divide the current window in half
+      (set vim.o.previewheight (math.floor (/ window-width 2)))
+      ; Open tag on vertical preview window
+      (vim.cmd (fmt "vert ptag %s" current-word)))))
 
 
-(keymap :n "<C-w>[" "<cmd>vert wincmd ]<CR>")
-(keymap :n "<C-w>{" ptag-vertical)
+(keymap :n "<C-w>["     "<cmd>vert wincmd ]<CR>"
+  {:desc "Vertically split window and jump to tag."})
+(keymap :n "<C-w><S-{>" ptag-vertical
+  {:desc "Vertically split window and open tag in preview window."})
 
 ;; Scroll the preview window
 (keymap :n "<M-e>" "'<C-w>P' . v:count1 . '<C-e><C-w>p'"
@@ -281,7 +292,7 @@
 (keymap :i "<C-l>" "<c-g>u<Esc>[s1z=`]a<c-g>u")
 
 ; Add semicolon to end of line iff it's not already there
-(keymap :i "<A-;>"
+(keymap :i "<M-;>"
   #(let [current (vim.fn.getline ".")]
      (when (~= (current:sub -1) ";")
        (vim.fn.setline "." (.. current ";"))))
@@ -392,16 +403,6 @@
                  (keymap :n "<F12>" ":wa<cr>:!love --fuseomod src &<cr>")
                  (keymap :n "<F12>" ":wa<cr>:!love --fused . &<cr>"))
              (vim.opt_local.iskeyword:remove "."))))
-
-
-; Quick access to last open files of each type
-(augroup :FiletypeMarks
-  (autocmd :BufLeave ["*.md" "*.md.lhs"]   "mark M")
-  (autocmd :BufLeave ["*.hs" "*.lhs"]      "mark H")
-  (autocmd :BufLeave ["*.lua" "*.fnl"]     "mark L")
-  (autocmd :BufLeave ["*.jl"]              "mark J")
-  (autocmd :BufLeave ["*.py"]              "mark P")
-  (autocmd :BufLeave ["*.c" "*.cpp" "*.h"] "mark C"))
 
 ;; Control built-in ftplugins
 (set vim.g.markdown_recommended_style 0)

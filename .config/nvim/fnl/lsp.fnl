@@ -3,6 +3,7 @@
 (local util lspconfig.util)
 
 (fn capable? [client capability]
+  "Check whether a LSP client can provide a certain server capability"
   (. client.server_capabilities capability))
 
 ;;--------------------------------------------------
@@ -15,9 +16,6 @@
   (let [bufnr  ev.buf
         client (vim.lsp.get_client_by_id ev.data.client_id)
         bmap   (keymap/buffer bufnr)]
-    ; Use lsp omnifunc for completion
-    (tset vim.bo bufnr :omnifunc "v:lua.vim.lsp.omnifunc")
-
     ;; Mappings
     (when (capable? client :hoverProvider)
       (bmap :n "K"          vim.lsp.buf.hover))
@@ -93,7 +91,7 @@
             {:version "LuaJIT"
              ; Setup lua path
              :path    lpath}
-          :diagnostics {:globals [:vim :love]
+          :diagnostics {:globals [:vim :love :pandoc]
                         :disable [:lowercase-global]}
           :workspace
             {:preloadFileSize 300
@@ -143,6 +141,10 @@
 
 ;;; Javascript / Typescript
 (lspconfig.tsserver.setup {})
+
+
+;;; Markdown
+(lspconfig.marksman.setup {})
 
 
 ;;; Prose

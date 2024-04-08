@@ -78,7 +78,6 @@
     (fn [mode keys cmd ?opts]
       (vim.keymap.set mode keys cmd (vim.tbl_extend :keep (or ?opts {}) extra)))))
 
-
 ;;;-------------------
 ;;; Vim tests
 ;;;-------------------
@@ -145,6 +144,19 @@
   "Link two highlight groups."
   (vim.api.nvim_set_hl 0 from {: link : default}))
 
+;-----------------------------
+; Easier nvim internals
+;-----------------------------
 
-;; Export
+"Allow accessing vim.api functions with a more fennelish syntax.
+ With this function, you can write, for example,
+
+     api.set-hl
+
+ and the call is automatically converted to `vim.api.nvim_set_hl`."
+(set M.api
+  (setmetatable {}
+    {:__index (fn [_ key]
+                (. vim.api (.. "nvim_" (string.gsub key "%-" "%_"))))}))
+
 M

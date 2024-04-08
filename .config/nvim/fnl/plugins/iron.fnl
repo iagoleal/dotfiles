@@ -34,7 +34,7 @@
          :open    ":{"
          :close   [":}" ""]}
       :cabal
-        {:command ["cabal" "repl"]
+        {:command ["cabal" "repl" "+RTS" "-N8" "-RTS"]
          :open    ":{"
          :close   [":}" ""]}}
    :lhaskell
@@ -61,7 +61,7 @@
 (iron.core.set_config
    {:preferred {:lua     "lua"
                 :fennel  "fennel"
-                :haskell "ghci-par"
+                :haskell "cabal"
                 :julia   "projectwise"
                 :python  "python"
                 :scheme  "racket"}
