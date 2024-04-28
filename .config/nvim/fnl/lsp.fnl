@@ -23,7 +23,8 @@
       (bmap :n "<C-k>"      vim.lsp.buf.signature_help))
 
     (when (capable? client :referencesProvider)
-      (bmap :n "<leader>re" vim.lsp.buf.references))
+      (bmap :n "<leader>re" vim.lsp.buf.references)
+      (bmap :n "gr"         vim.lsp.buf.references))
     (when (capable? client :renameProvider)
       (bmap :n "<leader>rn" vim.lsp.buf.rename))
 

@@ -63,16 +63,6 @@
 
 ;;; Keymap
 
-(fn M.keymap [mode keys cmd ...]
-  "Create a global keymap.
-   Differently from the function version, this one allows
-   both a table and a sequence of pairs for option arguments."
-  (let [[head]  [...]
-        options (match (get-literal-type head)
-                  :string (vararg-to-opts ...)
-                  _       head)]
-    `(vim.keymap.set ,mode ,keys ,cmd ,options)))
-
 (fn M.highlight [group ...]
   (let [opts (vararg-to-opts ...)]
     `(vim.api.nvim_set_hl 0 ,group ,opts)))
@@ -89,9 +79,9 @@
   (table.insert cmds `(vim.cmd "augroup END"))
   cmds)
 
-;;;
+;-------------------
 ;;; Define commands
-;;;
+;-------------------
 
 (fn M.def-command [name f ...]
   (let [opts (vararg-to-opts ...)]

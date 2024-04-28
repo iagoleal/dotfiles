@@ -7,6 +7,7 @@
         : hi-link
         : keymap
         : api
+        : echoerror
         &as ed} (require :editor))
 
 (import-macros {: option
@@ -268,8 +269,8 @@
 
 ;; Open :ptag on a vertical split (Like "<C-w>}")
 (fn ptag-vertical []
-  (let [window-width         (vim.fn.winwidth 0)        ; The current window's width
-        current-word         (vim.fn.expand "<cword>")] ; The word under the cursor
+  (let [window-width   (vim.fn.winwidth 0)        ; The current window's width
+        current-word   (vim.fn.expand "<cword>")] ; The word under the cursor
     (with-backup vim.o.previewheight
       ; Divide the current window in half
       (set vim.o.previewheight (math.floor (/ window-width 2)))
@@ -339,16 +340,13 @@
 ; Highlight cross around cursor
 (keymap :n "<leader>chl" "<cmd>set cursorline! cursorcolumn!<CR>")
 
-; UndoTree
-(keymap :n "<leader>tu" "<cmd>UndotreeToggle<CR>")
-
 ;-----------------------
 ;-- Commands
 ;-----------------------
 
-(fn make-scratch-buffer [mods]
+(fn make-scratch-buffer [smods]
   "Create a new scratch buffer in a split window."
-  (vim.cmd (.. mods " new"))
+  (vim.cmd.new {:mods smods})
   (set vim.bo.buftype   :nofile)
   (set vim.bo.bufhidden :wipe)
   (set vim.bo.buflisted false)
@@ -356,7 +354,7 @@
 
 (def-command :View
   (fn [arg]
-    (make-scratch-buffer arg.mods)
+    (make-scratch-buffer arg.smods)
     (vim.cmd (fmt "put=execute('%s')" arg.args)))
   :nargs    :*
   :complete :command
@@ -372,6 +370,17 @@
   :complete :filetype
   :desc     "Load skeleton template for a given filetype (current by default).")
 
+; Adapted from https://github.com/yutkat/convert-git-url.nvim/blob/main/plugin/convert_git_url.lua
+(def-command :ToggleGitUrl
+  #(let [save-pos (vim.fn.getpos ".")
+         current-word (vim.fn.expand "<cWORD>")]
+     (if (string.match current-word "^git@")
+         (vim.cmd "substitute#git@\\(.\\{-}\\).com:#https://\\1.com/#")
+         (string.match current-word "^http")
+         (vim.cmd "substitute#https://\\(.\\{-}\\).com/#git@\\1.com:#")
+         (echoerror "Current WORD is not a https/ssh URL."))
+     (vim.fn.setpos "." save-pos))
+  :force true)
 
 ;-----------------------
 ;-- Filetype Specific

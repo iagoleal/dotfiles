@@ -1,4 +1,6 @@
-(import-macros {: keymap : global-fn : def-command} :macros)
+(import-macros {: global-fn : def-command} :macros)
+
+(local {: keymap} (require :editor))
 
 ;--------------------------
 ;;;; Configure Iron REPL

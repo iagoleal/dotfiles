@@ -194,7 +194,8 @@
 (use "tpope/vim-abolish")
 
 ; View **undo history** as a nice tree (with diffs!)
-(use "mbbill/undotree")
+(use "mbbill/undotree"
+  :config #(vim.keymap.set :n "<leader>tu" "<cmd>UndotreeToggle<CR>"))
 
 ;; Diff mode for directories
 (use "cossonleo/dirdiff.nvim")
