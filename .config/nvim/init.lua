@@ -2,11 +2,6 @@
 vim.loader.enable()
 
 -- Ensure that a given package is installed and loaded
-local function echohl(text, hl)
-  local emsg = vim.fn.escape(text, '"')
-  vim.api.nvim_echo({{emsg, hl or ""}}, false, {})
-end
-
 local function bootstrap(name, repo, opt)
   local pack_type = opt and 'opt' or 'start'
   local pack_path = string.format("%s/site/pack/packer/%s/%s", vim.fn.stdpath('data'), pack_type, name)

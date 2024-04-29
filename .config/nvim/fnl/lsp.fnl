@@ -128,6 +128,15 @@
    :filetypes [:julia]})
 
 
+;;; Fennel
+
+(lspconfig.fennel_ls.setup
+  {:root_dir #(. (vim.fs.find ["fnl" ".git"]
+                              {:upward true :type :directory :path $})
+                 1)
+   :settings {:fennel-ls {:extra-globals "vim"}}})
+
+
 ;;; Python
 (lspconfig.pyright.setup {})
 

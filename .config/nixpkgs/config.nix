@@ -32,6 +32,7 @@
         ltex-ls                      # Text: Latex, Markdown, txt
         nodePackages.bash-language-server
         nodePackages.typescript-language-server
+        fennel-ls
 
         # ~ Graphics ~ #
         darktable
