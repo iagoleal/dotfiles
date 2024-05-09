@@ -1,3 +1,4 @@
+;; fennel-ls: macro-file
 (local M {})
 
 (local fmt string.format)
@@ -40,6 +41,21 @@
 
 (fn M.require-use [pkg ...]
   `(. (require ,pkg) ,...))
+
+(fn M.with-backup [variable ...]
+  "Execute code without changing value of variable.
+   Also works with table fields."
+  `(let [backup-var# ,variable]
+     (do ,...)
+     (set ,variable backup-var#)))
+
+(fn M.restoring-cursor [...]
+  "Execute vim code that may change the cursor position
+   but restore it at the end."
+  `(let [backup-var# (vim.fn.getpos ".")]
+     (do ,...)
+     (vim.fn.setpos "." backup-var#)))
+
 
 ;-----------------------------
 ;;; Setting options

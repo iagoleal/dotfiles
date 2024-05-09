@@ -26,7 +26,8 @@ bootstrap("hotpot.nvim",    "https://github.com/rktjmp/hotpot.nvim")
 
 -- Load real config written in Fennel
 require("hotpot").setup({
-  provide_require_fennel = true,
+  provide_require_fennel   = true,
+ enable_hotpot_diagnostics = false,   -- fennel-ls already provides the same
   compiler = {
     -- options passed to fennel.compile for modules, defaults to {}
     modules = {

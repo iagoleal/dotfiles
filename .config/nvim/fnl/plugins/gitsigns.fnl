@@ -13,14 +13,14 @@
     (bmap :n "<leader>gb" #(gs.blame_line {:full true}))
     ;; Hunks
     (bmap :n "<leader>gq" #(gs.setqflist :all))                           ; Quickfix for entire repository
-    (bmap :n "<leader>gl" #(gs.setqflist 0 {:use_location_list true}))    ; Location list for only current buffer
+    (bmap :n "<leader>gl" #(gs.setloclist 0 0))    ; Location list for only current buffer
     (bmap :n "[c" #(if vim.wo.diff
                      (vim.cmd.normal "[c")
-                     (vim.schedule gs.prev_hunk))
+                     (gs.nav_hunk :prev))
       {:desc "Go to previous git hunk"})
     (bmap :n "]c" #(if vim.wo.diff
                      (vim.cmd.normal "]c")
-                     (vim.schedule gs.next_hunk))
+                     (gs.nav_hunk :next))
       {:desc "Go to next git hunk"})))
 
 

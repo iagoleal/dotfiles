@@ -3,6 +3,7 @@
                 :require-setup setup
                 : require-use
                 : augroup
+                : restoring-cursor
                 : ex}
                :macros)
 (local {: autocmd : executable-exists?} (require :editor))
@@ -215,14 +216,17 @@
              (vim.keymap.set :n "-" "<CMD>Oil<CR>"
                {:desc "Open parent directory"})))
 
+;; This and the following plugins should be substitute by dial.nvim or something similar
 (use "nat-418/boole.nvim"
   :config #(setup :boole
             :mappings {:increment "<C-a>"
-                       :decrement "<C-x"}
-            :additions
-              [["LT" "EQ" "GT"]]
-              [[">"  "<"]]
-              [[">=" "<="]]))
+                       :decrement "<C-x>"}
+            :additions [["LT" "EQ" "GT"]
+                        [">"  "<"]
+                        [">=" "<="]]))
+
+(use "tpope/vim-speeddating")
+
 
 (use "rgroli/other.nvim"
   :config #(setup :other-nvim
@@ -243,10 +247,6 @@
 ;; Git
 (use "lewis6991/gitsigns.nvim"
   :config #(require :plugins.gitsigns))
-
-;; Google translate
-
-(use "uga-rosa/translate.nvim")
 
 ;;;----------------------------------------------------------------------------
 ;;; Prettier
@@ -338,10 +338,17 @@
             (set vim.g.ledger_bin             :hledger)
             (set vim.g.ledger_is_hledger      true)
             (set vim.g.ledger_date_format     "%Y-%m-%d")
-            (set vim.g.ledger_align_commodity 1)
+            (set vim.g.ledger_align_at        50)
+            (set vim.g.ledger_align_commodity 1)    ; Align on R$ instead of decimal dot
             (set vim.g.ledger_commodity_sep   " ")
             (set vim.g.ledger_extra_options   "--strict ordereddates payees uniqueleafnames")
-            (vim.keymap.set :n "<leader>dd" "<CMD>call ledger#transaction_date_set(line('.'), 'primary')<CR>")))
+            ;; Change transition date to today
+            (vim.keymap.set :n "<leader>dd" "<CMD>call ledger#transaction_date_set(line('.'), 'primary')<CR>"
+              {:desc "Change transaction date to today"})
+            ;; Align all posts on current paragraph (I use one transaction per paragraph)
+            (vim.keymap.set :n "<leader>da"
+              #(restoring-cursor (vim.cmd "'{,'}LedgerAlign"))
+              {:desc "Align postings on current transaction"})))
 
 ;; Return packer itself to allow chaining commands
 packer

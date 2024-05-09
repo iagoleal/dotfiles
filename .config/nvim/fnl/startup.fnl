@@ -16,6 +16,8 @@
                 : augroup
                 : def-command
                 : highlight
+                : with-backup
+                : restoring-cursor
                 : require-use}
                :macros)
 
@@ -120,13 +122,6 @@
   (autocmd :TextYankPost "*" #(vim.highlight.on_yank {:higroup "IncSearch" :timeout 150 :on_visual false})))
 
 
-;; Configure diagnostics (for all servers)
-(vim.diagnostic.config {:virtual_text     false
-                        :signs            true
-                        :underline        false
-                        :update_in_insert false
-                        :severity_sort    true})
-
 ;-------------------------
 ;-- MISC options
 ;-------------------------
@@ -188,6 +183,39 @@
 (when (executable-exists? "rg")
   (option :grepprg    "rg --vimgrep --no-heading")
   (option :grepformat "%f:%l:%c:%m,%f:%l:%m"))
+
+
+;====================================
+;            Diagnostics
+;====================================
+
+;; Configure diagnostics (for all servers)
+(vim.diagnostic.config {:virtual_text     false
+                        :signs            true
+                        :underline        false
+                        :update_in_insert false
+                        :severity_sort    true})
+
+;; Configure signs to only show the max severity
+(let [ns      (api.create-namespace :diagnostic-signs)
+      handler vim.diagnostic.handlers.signs]   ; Original handler that we're extending
+  (tset vim.diagnostic.handlers :signs
+    {:show (fn [_ns bufnr diagnostics opts]
+             (let [max-severity-per-line {}]
+               (collect [_ d (pairs diagnostics)
+                         &into max-severity-per-line]
+                 (let [sev (?. max-severity-per-line d.lnum :severity)]
+                   (when (or (not sev)
+                             (< d.severity sev))
+                     (values d.lnum d))))
+               ;; Now that we've simplified the diagnostics, we can pass them to the original handler
+               (handler.show ns
+                             bufnr
+                             (vim.tbl_values max-severity-per-line)
+                             opts)))
+
+     :hide (fn [_ bufnr]
+             (handler.hide ns bufnr))}))
 
 
 ;====================================
@@ -262,11 +290,6 @@
 (unimpaired :b :b)   ; Buffers
 (unimpaired :t :tab) ; Tabs
 
-(macro with-backup [variable ...]
-  `(let [backup-var# ,variable]
-     (do ,...)
-     (set ,variable backup-var#)))
-
 ;; Open :ptag on a vertical split (Like "<C-w>}")
 (fn ptag-vertical []
   (let [window-width   (vim.fn.winwidth 0)        ; The current window's width
@@ -340,9 +363,10 @@
 ; Highlight cross around cursor
 (keymap :n "<leader>chl" "<cmd>set cursorline! cursorcolumn!<CR>")
 
-;-----------------------
-;-- Commands
-;-----------------------
+
+;====================================
+;            Commands
+;====================================
 
 (fn make-scratch-buffer [smods]
   "Create a new scratch buffer in a split window."
@@ -372,14 +396,13 @@
 
 ; Adapted from https://github.com/yutkat/convert-git-url.nvim/blob/main/plugin/convert_git_url.lua
 (def-command :ToggleGitUrl
-  #(let [save-pos (vim.fn.getpos ".")
-         current-word (vim.fn.expand "<cWORD>")]
-     (if (string.match current-word "^git@")
-         (vim.cmd "substitute#git@\\(.\\{-}\\).com:#https://\\1.com/#")
-         (string.match current-word "^http")
-         (vim.cmd "substitute#https://\\(.\\{-}\\).com/#git@\\1.com:#")
-         (echoerror "Current WORD is not a https/ssh URL."))
-     (vim.fn.setpos "." save-pos))
+  #(let [current-word (vim.fn.expand "<cWORD>")]
+     (restoring-cursor
+       (if (string.match current-word "^git@")
+           (vim.cmd "substitute#git@\\(.\\{-}\\):#https://\\1/#")
+           (string.match current-word "^http")
+           (vim.cmd "substitute#https://\\(.\\{-}\\)/#git@\\1:#")
+           (echoerror "Current WORD is not a https/ssh URL."))))
   :force true)
 
 ;-----------------------
@@ -419,6 +442,7 @@
 ;-----------------------------
 ;-- Disable Built-in plugins
 ;-----------------------------
+
 
 (local disabled-built-ins [; :gzip
                            ; :zip
