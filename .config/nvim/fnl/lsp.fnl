@@ -17,8 +17,6 @@
         client (vim.lsp.get_client_by_id ev.data.client_id)
         bmap   (keymap/buffer bufnr)]
     ;; Mappings
-    (when (capable? client :hoverProvider)
-      (bmap :n "K"          vim.lsp.buf.hover))
     (when (capable? client :signatureHelpProvider)
       (bmap :n "<C-k>"      vim.lsp.buf.signature_help))
 
@@ -151,10 +149,6 @@
 
 ;;; Javascript / Typescript
 (lspconfig.tsserver.setup {})
-
-
-;;; Markdown
-(lspconfig.marksman.setup {})
 
 
 ;;; Prose

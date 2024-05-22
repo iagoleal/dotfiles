@@ -344,10 +344,6 @@
 ;; Diagnostics
 (keymap :n "<leader>e"  vim.diagnostic.open_float
   {:desc "Open diagnostics popup"})
-(keymap :n "[d"         vim.diagnostic.goto_prev
-  {:desc "Previous diagnostic"})
-(keymap :n "]d"         vim.diagnostic.goto_next
-  {:desc "Next diagnostic"})
 (keymap :n "<leader>dq" vim.diagnostic.setloclist
   {:desc "Put diagnostics on location list"})
 
@@ -467,9 +463,6 @@
 (each [_ plugin (ipairs disabled-built-ins)]
   (tset vim.g (.. "loaded_" plugin) 1))
 
-
-; Netrw defaults to tree view
-(set vim.g.netrw_liststyle 3)
 
 (viml "
   func! Thesaur(findstart, base)

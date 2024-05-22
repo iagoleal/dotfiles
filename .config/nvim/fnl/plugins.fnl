@@ -93,10 +93,6 @@
 ;; Title case operator
 (use "christoomey/vim-titlecase")
 
-;; Add commands to (un)comment text objects
-(use "numToStr/Comment.nvim"
-  :config #(setup :Comment :ignore "^$"))
-
 ;; Edit surrounding objects
 (use "kylechui/nvim-surround"
   :config #(setup :nvim-surround))
@@ -132,11 +128,6 @@
 ; Better marks management
 (use "chentoast/marks.nvim"
   :config #(setup :marks))
-
-; Open links without netrw
-(use "chrishrb/gx.nvim"
-  :requires "nvim-lua/plenary.nvim"
-  :config #(setup :gx))
 
 ;;;----------------------------------------------------------------------------
 ;;; Extra functionalities
@@ -341,7 +332,7 @@
             (set vim.g.ledger_align_at        50)
             (set vim.g.ledger_align_commodity 1)    ; Align on R$ instead of decimal dot
             (set vim.g.ledger_commodity_sep   " ")
-            (set vim.g.ledger_extra_options   "--strict ordereddates payees uniqueleafnames")
+            (set vim.g.ledger_extra_options   "--strict ordereddates")
             ;; Change transition date to today
             (vim.keymap.set :n "<leader>dd" "<CMD>call ledger#transaction_date_set(line('.'), 'primary')<CR>"
               {:desc "Change transaction date to today"})
