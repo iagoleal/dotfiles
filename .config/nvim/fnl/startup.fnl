@@ -10,6 +10,9 @@
         : echoerror
         &as ed} (require :editor))
 
+(local {: last
+        &as core} (require :core))
+
 (import-macros {: option
                 : ex
                 : viml
@@ -126,6 +129,8 @@
 ;-- MISC options
 ;-------------------------
 
+(option :virtualedit append "block")
+
 (option :lazyredraw)              ; Don't redraw screen during macros or register operations
 
 ;; Search
@@ -139,7 +144,7 @@
 (option :wildmode [:full :list :full])   ; first autocomplete the word, afterwards run across the list
 (option :wildignorecase)
 
-(option :completeopt "menuone")
+(option :completeopt [:menuone :popup])
 
 ;; Vertical split to the right (default is left)
 (option :splitright)
@@ -235,7 +240,6 @@
 ;;;---------------------
 ;;; Modifications on vim's traditional keybidings for ergonomic reasons.
 
-;; Terminal mappings
 ; Exit terminal with ESC
 (keymap :t "<Esc>" "<C-\\><C-n>")
 ; And use the default keybind to send ESC (This must be norecursive!!!)
@@ -251,81 +255,11 @@
                      "dd")
   {:expr true})
 
-;;; Additional behaviour
-;;;---------------------
-
-; Zoom window at new tab
-(keymap :n "<leader>tz" "<cmd>tab split<CR>")
-
-; Close tab
-(keymap :n "<leader>tc" "<cmd>tabclose<CR>")
-
-; Search word under cursor on whole project
-(keymap :n "<M-*>" ":grep '<C-r><C-w>' **/*")
-
-; Search visual selection
-(keymap :v "*" "y/\\V<C-R>=escape(@\",'/\\')<CR><CR>")
-(keymap :v "#" "y?\\V<C-R>=escape(@\",'/\\')<CR><CR>")
-
-; Search visual selection text on whole project
-(keymap :v "<M-*>" "y:grep '<C-R>=escape(@\",'/\\')<CR>' **/*")
-
-; Toggle quickfix window on the bottom of screen
-(keymap :n "<leader>q" "empty(filter(getwininfo(), 'v:val.quickfix')) ? ':botright copen<CR>' : ':cclose<CR>'"
-  {:expr true})
-; Toggle locationlist window on the bottom of buffer
-(keymap :n "<leader>Q" "empty(filter(getwininfo(), 'v:val.loclist')) ? ':lopen<CR>' : ':lclose<CR>'"
-  {:expr true})
-
-
-;;;; Navigation
-(fn unimpaired [key cmd]
-  (keymap :n (.. "[" (key:lower)) (fmt ":<C-U>exe v:count1 '%sprevious'<CR>" cmd))
-  (keymap :n (.. "]" (key:lower)) (fmt ":<C-U>exe v:count1 '%snext'<CR>"     cmd))
-  (keymap :n (.. "[" (key:upper)) (fmt ":<C-U>exe v:count1 '%sfirst'<CR>"    cmd))
-  (keymap :n (.. "]" (key:upper)) (fmt ":<C-U>exe v:count1 '%slast'<CR>"     cmd)))
-
-(unimpaired :q :c)   ; Quickfix
-(unimpaired :l :l)   ; Location list
-(unimpaired :b :b)   ; Buffers
-(unimpaired :t :tab) ; Tabs
-
-;; Open :ptag on a vertical split (Like "<C-w>}")
-(fn ptag-vertical []
-  (let [window-width   (vim.fn.winwidth 0)        ; The current window's width
-        current-word   (vim.fn.expand "<cword>")] ; The word under the cursor
-    (with-backup vim.o.previewheight
-      ; Divide the current window in half
-      (set vim.o.previewheight (math.floor (/ window-width 2)))
-      ; Open tag on vertical preview window
-      (vim.cmd (fmt "vert ptag %s" current-word)))))
-
-
-(keymap :n "<C-w>["     "<cmd>vert wincmd ]<CR>"
-  {:desc "Vertically split window and jump to tag."})
-(keymap :n "<C-w><S-{>" ptag-vertical
-  {:desc "Vertically split window and open tag in preview window."})
-
-;; Scroll the preview window
-(keymap :n "<M-e>" "'<C-w>P' . v:count1 . '<C-e><C-w>p'"
-  {:expr true})
-(keymap :n "<M-y>" "'<C-w>P' . v:count1 . '<C-y><C-w>p'"
-  {:expr true})
-
-; Spell check previous mistake and correct to first suggestion
-(keymap :i "<C-l>" "<c-g>u<Esc>[s1z=`]a<c-g>u")
-
-; Add semicolon to end of line iff it's not already there
-(keymap :i "<M-;>"
-  #(let [current (vim.fn.getline ".")]
-     (when (~= (current:sub -1) ";")
-       (vim.fn.setline "." (.. current ";"))))
-  {:desc "Append semicolon to end of current line if it is not already there"})
-
 ;; Save insert mode undo history before pasting something
 (keymap :i "<C-r>" "<C-g>u<C-r>")
 
-;;; Make life easier on command mode
+;;; Emacs / readline-line Commands mode
+;;;------------------------------------
 
 ;; Emacs-like keybindings for cmd mode
 ; back one word
@@ -337,6 +271,89 @@
 (keymap :c "<M-x>p" "getcmdtype() == ':' ? expand('%:h').'/' : ''"
   {:expr true})
 
+;;; Search
+;;;---------------------
+
+; Search word under cursor on whole project
+(keymap :n "<M-*>" ":grep '<C-r><C-w>' **/*"
+  {:desc "Search word under cursor on whole project"})
+
+; Search visual selection text on whole project
+(keymap :v "<M-*>" "y:grep '<C-R>=escape(@\",'/\\')<CR>' **/*"
+  {:desc "Search visual selection text on whole project"})
+
+;;;; Window management
+;;;---------------------
+
+; Zoom window at new tab
+(keymap :n "<leader>tz" "<cmd>tab split<CR>")
+
+; Close tab
+(keymap :n "<leader>tc" "<cmd>tabclose<CR>")
+
+;; Open :ptag on a vertical split (Like "<C-w>}")
+(fn ptag-vertical []
+  (let [window-width   (vim.fn.winwidth 0)]        ; The current window's width
+    (with-backup vim.o.previewheight
+      ; Divide the current window in half
+      (set vim.o.previewheight (math.floor (/ window-width 2)))
+      ; Open tag on vertical preview window
+      (vim.cmd.pedit {:mods {:vertical true}})
+      (vim.cmd.wincmd "}"))))
+
+(keymap :n "<C-w>["     "<cmd>vert wincmd ]<CR>"
+  {:desc "Vertically split window and jump to tag."})
+
+(keymap :n "<C-w><S-{>" ptag-vertical
+  {:desc "Vertically split window and open tag in preview window."})
+
+;; Scroll the preview window
+(keymap :n "<M-e>" "'<C-w>P' . v:count1 . '<C-e><C-w>p'"
+  {:expr true
+   :desc "Scroll the preview window down"})
+
+(keymap :n "<M-y>" "'<C-w>P' . v:count1 . '<C-y><C-w>p'"
+  {:expr true
+   :desc "Scroll the preview window up"})
+
+;; Quickfix
+
+; Toggle quickfix window on the bottom of screen
+(keymap :n "<leader>q" "empty(filter(getwininfo(), 'v:val.quickfix')) ? ':botright copen<CR>' : ':cclose<CR>'"
+  {:expr true})
+; Toggle locationlist window on the bottom of buffer
+(keymap :n "<leader>Q" "empty(filter(getwininfo(), 'v:val.loclist')) ? ':lopen<CR>' : ':lclose<CR>'"
+  {:expr true})
+
+
+;;;; Navigation
+;;;---------------------
+
+(fn unimpaired [key cmd]
+  (keymap :n (.. "[" (key:lower)) (fmt ":<C-U>exe v:count1 '%sprevious'<CR>" cmd))
+  (keymap :n (.. "]" (key:lower)) (fmt ":<C-U>exe v:count1 '%snext'<CR>"     cmd))
+  (keymap :n (.. "[" (key:upper)) (fmt ":<C-U>exe v:count1 '%sfirst'<CR>"    cmd))
+  (keymap :n (.. "]" (key:upper)) (fmt ":<C-U>exe v:count1 '%slast'<CR>"     cmd)))
+
+(unimpaired :q :c)   ; Quickfix
+(unimpaired :l :l)   ; Location list
+(unimpaired :b :b)   ; Buffers
+(unimpaired :t :tab) ; Tabs
+
+;;;; Editing
+;;;---------------------
+
+; Spell check previous mistake and correct to first suggestion
+(keymap :i "<C-l>" "<c-g>u<Esc>[s1z=`]a<c-g>u"
+  {:desc "Spell check previous mistake and correct to first suggestion"})
+
+; Add semicolon to end of line iff it's not already there
+(keymap [:n :i] "<M-;>"
+  #(let [current (vim.fn.getline ".")]
+     (when (~= (last current) ";")
+       (vim.fn.setline "." (.. current ";"))))
+  {:desc "Append semicolon to end of current line if it is not already there"})
+
 ;--------------------------
 ;;; LSP
 ;--------------------------
@@ -346,6 +363,14 @@
   {:desc "Open diagnostics popup"})
 (keymap :n "<leader>dq" vim.diagnostic.setloclist
   {:desc "Put diagnostics on location list"})
+
+;;Snippets
+
+(keymap [:i :s] "<Tab>"
+  #(if (vim.snippet.active {:direction 1})
+       "<cmd>lua vim.snippet.jump(1)<cr>"
+       "<Tab>")
+  {:expr true})
 
 
 ;--------------------------
@@ -358,6 +383,10 @@
 
 ; Highlight cross around cursor
 (keymap :n "<leader>chl" "<cmd>set cursorline! cursorcolumn!<CR>")
+
+;; Insert today's date
+(keymap :n "<leader>dd" #(api.put [(os.date "%Y-%m-%d")] :c false false))
+
 
 
 ;====================================
@@ -488,7 +517,6 @@
     set thesaurusfunc=Thesaur
   endif
 ")
-
 
 ;; Hide sponsor information from Conjure
 (augroup :ConjureRemoveSponsor

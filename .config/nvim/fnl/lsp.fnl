@@ -2,62 +2,67 @@
 (local {: keymap/buffer}  (require :editor))
 (local util lspconfig.util)
 
-(fn capable? [client capability]
-  "Check whether a LSP client can provide a certain server capability"
-  (. client.server_capabilities capability))
 
 ;;--------------------------------------------------
 ;; Per buffer settings
 ;;--------------------------------------------------
 
-(vim.api.nvim_create_augroup :GenLspConfig {:clear true})
+(local GenLspConfig (vim.api.nvim_create_augroup :GenLspConfig {:clear true}))
 
-(fn on-attach [ev]
-  (let [bufnr  ev.buf
-        client (vim.lsp.get_client_by_id ev.data.client_id)
-        bmap   (keymap/buffer bufnr)]
+(fn on-attach [{:buf bufnr : data}]
+  (let [client   (vim.lsp.get_client_by_id data.client_id)
+        ; Check whether a LSP client can provide a certain server capability
+        capable? #(. client.server_capabilities $...)
+        bmap     (keymap/buffer bufnr)]
     ;; Mappings
-    (when (capable? client :signatureHelpProvider)
-      (bmap :n "<C-k>"      vim.lsp.buf.signature_help))
+    (when (capable? :signatureHelpProvider)
+      (bmap :n "<C-k>"      vim.lsp.buf.signature_help
+        {:desc "LSP Signature Help"}))
 
-    (when (capable? client :referencesProvider)
-      (bmap :n "<leader>re" vim.lsp.buf.references)
-      (bmap :n "gr"         vim.lsp.buf.references))
-    (when (capable? client :renameProvider)
-      (bmap :n "<leader>rn" vim.lsp.buf.rename))
+    (when (capable? :referencesProvider)
+      (bmap :n "<leader>re" vim.lsp.buf.references
+        {:desc "LSP References"})
+      (bmap :n "gr"         vim.lsp.buf.references
+        {:desc "LSP References"}))
+    (when (capable? :renameProvider)
+      (bmap :n "<leader>rn" vim.lsp.buf.rename
+        {:desc "Rename symbol under cursor"}))
 
-    (bmap :n "<leader>wa" vim.lsp.buf.add_workspace_folder)
-    (bmap :n "<leader>wr" vim.lsp.buf.remove_workspace_folder)
-    (bmap :n "<leader>wl" #(print (vim.inspect (vim.lsp.buf.list_workspace_folders))))
-
-    (when (capable? client :definitionProvider)
+    (when (capable? :definitionProvider)
       (bmap :n "gd"         vim.lsp.buf.definition
         {:desc "Go to definition"}))
-    (when (capable? client :typeDefinitionProvider)
-      (bmap :n "gy" vim.lsp.buf.type_definition
+    (when (capable? :typeDefinitionProvider)
+      (bmap :n "gy"         vim.lsp.buf.type_definition
         {:desc "Go to type definition"}))
-    (when (capable? client :declarationProvider)
+    (when (capable? :declarationProvider)
       (bmap :n "gD"         vim.lsp.buf.declaration
         {:desc "Go to declaration"}))
-    (when (capable? client :implementationProvider)
-      (bmap :n "gI"     vim.lsp.buf.implementation
+    (when (capable? :implementationProvider)
+      (bmap :n "gI"         vim.lsp.buf.implementation
         {:desc "Go to implementation"}))
 
-    (when (capable? client :codeActionProvider)
+    (when (capable? :codeActionProvider)
       (bmap :n "<leader>ca" vim.lsp.buf.code_action
         {:desc "Execute Code Action under cursor"}))
 
-    (when (capable? client :codeLensProvider)
+    (when (capable? :codeLensProvider)
       (bmap :n "<leader>cl" vim.lsp.codelens.run
           {:desc "Execute Code Lens under cursor"})
+      ;;
       (vim.api.nvim_create_autocmd [:BufEnter :CursorHold :InsertLeave]
-        {:group    :GenLspConfig
+        {:group    GenLspConfig
          :callback vim.lsp.codelens.refresh
-         :buffer   0
-         :desc     "Refresh all Code Lenses"}))))
+         :buffer   bufnr
+         :desc     "Refresh all Code Lenses"}))
+
+    ;; Workspaces
+    (bmap :n "<leader>wa" vim.lsp.buf.add_workspace_folder)
+    (bmap :n "<leader>wr" vim.lsp.buf.remove_workspace_folder)
+    (bmap :n "<leader>wl" #(print (vim.inspect (vim.lsp.buf.list_workspace_folders))))))
+
 
 (vim.api.nvim_create_autocmd :LspAttach
-  {:group    :GenLspConfig
+  {:group    GenLspConfig
    :callback on-attach})
 
 

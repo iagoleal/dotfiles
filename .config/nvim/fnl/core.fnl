@@ -38,12 +38,16 @@
   (require pkg-name))
 
 (fn M.first [t]
-  "First element of a list."
-  (. t 1))
+  "First element of a list or string."
+  (match (type t)
+    :table  (. t 1)
+    :string (t:sub 1)))
 
 (fn M.last [t]
   "last element of a list or string."
-  (. t (length t)))
+  (match (type t)
+    :table  (. t (length t))
+    :string (t:sub -1)))
 
 ;; Export
 M

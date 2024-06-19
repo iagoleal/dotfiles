@@ -159,4 +159,12 @@
     {:__index (fn [_ key]
                 (. vim.api (.. "nvim_" (string.gsub key "%-" "%_"))))}))
 
+;-----------------------------
+; Goodies
+;-----------------------------
+
+(fn M.current-word []
+  "The word under the cursor"
+  (vim.fn.expand "<cword>"))
+
 M

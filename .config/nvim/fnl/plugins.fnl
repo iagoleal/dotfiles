@@ -56,12 +56,12 @@
             (setup :treesj
               :use_default_keymaps false
               :max_join_length     140)
-            (vim.keymap.set :n "<space>j" (require-use :treesj :toggle))))
+            (vim.keymap.set :n "<leader>j" (require-use :treesj :toggle))))
 
 (use "danymat/neogen"
   :config #(do
              (setup :neogen)
-             (vim.keymap.set :n "<space>gd" (require-use :neogen :generate)))
+             (vim.keymap.set :n "<leader>gd" (require-use :neogen :generate)))
   :requires "nvim-treesitter/nvim-treesitter")
 
 ;;;----------------------------------------------------------------------------
@@ -333,13 +333,28 @@
             (set vim.g.ledger_align_commodity 1)    ; Align on R$ instead of decimal dot
             (set vim.g.ledger_commodity_sep   " ")
             (set vim.g.ledger_extra_options   "--strict ordereddates")
-            ;; Change transition date to today
-            (vim.keymap.set :n "<leader>dd" "<CMD>call ledger#transaction_date_set(line('.'), 'primary')<CR>"
-              {:desc "Change transaction date to today"})
+            (vim.keymap.set :n "<leader>dd"
+              #(if vim.b.posting_date
+                   (vim.fn.ledger#transaction_date_set
+                     (vim.fn.line ".")
+                     "primary"
+                     (vim.fn.strptime "%Y-%m-%d" vim.b.posting_date))
+                   (vim.fn.ledger#transaction_date_set
+                     (vim.fn.line ".")
+                     "primary"))
+              {:buffer 0
+               :desc "Change transaction date to today"})
+            (vim.keymap.set :n "<leader>de" "<CMD>call ledger#transaction_state_toggle(line('.'), '!* ')<CR>"
+              {:buffer 0
+               :desc "Toggle transaction status"})
+            (vim.keymap.set :n "<leader>dE" "<CMD>call ledger#transaction_post_state_toggle(line('.'), ' *!')<CR>"
+              {:buffer 0
+               :desc "Toggle posting status"})
             ;; Align all posts on current paragraph (I use one transaction per paragraph)
             (vim.keymap.set :n "<leader>da"
               #(restoring-cursor (vim.cmd "'{,'}LedgerAlign"))
-              {:desc "Align postings on current transaction"})))
+              {:buffer 0
+               :desc "Align postings on current transaction"})))
 
 ;; Return packer itself to allow chaining commands
 packer
