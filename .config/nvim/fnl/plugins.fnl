@@ -76,8 +76,7 @@
   :requires "nvim-lua/plenary.nvim"
   :config #(let [null-ls (require :null-ls)]
             (null-ls.setup
-              {:sources [null-ls.builtins.code_actions.gitsigns
-                         null-ls.builtins.hover.dictionary
+              {:sources [null-ls.builtins.hover.dictionary
                          null-ls.builtins.hover.printenv]})))
 
 ;;;----------------------------------------------------------------------------

@@ -49,5 +49,10 @@
     :table  (. t (length t))
     :string (t:sub -1)))
 
+(fn M.sort! [t]
+  "Sort a list in-place and return it."
+  (table.sort t)
+  t)
+
 ;; Export
 M
