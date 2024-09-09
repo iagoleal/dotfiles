@@ -18,9 +18,6 @@
                :max_jobs         9
                :profile          {:enable true}})
 
-(macro require-use [pkg ...]
-  `(. (require ,pkg) ,...))
-
 ;;; Initialize the just defined configuration
 (packer.init config)
 (packer.reset)
@@ -31,16 +28,11 @@
 
 ;; The plugin manager itself
 (use "wbthomason/packer.nvim"
-      :opt true)
+  :opt true)
 
 ;; Fennel support for nvim
 (use "rktjmp/hotpot.nvim"
-      :config #(require :hotpot))
-
-
-;;;----------------------------------------------------------------------------
-;;; Treesitter
-;;;----------------------------------------------------------------------------
+  :branch :main)
 
 (use "nvim-treesitter/nvim-treesitter"
   :run    ":TSUpdate"
@@ -50,24 +42,7 @@
 (use "nvim-treesitter/nvim-treesitter-textobjects"
   :requires "nvim-treesitter/nvim-treesitter")
 
-;; Split and join nodes treesitter
-(use "Wansmer/treesj"
-  :config #(do
-            (setup :treesj
-              :use_default_keymaps false
-              :max_join_length     140)
-            (vim.keymap.set :n "<leader>j" (require-use :treesj :toggle))))
-
-(use "danymat/neogen"
-  :config #(do
-             (setup :neogen)
-             (vim.keymap.set :n "<leader>gd" (require-use :neogen :generate)))
-  :requires "nvim-treesitter/nvim-treesitter")
-
-;;;----------------------------------------------------------------------------
-;;; Language Server Protocol
-;;;----------------------------------------------------------------------------
-
+;; Configure language servers
 (use "neovim/nvim-lspconfig"
      :config #(require :lsp))
 
@@ -78,6 +53,7 @@
             (null-ls.setup
               {:sources [null-ls.builtins.hover.dictionary
                          null-ls.builtins.hover.printenv]})))
+
 
 ;;;----------------------------------------------------------------------------
 ;;; Should be built-in
@@ -90,14 +66,38 @@
     :cmd [:SudaRead :SudaWrite]))
 
 ;; Title case operator
+;; Adds `gz` command turn text from {lower,UPPER}-case to Title Case
 (use "christoomey/vim-titlecase")
 
 ;; Edit surrounding objects
 (use "kylechui/nvim-surround"
   :config #(setup :nvim-surround))
 
-;; Additional text operators
-(use "wellle/targets.vim")
+;; Operator exchanging text object by "0 register
+(use "gbprod/substitute.nvim"
+  :config
+    (fn []
+      (setup :substitute)
+      ;; Substitute
+      (vim.keymap.set :n "gs"  "<nop>")
+      (vim.keymap.set :n "gs"  (require-use :substitute :operator))
+      (vim.keymap.set :n "gss" (require-use :substitute :line))
+      (vim.keymap.set :n "gS"  (require-use :substitute :eol))
+      (vim.keymap.set :x "gs"  (require-use :substitute :visual))
+      ;; Exchange
+      (vim.keymap.set :n "cx"  (require-use :substitute.exchange :operator))
+      (vim.keymap.set :n "cxx" (require-use :substitute.exchange :line))
+      (vim.keymap.set :x "cx"  (require-use :substitute.exchange :visual))
+))
+
+
+;; Split and join paramaters, lists, etc.
+(use "Wansmer/treesj"
+  :config #(do
+            (setup :treesj
+              :use_default_keymaps false
+              :max_join_length     140)
+            (vim.keymap.set :n "<leader>j" (require-use :treesj :toggle))))
 
 ;; Improved matchparen and matchit
 (use "andymass/vim-matchup"
@@ -124,15 +124,21 @@
                "r" {:pattern "{\\|}\\|,"     ; Lua / Haskell style Records
                     :delimiter_align :r}})))
 
-; Better marks management
-(use "chentoast/marks.nvim"
-  :config #(setup :marks))
-
 ;;;----------------------------------------------------------------------------
 ;;; Extra functionalities
 ;;;----------------------------------------------------------------------------
 
+;; Highly improved wildmenu.
+;; Includes niceties such as fuzzy search.
+; TODO: get rid of this
+(use "gelguy/wilder.nvim"
+     ; In case of errors, disable with "call wilder#disable()"
+  :event    [:CmdlineEnter]
+  :requires ["romgrk/fzy-lua-native"]
+  :config   #(require :plugins.wilder))
+
 ;; Manage REPLs
+; TODO: Remove
 (use "hkupty/iron.nvim"
   :commit "bc9c596d6a97955f0306d2abcc10d9c35bbe2f5b"
   :config (fn []
@@ -158,25 +164,8 @@
             (tset vim.g :conjure#client#fennel#stdio#command        "fennel")))
 
 ; Auto-layouting for Lisp parentheses
-(use "gpanders/nvim-parinfer"
+(use "gpanders/nvim-parinfer" 
   :config #(set vim.g.parinfer_no_maps 1))
-
-;; Highly improved wildmenu.
-;; Includes niceties such as fuzzy search.
-(use "gelguy/wilder.nvim"
-     ; In case of errors, disable with "call wilder#disable()"
-  :event    [:CmdlineEnter]
-  :requires ["romgrk/fzy-lua-native"]
-  :config   #(require :plugins.wilder))
-
-;; Search everything with fzf
-(use "ibhagwan/fzf-lua"
-  :config (fn []
-            (vim.keymap.set :n "<leader>ff" (require-use :fzf-lua :files))
-            (vim.keymap.set :n "<leader>fb" (require-use :fzf-lua :buffers))
-            (vim.keymap.set :n "<leader>fh" (require-use :fzf-lua :help_tags))
-            (vim.keymap.set :i "<C-x><C-f>" (require-use :fzf-lua :complete_path))
-            (vim.keymap.set :i "<C-x><C-l>" (require-use :fzf-lua :complete_line))))
 
 ; Async make      (vimscript)
 (use "tpope/vim-dispatch"
@@ -206,29 +195,48 @@
              (vim.keymap.set :n "-" "<CMD>Oil<CR>"
                {:desc "Open parent directory"})))
 
-;; This and the following plugins should be substitute by dial.nvim or something similar
-(use "nat-418/boole.nvim"
-  :config #(setup :boole
-            :mappings {:increment "<C-a>"
-                       :decrement "<C-x>"}
-            :additions [["LT" "EQ" "GT"]
-                        [">"  "<"]
-                        [">=" "<="]]))
-
-(use "tpope/vim-speeddating")
-
+;; Substitute the built-in C-a / C-x.
+;; Also adds support for cycling through patterns and constants
+(use "monaqa/dial.nvim"
+  :config
+    (fn []
+        (vim.keymap.set :n "<C-a>"  #((require-use :dial.map :manipulate) "increment" "normal"))
+        (vim.keymap.set :n "<C-x>"  #((require-use :dial.map :manipulate) "decrement" "normal"))
+        (vim.keymap.set :n "g<C-a>" #((require-use :dial.map :manipulate) "increment" "gnormal"))
+        (vim.keymap.set :n "g<C-x>" #((require-use :dial.map :manipulate) "decrement" "gnormal"))
+        (vim.keymap.set :v "<C-a>"  #((require-use :dial.map :manipulate) "increment" "visual"))
+        (vim.keymap.set :v "<C-x>"  #((require-use :dial.map :manipulate) "decrement" "visual"))
+        (vim.keymap.set :v "g<C-a>" #((require-use :dial.map :manipulate) "increment" "gvisual"))
+        (vim.keymap.set :v "g<C-x>" #((require-use :dial.map :manipulate) "decrement" "gvisual"))))
 
 (use "rgroli/other.nvim"
-  :config #(setup :other-nvim
-            :mappings
-              ["golang"
-               ; Site
-               { :pattern "content/(.-)%..+$"
-                :target
-                  [{:target  "build/%1/index.html"
-                    :context "build"}
-                   {:target  "static/%1/figures.js"
-                    :context "js"}]}]))
+  :config #(let [hotpot-cache ((require-use :hotpot :api :cache :cache-prefix))]
+            (setup :other-nvim
+              :mappings
+                ["golang"
+                 ; Hotpot
+                 {:pattern (.. (vim.fn.expand "$HOME") "/.config/nvim/fnl/(.+).fnl")
+                 ; /home/iago/.cache/nvim/hotpot/compiled/nvim/lua/startup.lua
+                  :target  (.. hotpot-cache "/nvim/lua/%1.lua")
+                  :context "compiled"}
+                 {:pattern (.. (vim.fn.expand "$HOME") "/.config/nvim/(.+)/(.+).fnl")
+                  :target  (.. hotpot-cache "/hotpot-runtime-nvim/lua/hotpot-runtime-%1/%2.lua")}
+                 ; Site
+                 {:pattern "content/(.-)%..+$"
+                  :target
+                    [{:target  "build/%1/index.html"
+                      :context "build"}
+                     {:target  "static/%1/figures.js"
+                      :context "js"}]}])))
+
+;; Generate documentation for functions, classes, etc.
+(use "danymat/neogen"
+  :config #(do
+             (setup :neogen)
+             (vim.keymap.set :n "<leader>gd" (require-use :neogen :generate)))
+  :requires "nvim-treesitter/nvim-treesitter")
+
+(use "lewis6991/hover.nvim")
 
 ;;;----------------------------------------------------------------------------
 ;;; External Integrations
@@ -238,6 +246,16 @@
 (use "lewis6991/gitsigns.nvim"
   :config #(require :plugins.gitsigns))
 
+;; FZF
+(use "ibhagwan/fzf-lua"
+  :config (fn []
+            (vim.keymap.set :n "<leader>ff" (require-use :fzf-lua :files))
+            (vim.keymap.set :n "<leader>fb" (require-use :fzf-lua :buffers))
+            (vim.keymap.set :n "<leader>fh" (require-use :fzf-lua :help_tags))
+            (vim.keymap.set :i "<C-x><C-f>" (require-use :fzf-lua :complete_path))
+            (vim.keymap.set :i "<C-x><C-l>" (require-use :fzf-lua :complete_line))))
+
+
 ;;;----------------------------------------------------------------------------
 ;;; Prettier
 ;;;----------------------------------------------------------------------------
@@ -245,6 +263,11 @@
 ;; Align quickfix
 (use "https://gitlab.com/yorickpeterse/nvim-pqf"
   :config #(setup :pqf))
+
+; Better marks management
+(use "chentoast/marks.nvim"
+  :config #(setup :marks))
+
 
 ;;;----------------------------------------------------------------------------
 ;;; Colors
@@ -328,8 +351,9 @@
             (set vim.g.ledger_bin             :hledger)
             (set vim.g.ledger_is_hledger      true)
             (set vim.g.ledger_date_format     "%Y-%m-%d")
-            (set vim.g.ledger_align_at        50)
-            (set vim.g.ledger_align_commodity 1)    ; Align on R$ instead of decimal dot
+            (set vim.g.ledger_align_at        60)
+            (set vim.g.ledger_align_commodity false)    ; Align on R$ instead of decimal dot
+            (set vim.g.ledger_align_last      false)
             (set vim.g.ledger_commodity_sep   " ")
             (set vim.g.ledger_extra_options   "--strict ordereddates")
             (vim.keymap.set :n "<leader>dd"

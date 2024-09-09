@@ -102,7 +102,7 @@
 ;------------------------
 
 (option :synmaxcol 179)
-(option :wrap false)
+(option :wrap      false)
 (option :linebreak true)
 
 (option :list) ; Show trailing {spaces, tabs}
@@ -378,8 +378,8 @@
 ;--------------------------
 
 ;; Building keymaps
-(keymap :n "<leader>m" ":Dispatch<CR>")
-(keymap :n "<leader>M" ":Dispatch!<CR>")
+(keymap :n "<leader>m" "<CMD>write | Dispatch<CR>")
+(keymap :n "<leader>M" "<CMD>write | Dispatch!<CR>")
 
 ; Highlight cross around cursor
 (keymap :n "<leader>chl" "<cmd>set cursorline! cursorcolumn!<CR>")

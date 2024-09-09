@@ -164,7 +164,22 @@
 ;-----------------------------
 
 (fn M.current-word []
-  "The word under the cursor"
+  "The word under the cursor."
   (vim.fn.expand "<cword>"))
+
+(fn M.current-line []
+  "The line under the cursor."
+  (vim.api.nvim_get_current_line))
+
+(fn M.pumvisible? []
+  "Is the popup menu open?"
+  (not= (tonumber (vim.fn.pumvisible)) 0))
+
+(fn M.feedkeys [keys ?mode]
+  "Input keys as if typed."
+  (default-value! ?mode :n)
+  (vim.api.nvim_feedkeys (vim.api.nvim_replace_termcodes keys true false true)
+                         ?mode
+                         true))
 
 M

@@ -54,5 +54,10 @@
   (table.sort t)
   t)
 
+(fn M.tupdate! [t k f]
+  "Apply function to table at key."
+  (tset t k (f (. t k) k))
+  t)
+
 ;; Export
 M

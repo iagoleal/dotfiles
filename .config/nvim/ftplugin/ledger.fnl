@@ -1,16 +1,21 @@
 (local {: api} (require :editor))
 
+(local {: tupdate!} (require :core))
+
 (import-macros {: def-command
                 : restoring-cursor}
                :macros)
 
 (local fmt string.format)
 
+;; Ler https://zignar.net/2022/09/02/a-tree-sitting-in-your-editor/
+
 ;;;----------------------------------------------------------------------------
 ;;; Constants and parameters
 ;;;----------------------------------------------------------------------------
 
 (local bu-limit 8.55)
+(local default-payment "assets:wise:usd")
 
 (local bus-prices
   {:110   13.10
@@ -25,6 +30,7 @@
    ; SG <-> Niterói
    :409    5.85
    :408    5.85
+   :403    5.85
    :532    5.85
    ; Rio de Janeiro
    :metro  5.00
@@ -72,52 +78,83 @@
     (tput (templates.riocard:format (- total)))
     transaction))
 
-(fn build#simple-transaction [cat payer _amount name]
+(fn build#simple-transaction [cat _amount payer name]
   (let [amount (tonumber _amount)]
     [(fmt "%s * %s"                  (today!) (or name "???"))
-     (fmt "  %s             R$% .2f" cat amount)
-     (fmt "  %s             R$% .2f" payer (- amount))]))
+     (fmt "  %s             % .2f USD" cat amount)
+     (fmt "  %s             % .2f USD" payer (- amount))]))
 
-(fn build#split-transaction [cat payer amount name]
-  [(fmt "%s * %s ; split:ivani"    (today!) (or name "???"))
-   (fmt "  %s             R$% .2f" cat (/ amount 2))
-   (fmt "  person:ivani   R$% .2f" (/ amount 2))
-   (fmt "  ; payer")
-   (fmt "  %s             R$% .2f" payer (- amount))])
+(fn build#split-transaction [who cat _amount payer name]
+  (let [amount      (tonumber _amount)
+        per/capita  (/ amount (+ 1 (length who)))
+        tags        (table.concat (icollect [_ p (ipairs who)]
+                                    (fmt "split:%s" p))
+                                  ", ")
+        transaction []
+        tput        #(table.insert transaction $...)]
+    (tput (fmt "%s * %s %s"    (today!) (or name "???") (if (= tags "") tags (.. "; " tags))))
+    (tput (fmt "  %s             R$% .2f" cat per/capita))
+    (each [_ p (ipairs who)]
+      (tput (fmt "  person:%s   R$% .2f" p per/capita)))
+    (tput (fmt "  ; payer"))
+    (tput (fmt "  %s             R$% .2f" payer (- amount)))
+    transaction))
 
 ;;;----------------------------------------------------------------------------
 ;;; Commands and Options
 ;;;----------------------------------------------------------------------------
 
-(api.buf_create_user_command 0 :Bus
-  (fn [{: fargs}]
-    (api.put (build#bus-transaction fargs) :l true true)
-    (restoring-cursor (vim.cmd "'{,'}LedgerAlign")))
-  {:nargs :+
-   :complete #(vim.tbl_keys bus-prices)})
+(set vim.wo.foldmethod :syntax)
 
-(api.buf_create_user_command 0 :SplitIvani
+(api.buf-create-user-command 0 :AddTransaction
   (fn [{: fargs}]
-    (api.put (build#split-transaction (table.unpack fargs)) :l true true)
-    (restoring-cursor (vim.cmd "'{,'}LedgerAlign")))
-  {:nargs :+
-   :complete #(do hl-accounts)})
-
-(api.buf_create_user_command 0 :AddTransaction
-  (fn [{: fargs}]
+    (tupdate! fargs 2 #(or $1 default-payment))
     (api.put (build#simple-transaction (table.unpack fargs)) :l true true)
     (restoring-cursor (vim.cmd "'{,'}LedgerAlign")))
   {:nargs :+
    :complete #(do hl-accounts)})
 
-(api.buf_create_user_command 0 :Uber
+(api.buf-create-user-command 0 :SplitIvani
+  (fn [{: fargs}]
+    (tupdate! fargs 3 #(or $1 default-payment))
+    (vim.print fargs)
+    (api.put (build#split-transaction ["ivani"] (table.unpack fargs)) :l true true)
+    (restoring-cursor (vim.cmd "'{,'}LedgerAlign")))
+  {:nargs :+
+   :complete #(do hl-accounts)})
+
+(api.buf-create-user-command 0 :Split3
+  (fn [{: fargs}]
+    (tupdate! fargs 2 #(or $1 default-payment))
+    (api.put (build#split-transaction ["ivani" "gi"] (table.unpack fargs)) :l true true)
+    (restoring-cursor (vim.cmd "'{,'}LedgerAlign")))
+  {:nargs :+
+   :complete #(do hl-accounts)})
+
+(api.buf-create-user-command 0 :Bus
+  (fn [{: fargs}]
+    (api.put (build#bus-transaction fargs) :l true true)
+    (restoring-cursor (vim.cmd "'{,'}LedgerAlign")))
+  {:nargs :+
+   :complete #(vim.tbl-keys bus-prices)})
+
+(api.buf-create-user-command 0 :Uber
   (fn [{: args}]
     (api.put (build#simple-transaction "expenses:transport:uber"
-                                       "card:btg"
                                        (tonumber args)
+                                       default-payment
                                        "Uber")
              :l true true)
     (restoring-cursor (vim.cmd "'{,'}LedgerAlign")))
   {:nargs 1})
 
-(set vim.wo.foldmethod :syntax)
+(api.buf-create-user-command 0 :Uber2
+  (fn [{: args}]
+    (api.put (build#split-transaction ["ivani"]
+                                      "expenses:transport:uber"
+                                      (tonumber args)
+                                      default-payment
+                                      "Uber")
+             :l true true)
+    (restoring-cursor (vim.cmd "'{,'}LedgerAlign")))
+  {:nargs 1})

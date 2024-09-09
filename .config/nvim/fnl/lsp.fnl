@@ -51,7 +51,7 @@
       ;;
       (vim.api.nvim_create_autocmd [:BufEnter :CursorHold :InsertLeave]
         {:group    GenLspConfig
-         :callback vim.lsp.codelens.refresh
+         :callback #(vim.lsp.codelens.refresh {:bufnr 0})
          :buffer   bufnr
          :desc     "Refresh all Code Lenses"}))
 
@@ -153,7 +153,7 @@
 
 
 ;;; Javascript / Typescript
-(lspconfig.tsserver.setup {})
+(lspconfig.ts_ls.setup {})
 
 
 ;;; Prose
