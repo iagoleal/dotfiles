@@ -20,6 +20,7 @@ if [[ "$vol_ison" = 'on' ]]
         vol="<span color='$vol_color'>$vol_symb $vol_info</span>"
 fi
 
+
 #------------------------
 # Battery
 #------------------------
@@ -32,10 +33,12 @@ bat0="$(cat /sys/class/power_supply/BAT0/capacity)"
 bat1="$(cat /sys/class/power_supply/BAT1/capacity)"
 bat="$bat_symbol 0: ${bat0}% 1: ${bat1}%"
 
+
 #------------------------
 # Screen Brightness
 #------------------------
 brightness="$( printf "%0.1f\n" $(xbacklight))"
+
 
 #------------------------
 # Temperature
@@ -47,6 +50,7 @@ temp_mC=$(cat /sys/class/thermal/thermal_zone0/temp)
 # Formatted temperature
 temp_fmt=$(awk '{tp=$1/1000.; printf("%.1f", tp) }' <<<"$temp_mC")
 temp="$temp_symb $temp_fmt°C"
+
 
 #------------------------
 # CPU Status
@@ -60,6 +64,7 @@ mem_used=$(free -m | grep Mem | awk '{print $3}')
 mem_perc=$(awk '{perc=$1/$2*100; printf("%.1f", perc) }' <<<"$mem_used $mem_total")
 mem_perc=${mem_perc}%
 #mem_perc=$( free -m | grep Mem | awk '{perc=$2/$3*100; printf("%.1f", perc) }' )
+
 
 #------------------------
 # Date and Time
@@ -75,10 +80,29 @@ declare -A week_symbol=( \
 
 week_num=$(($(date +%w) + 1 ))
 week_day="<span font-weight='bold' font-size='large' color='yellow'>${week_symbol[$week_num]}</span>"
+
+
 #---------------------
 # Bluetooth
 #---------------------
-bluetooth_status="$(bluetooth | cut -f 3 -d' ')"
-bt="<span color='#0082fc'>bt</span> $bluetooth_status"
+st_bluetooth() {
+  local status="$(bluetooth | cut -f 3 -d' ')"
+  echo "<span color='#0082fc'>bt</span> $status"
+}
 
-echo "${vol} |${bat} |${temp} | ${mem_perc} | $brightness | ${bt} | ${day} [$week_day] | ${hour}"
+#---------------------
+# Wifi status
+#---------------------
+st_wifi() {
+  if [[ "$(nmcli radio wifi)" = 'enabled' ]]; then
+    status='on'
+  else
+    status='off'
+  fi
+  echo "<span color='#f1ac0b'>wifi</span> $status"
+}
+
+
+
+
+echo "${vol} |${bat} |${temp} | ${mem_perc} | $brightness | $(st_wifi) | $(st_bluetooth) | ${day} [$week_day] | ${hour}"
