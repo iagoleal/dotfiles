@@ -16,7 +16,7 @@ alias dtf=dotfiles
 alias nix-reload='nix-env -riA nixpkgs.myPackages'
 
 # Get weather information
-function weather { curl wttr.in/"$*"; }
+function weather { curl wttr.in/"$*?m"; }
 
 # Check if a given command exists in the path
 function hascmd { (( $+commands[$1] )) }

@@ -27,8 +27,12 @@ function _prompt {
 )'
   echo -n $error_code
 
-  if [[ -n $IN_NIX_SHELL ]]; then
+  if [[ -n "$IN_NIX_SHELL" ]]; then
     echo -n "(nix)"
+  fi
+
+  if [[ -n "$VIRTUAL_ENV" ]]; then
+    echo -n "(py)"
   fi
 
   if [ -n "$GUIX_ENVIRONMENT" ]; then
