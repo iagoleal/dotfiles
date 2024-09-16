@@ -8,9 +8,8 @@ function finder() {
   fzfmenu -T 'Window Switcher' \
       --border --prompt='-> ' --info=inline \
       --header='~:~ Window Selection ~:~M-S-q - close | M-b - bring | Enter - jump' \
-      --select-1 --cycle --multi --with-nth='2..' \
-      --expect="alt-Q,alt-b" \
-      --bind='one:accept'
+      --cycle --multi --with-nth='2..' \
+      --expect="alt-Q,alt-b"
 }
 
 function tag-name() {
@@ -29,8 +28,6 @@ mapfile -t out <<<"$(list-windows | finder)"
 
 key="${out[0]}"
 wids=$(printf "%s\n" "${out[@]:1}" | cut -d' ' -f1)
-
-# notify-send "$key" "$key"
 
 case "$key" in
   alt-Q) # Close the chosen windows

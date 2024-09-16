@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Folder with scripts to other modes
-DIR=$(dirname $(realpath "$0"))
+DIR="$(dirname "$(realpath "$0")")"
 MODES="${DIR}/modes"
 SCRIPTS="${DIR}/scripts"
 
@@ -26,18 +26,9 @@ herbstclient keybind Super-n chain \
 
 # Session management
 herbstclient keybind Super-a       spawn $SCRIPTS/window-switcher
+herbstclient keybind Super-w       spawn $SCRIPTS/show-tags
 herbstclient keybind Super-Shift-s spawn $SCRIPTS/tag-switcher
 herbstclient keybind Super-s       spawn $SCRIPTS/tag-switcher sessions
-
-herbstclient keybind Super-w chain \
- . keyunbind --all \
- . keybind w       chain , spawn $SCRIPTS/window-switcher       , spawn sh "$normalMode" \
- . keybind Shift-s chain , spawn $SCRIPTS/tag-switcher          , spawn sh "$normalMode" \
- . keybind s       chain , spawn $SCRIPTS/tag-switcher sessions , spawn sh "$normalMode" \
- . keybind r       chain , spawn $SCRIPTS/rename-tag            , spawn sh "$normalMode" \
- . keybind Super-w chain , spawn $SCRIPTS/show-tags , spawn sh "$normalMode" \
- . keybind e       chain , spawn $SCRIPTS/show-tags , spawn sh "$normalMode" \
- . keybind Escape spawn bash "$normalMode"
 
 # System control
 herbstclient keybind Super-Shift-e chain \
@@ -130,23 +121,13 @@ herbstclient keybind Super-Down      split   bottom  0.5
 herbstclient keybind Super-Up        split   top     0.5
 herbstclient keybind Super-Right     split   right   0.5
 
-## Tags
 for key in {1..9} ; do
-  # herbstclient keybind "Super-$key" chain . add $tag . use $tag
-  # herbstclient keybind "Super-Control-$key" chain . add $tag . move $tag
-  # herbstclient keybind "Super-Shift-$key" chain , add $tag , move $tag , use $tag
-
-  # Go to tag i
-  herbstclient keybind "Super-$key" spawn $SCRIPTS/sessionctl jump-to "$key"
-  # Move focused window to tag i
-  herbstclient keybind "Super-Control-$key" spawn $SCRIPTS/sessionctl win-to "$key"
-  # Move focused window and go to tag i
-  herbstclient keybind "Super-Shift-$key" chain , spawn $SCRIPTS/sessionctl win-to "$key" , spawn $SCRIPTS/sessionctl jump-to $key
+  tag=$key
+  herbstclient keybind "Super-$key" chain . add $tag . use $tag
+  herbstclient keybind "Super-Control-$key" chain . add $tag . move $tag
+  herbstclient keybind "Super-Shift-$key" chain , add $tag , move $tag , use $tag
 done
 
-# Cycle through sessions
-# herbstclient keybind Super-apostrophe        $SCRIPTS/sessionctl next
-# herbstclient keybind Super-Shift-apostrophe  $SCRIPTS/sessionctl prev
 # Quick look at slack tag
 herbstclient keybind Super-apostrophe        \
   or , and . compare tags.focus.name = slack \

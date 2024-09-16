@@ -1,10 +1,6 @@
 #!/bin/bash
 set -e
 
-function sessionctl() {
-  $(dirname "$0")/sessionctl "$@"
-}
-
 function hc() {
   herbstclient "$@"
 }
@@ -30,40 +26,30 @@ declare -A tag_symbol=( \
 [6]='六' [7]='七' [8]='八' [9]='九' [10]='十' \
 )
 
-function list-tags() {
-  sessionctl query tags
-}
-
-function list-tags() {
-  sessionctl query tags
-}
-
 function prettify() {
-  focused=$(hc attr tags.focus.name)
+  focused="$(hc attr tags.focus.name)"
 
-  # Active session name
-  printf '<span font_weight="bold" color="%s">%s</span> | ' '#5acc74' "$(sessionctl query active)"
-
-  list-tags | while read -r tag i status; do
-    num_clients=$(hc attr tags.by-name.$tag.client_count)
-    urgency=$(hc attr tags.by-name.$tag.urgent_count)
+  for i in {1..9}; do
+    tag=$i
+    num_clients="$(hc attr tags.by-name.$tag.client_count)"
+    urgency="$(hc attr tags.by-name.$tag.urgent_count)"
+    visible="$(hc attr tags.by-name.$tag.visible)"
 
     symbol="${tag_symbol[$tag]}"
     if [[ -z $symbol ]]; then
       symbol=$tag
     fi
 
-    printf "${tag_symbol[$i]}:"
-
-    if   [[ $tag = $focused ]]; then
-      echo "$( beautify-active "${symbol}" )"
+    if   [[ "$tag" = "$focused" ]]; then
+      beautify-active "${symbol}"
     elif [[ $urgency -gt 0 ]]; then
-      echo "$( beautify-urgent "${symbol}" )"
-    elif [[ $status = active ]]; then
-      echo "$( beautify-monitor "${symbol}" )"
-    else
+      beautify-urgent "${symbol}"
+    elif [[ $visible = active ]]; then
+      beautify-monitor "${symbol}"
+    elif [[ $num_clients -gt 0 ]]; then
       echo "${symbol}"
     fi
+
   done
 
 }

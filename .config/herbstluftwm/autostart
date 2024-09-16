@@ -5,10 +5,6 @@ SCRIPTS="${DIR}/scripts"
 # this is a simple config for herbstluftwm
 herbstclient emit_hook reload
 
-# Turn daemons on
-$DIR/hooks.sh &
-lua "${DIR}/sessions.lua" &
-
 # Set default frame layout to horizontal split
 herbstclient set default_frame_layout horizontal
 
@@ -26,8 +22,10 @@ fi
 source "${DIR}/theme.sh"
 
 # Create sessions and tags
-herbstclient rename default nav || true
-$SCRIPTS/sessionctl create main nav
+herbstclient rename default 1 || true
+for key in {2..9} ; do
+  herbstclient add $key
+done
 
 # rules
 herbstclient unrule -F
