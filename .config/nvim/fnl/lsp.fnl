@@ -157,5 +157,7 @@
 
 
 ;;; Prose
-(lspconfig.ltex.setup
-  {:settings {:ltex {:additionalRules {:languageModel (.. (vim.fn.stdpath :data) "/ngrams")}}}})
+(lspconfig.harper_ls.setup {})
+
+; (lspconfig.ltex.setup
+;   {:settings {:ltex {:additionalRules {:languageModel (.. (vim.fn.stdpath :data) "/ngrams")}}}})

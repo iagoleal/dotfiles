@@ -38,10 +38,6 @@
   :run    ":TSUpdate"
   :config #(require :plugins.treesitter))
 
-;; Semantically based text objects (such as functions, classes etc.)
-(use "nvim-treesitter/nvim-treesitter-textobjects"
-  :requires "nvim-treesitter/nvim-treesitter")
-
 ;; Configure language servers
 (use "neovim/nvim-lspconfig"
      :config #(require :lsp))
@@ -54,22 +50,16 @@
               {:sources [null-ls.builtins.hover.dictionary
                          null-ls.builtins.hover.printenv]})))
 
+(use "mfussenegger/nvim-dap")
+
 
 ;;;----------------------------------------------------------------------------
-;;; Should be built-in
+;;; Text editing
 ;;;----------------------------------------------------------------------------
+;; Provide new ways to edit and manipulate text,
+;; such as text objects or operators.
 
-; Allow writing file with sudo
-; even if I open nvim as a normal user
-(when (executable-exists? "sudo")
-  (use "lambdalisue/suda.vim"
-    :cmd [:SudaRead :SudaWrite]))
-
-;; Title case operator
-;; Adds `gz` command turn text from {lower,UPPER}-case to Title Case
-(use "christoomey/vim-titlecase")
-
-;; Edit surrounding objects
+;; Manipulate delimiter pairs "'[({})]'"
 (use "kylechui/nvim-surround"
   :config #(setup :nvim-surround))
 
@@ -79,7 +69,6 @@
     (fn []
       (setup :substitute)
       ;; Substitute
-      (vim.keymap.set :n "gs"  "<nop>")
       (vim.keymap.set :n "gs"  (require-use :substitute :operator))
       (vim.keymap.set :n "gss" (require-use :substitute :line))
       (vim.keymap.set :n "gS"  (require-use :substitute :eol))
@@ -90,6 +79,14 @@
       (vim.keymap.set :x "cx"  (require-use :substitute.exchange :visual))
 ))
 
+;; Semantical text objects
+;; (such as functions, classes etc.)
+(use "nvim-treesitter/nvim-treesitter-textobjects"
+  :requires "nvim-treesitter/nvim-treesitter")
+
+;; Title case operator
+;; Adds `gz` command turn text from {lower,UPPER}-case to Title Case
+(use "christoomey/vim-titlecase")
 
 ;; Split and join paramaters, lists, etc.
 (use "Wansmer/treesj"
@@ -99,17 +96,7 @@
               :max_join_length     140)
             (vim.keymap.set :n "<leader>j" (require-use :treesj :toggle))))
 
-;; Improved matchparen and matchit
-(use "andymass/vim-matchup"
-  :config (fn []
-           (set vim.g.loaded_matchit 1)
-           (set vim.g.matchup_matchparen_offscreen {:method :popup})
-           (set vim.g.matchup_matchparen_hi_surround_always 1)
-           (set vim.g.matchup_matchparen_deferred_show_delay 150)
-           (set vim.g.matchup_override_vimtex 0)
-           (set vim.g.matchup_matchpref {:html {:tagnameonly 1}})))
-
-; Alignment utils (vimscript)
+;; Alignment utils (vimscript)
 (use "junegunn/vim-easy-align"
   :config (fn []
             (vim.keymap.set [:n :x] "<leader>a" "<Plug>(LiveEasyAlign)"
@@ -124,77 +111,6 @@
                "r" {:pattern "{\\|}\\|,"     ; Lua / Haskell style Records
                     :delimiter_align :r}})))
 
-;;;----------------------------------------------------------------------------
-;;; Extra functionalities
-;;;----------------------------------------------------------------------------
-
-;; Highly improved wildmenu.
-;; Includes niceties such as fuzzy search.
-; TODO: get rid of this
-(use "gelguy/wilder.nvim"
-     ; In case of errors, disable with "call wilder#disable()"
-  :event    [:CmdlineEnter]
-  :requires ["romgrk/fzy-lua-native"]
-  :config   #(require :plugins.wilder))
-
-;; Manage REPLs
-; TODO: Remove
-(use "hkupty/iron.nvim"
-  :commit "bc9c596d6a97955f0306d2abcc10d9c35bbe2f5b"
-  :config (fn []
-            (set vim.g.iron_map_defaults 0)
-            (set vim.g.iron_map_extended 0)
-            (require :plugins.iron)))
-
-;; Better REPL management for Lisps
-(use "Olical/conjure"
-  :ft [:fennel :racket :scheme :lisp]
-  :config (fn []
-            (tset vim.g :conjure#extract#tree_sitter#enabled        true)
-            (tset vim.g :conjure#highlight#enabled                  true)
-            (tset vim.g :conjure#log#hud#border                     "double")
-            (tset vim.g :conjure#highlight#enabled                  :IncSearch)
-            ;; scheme
-            (tset vim.g :conjure#filetype#scheme                    "conjure.client.guile.socket")
-            (tset vim.g :conjure#client#scheme#stdio#command        "racket -il scheme")
-            (tset vim.g :conjure#client#scheme#stdio#prompt_pattern "\n?[\"%w%-./_]*> ")
-            (tset vim.g :conjure#client#guile#socket#pipename       "/tmp/guile-repl.socket")
-            ;; fennel
-            (tset vim.g :conjure#filetype#fennel                    "conjure.client.fennel.stdio")
-            (tset vim.g :conjure#client#fennel#stdio#command        "fennel")))
-
-; Auto-layouting for Lisp parentheses
-(use "gpanders/nvim-parinfer" 
-  :config #(set vim.g.parinfer_no_maps 1))
-
-; Async make      (vimscript)
-(use "tpope/vim-dispatch"
-  :cmd [:Make :Dispatch])
-
-(use "tpope/vim-abolish")
-
-; View **undo history** as a nice tree (with diffs!)
-(use "mbbill/undotree"
-  :config #(vim.keymap.set :n "<leader>tu" "<cmd>UndotreeToggle<CR>"))
-
-;; Diff mode for directories
-(use "cossonleo/dirdiff.nvim")
-
-(use "NMAC427/guess-indent.nvim"
-  :opt true
-  :config #(setup :guess-indent))
-
-;; Auto-close hidden / unedited buffers
-(use "axkirillov/hbac.nvim")
-
-;; File explorer (netrw substitute)
-(use "stevearc/oil.nvim"
-  :config #(do
-             (setup :oil
-               :columns [:icon :permission :size :mtime])
-             (vim.keymap.set :n "-" "<CMD>Oil<CR>"
-               {:desc "Open parent directory"})))
-
 ;; Substitute the built-in C-a / C-x.
 ;; Also adds support for cycling through patterns and constants
 (use "monaqa/dial.nvim"
@@ -208,6 +124,74 @@
         (vim.keymap.set :v "<C-x>"  #((require-use :dial.map :manipulate) "decrement" "visual"))
         (vim.keymap.set :v "g<C-a>" #((require-use :dial.map :manipulate) "increment" "gvisual"))
         (vim.keymap.set :v "g<C-x>" #((require-use :dial.map :manipulate) "decrement" "gvisual"))))
+
+
+
+;;;----------------------------------------------------------------------------
+;;; Interface | Experience
+;;;----------------------------------------------------------------------------
+;; UI improvements such as file explorer, undo trees, colors, pickers.
+
+;; Allow writing file with sudo even if I open nvim as a normal user
+(when (executable-exists? "sudo")
+  (use "lambdalisue/suda.vim"
+    :cmd [:SudaRead :SudaWrite]))
+
+
+;; View **undo history** as a nice tree (with diffs!)
+(use "mbbill/undotree"
+  :config #(vim.keymap.set :n "<leader>tu" "<cmd>UndotreeToggle<CR>"))
+
+;; File explorer (netrw substitute)
+(use "stevearc/oil.nvim"
+  :config #(do
+             (setup :oil
+               :columns [:icon :permission :size :mtime])
+             (vim.keymap.set :n "-" "<CMD>Oil<CR>"
+               {:desc "Open parent directory"})))
+
+;; Improved matchparen and matchit
+(use "andymass/vim-matchup"
+  :config (fn []
+           (set vim.g.matchup_matchparen_offscreen {:method :popup})
+           (set vim.g.matchup_matchpref {:html {:tagnameonly 1}})))
+           (set vim.g.matchup_matchparen_hi_surround_always  1)
+           (set vim.g.matchup_matchparen_deferred_show_delay 150)
+           (set vim.g.matchup_override_vimtex    0)
+           (set vim.g.matchup_transmute_enabled  1)
+
+;; Async make      (vimscript)
+(use "tpope/vim-dispatch"
+  :cmd [:Make :Dispatch])
+
+
+;;;
+;;; Prettier interfaces
+;;;
+
+;; Align quickfix
+(use "https://gitlab.com/yorickpeterse/nvim-pqf"
+  :config #(setup :pqf))
+
+; Better marks management
+(use "chentoast/marks.nvim"
+  :config #(setup :marks))
+
+
+;;;----------------------------------------------------------------------------
+;;; Extra functionality
+;;;----------------------------------------------------------------------------
+;; Plugins that I don't use this much but provide useful perks and features.
+
+;; Diff mode for directories
+(use "cossonleo/dirdiff.nvim")
+
+(use "NMAC427/guess-indent.nvim"
+  :opt true
+  :config #(setup :guess-indent))
+
+;; Auto-close hidden / unedited buffers
+(use "axkirillov/hbac.nvim")
 
 (use "rgroli/other.nvim"
   :config #(let [hotpot-cache ((require-use :hotpot :api :cache :cache-prefix))]
@@ -236,7 +220,53 @@
              (vim.keymap.set :n "<leader>gd" (require-use :neogen :generate)))
   :requires "nvim-treesitter/nvim-treesitter")
 
-(use "lewis6991/hover.nvim")
+;;;
+;;; Lispsy lisps
+;;;
+
+; Auto-layouting for Lisp parentheses
+(use "gpanders/nvim-parinfer"
+  :config #(set vim.g.parinfer_no_maps 1))
+
+;; Better REPL management for Lisps
+(use "Olical/conjure"
+  :ft [:fennel :racket :scheme :lisp]
+  :config (fn []
+            (tset vim.g :conjure#extract#tree_sitter#enabled        true)
+            (tset vim.g :conjure#highlight#enabled                  true)
+            (tset vim.g :conjure#log#hud#border                     "double")
+            (tset vim.g :conjure#highlight#enabled                  :IncSearch)
+            ;; scheme
+            (tset vim.g :conjure#filetype#scheme                    "conjure.client.guile.socket")
+            (tset vim.g :conjure#client#scheme#stdio#command        "racket -il scheme")
+            (tset vim.g :conjure#client#scheme#stdio#prompt_pattern "\n?[\"%w%-./_]*> ")
+            (tset vim.g :conjure#client#guile#socket#pipename       "/tmp/guile-repl.socket")
+            ;; fennel
+            (tset vim.g :conjure#filetype#fennel                    "conjure.client.fennel.stdio")
+            (tset vim.g :conjure#client#fennel#stdio#command        "fennel")))
+
+;;;
+;;; To remove
+;;;
+
+;; Highly improved wildmenu.
+;; Includes niceties such as fuzzy search.
+; TODO: get rid of this
+(use "gelguy/wilder.nvim"
+     ; In case of errors, disable with "call wilder#disable()"
+  :event    [:CmdlineEnter]
+  :requires ["romgrk/fzy-lua-native"]
+  :config   #(require :plugins.wilder))
+
+;; Manage REPLs
+; TODO: Remove
+(use "hkupty/iron.nvim"
+  :commit "bc9c596d6a97955f0306d2abcc10d9c35bbe2f5b"
+  :config (fn []
+            (set vim.g.iron_map_defaults 0)
+            (set vim.g.iron_map_extended 0)
+            (require :plugins.iron)))
+
 
 ;;;----------------------------------------------------------------------------
 ;;; External Integrations
@@ -254,19 +284,6 @@
             (vim.keymap.set :n "<leader>fh" (require-use :fzf-lua :help_tags))
             (vim.keymap.set :i "<C-x><C-f>" (require-use :fzf-lua :complete_path))
             (vim.keymap.set :i "<C-x><C-l>" (require-use :fzf-lua :complete_line))))
-
-
-;;;----------------------------------------------------------------------------
-;;; Prettier
-;;;----------------------------------------------------------------------------
-
-;; Align quickfix
-(use "https://gitlab.com/yorickpeterse/nvim-pqf"
-  :config #(setup :pqf))
-
-; Better marks management
-(use "chentoast/marks.nvim"
-  :config #(setup :marks))
 
 
 ;;;----------------------------------------------------------------------------
@@ -346,38 +363,7 @@
 
 (use "edwinb/idris2-vim")
 
-(use "ledger/vim-ledger"
-  :config (fn []
-            (set vim.g.ledger_bin             :hledger)
-            (set vim.g.ledger_is_hledger      true)
-            (set vim.g.ledger_date_format     "%Y-%m-%d")
-            (set vim.g.ledger_align_at        60)
-            (set vim.g.ledger_align_commodity false)    ; Align on R$ instead of decimal dot
-            (set vim.g.ledger_align_last      false)
-            (set vim.g.ledger_commodity_sep   " ")
-            (set vim.g.ledger_extra_options   "--strict ordereddates")
-            (vim.keymap.set :n "<leader>dd"
-              #(if vim.b.posting_date
-                   (vim.fn.ledger#transaction_date_set
-                     (vim.fn.line ".")
-                     "primary"
-                     (vim.fn.strptime "%Y-%m-%d" vim.b.posting_date))
-                   (vim.fn.ledger#transaction_date_set
-                     (vim.fn.line ".")
-                     "primary"))
-              {:buffer 0
-               :desc "Change transaction date to today"})
-            (vim.keymap.set :n "<leader>de" "<CMD>call ledger#transaction_state_toggle(line('.'), '!* ')<CR>"
-              {:buffer 0
-               :desc "Toggle transaction status"})
-            (vim.keymap.set :n "<leader>dE" "<CMD>call ledger#transaction_post_state_toggle(line('.'), ' *!')<CR>"
-              {:buffer 0
-               :desc "Toggle posting status"})
-            ;; Align all posts on current paragraph (I use one transaction per paragraph)
-            (vim.keymap.set :n "<leader>da"
-              #(restoring-cursor (vim.cmd "'{,'}LedgerAlign"))
-              {:buffer 0
-               :desc "Align postings on current transaction"})))
+(use "ledger/vim-ledger") ; config on ftplugin/ledger.fnl
 
 ;; Return packer itself to allow chaining commands
 packer

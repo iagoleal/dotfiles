@@ -21,7 +21,7 @@
   ;;;-----------------
 
   :matchup
-    {:enable false} ; This causes extreme lag, disable by now
+    {:enable true} ; This causes extreme lag, disable by now
 
   :refactor
     {:highlight_current_scope {:enable true}}
