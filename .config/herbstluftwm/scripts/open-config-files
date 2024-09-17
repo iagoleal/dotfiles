@@ -12,9 +12,9 @@ listconfigs() {
   echo -e "pulseaudio"
 }
 
-choose="$(listconfigs | finder)"
+choice="$(listconfigs | finder)"
 
-case "${choose}" in
+case "${choice}" in
   nvim)
     herbstclient spawn xterm -e sh -c 'cd ~/.config/nvim && nvim -O fnl/startup.fnl fnl/plugins.fnl'
     ;;
@@ -28,6 +28,11 @@ case "${choose}" in
     herbstclient spawn xterm -e sh -c 'cd ~/.zsh.d/ && nvim ~/.zshrc *'
     ;;
   *)
-    herbstclient spawn xterm -e sh -c "cd ${XDG_CONFIG_HOME}/$choose && vi ."
+    files="$(find "${XDG_CONFIG_HOME:-$HOME/.config}/$choice" -mindepth 1 -maxdepth 1)"
+    if [ "$(echo "$files" | wc -l)" -eq 1 ]; then
+      herbstclient spawn xterm -e sh -c "cd ${XDG_CONFIG_HOME}/$choice && vi $files"
+    else
+      herbstclient spawn xterm -e sh -c "cd ${XDG_CONFIG_HOME}/$choice && vi ."
+    fi
     ;;
 esac
