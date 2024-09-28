@@ -104,6 +104,15 @@
   (let [test (predicate#one-to-true-based vim.fn.isdirectory)]
     (test name)))
 
+(fn M.pumvisible? []
+  "Is the popup menu open?"
+  (not= (tonumber (vim.fn.pumvisible)) 0))
+
+(fn M.filereadable? [name]
+  "Does the file exists, is not a directory, and is readable by the user?"
+  (not= (tonumber (vim.fn.filereadable name)) 0))
+
+
 ;-------------------
 ; Echo messages
 ;-------------------
@@ -170,10 +179,6 @@
 (fn M.current-line []
   "The line under the cursor."
   (vim.api.nvim_get_current_line))
-
-(fn M.pumvisible? []
-  "Is the popup menu open?"
-  (not= (tonumber (vim.fn.pumvisible)) 0))
 
 (fn M.feedkeys [keys ?mode]
   "Input keys as if typed."

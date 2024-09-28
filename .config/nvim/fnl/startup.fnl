@@ -288,9 +288,6 @@
 ; Zoom window at new tab
 (keymap :n "<leader>tz" "<cmd>tab split<CR>")
 
-; Close tab
-(keymap :n "<leader>tc" "<cmd>tabclose<CR>")
-
 ;; Open :ptag on a vertical split (Like "<C-w>}")
 (fn ptag-vertical []
   (let [window-width   (vim.fn.winwidth 0)]        ; The current window's width

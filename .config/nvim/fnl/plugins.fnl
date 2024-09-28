@@ -50,8 +50,32 @@
               {:sources [null-ls.builtins.hover.dictionary
                          null-ls.builtins.hover.printenv]})))
 
-(use "mfussenegger/nvim-dap")
+(use "mfussenegger/nvim-dap"
+  :config #(require :plugins.dap))
 
+(use "mfussenegger/nvim-dap-python"
+  :config #((require-use :dap-python :setup) "python"))
+
+(use "rcarriga/nvim-dap-ui"
+  :requires ["mfussenegger/nvim-dap"
+             "nvim-neotest/nvim-nio"]
+  :config #(setup :dapui))
+
+(use "nvim-neotest/neotest"
+  :requires ["nvim-neotest/nvim-nio"
+             "nvim-lua/plenary.nvim"
+             ; Adapters
+             "mrcjkb/neotest-haskell"
+             "nvim-neotest/neotest-python"
+             "rcasia/neotest-bash"
+             "nvim-treesitter/nvim-treesitter"]
+  :config
+    (fn []
+      (setup :neotest
+        :adapters [(require :neotest-haskell)
+                   (require :neotest-python)
+                   (require :neotest-bash)]
+       )))
 
 ;;;----------------------------------------------------------------------------
 ;;; Text editing
@@ -281,6 +305,7 @@
   :config (fn []
             (vim.keymap.set :n "<leader>ff" (require-use :fzf-lua :files))
             (vim.keymap.set :n "<leader>fb" (require-use :fzf-lua :buffers))
+            (vim.keymap.set :n "<leader>fd" (require-use :fzf-lua :dap_commands))
             (vim.keymap.set :n "<leader>fh" (require-use :fzf-lua :help_tags))
             (vim.keymap.set :i "<C-x><C-f>" (require-use :fzf-lua :complete_path))
             (vim.keymap.set :i "<C-x><C-l>" (require-use :fzf-lua :complete_line))))
