@@ -71,7 +71,8 @@ mem_perc=${mem_perc}%
 #------------------------
 day=$(date +'%Y.%m.%d')
 # date +%w gives the day of the week in {0..6} starting on Sunday
-hour=$(date +'%H:%M')
+# Use %:::z for numeric timezone / %Z for alphabetical one
+hour=$(date +'%Z %H:%M')
 
 # Planet for each day
 declare -A week_symbol=( \
@@ -101,7 +102,6 @@ st_wifi() {
   fi
   echo "<span color='#f1ac0b'>wifi</span> $status"
 }
-
 
 
 
