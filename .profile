@@ -58,9 +58,3 @@ export XCOMPOSECACHE="$XDG_CACHE_HOME"/X11/Xcompose
 
 # Nix needs this to find the proper locale
 export LOCALE_ARCHIVE=/usr/lib/locale/locale-archive
-
-GUIX_PROFILE="$HOME/.guix-profile"
-. "$GUIX_PROFILE/etc/profile"
-
-GUIX_PROFILE="$HOME/.config/guix/current"
-. "$GUIX_PROFILE/etc/profile"
