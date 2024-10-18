@@ -97,7 +97,7 @@ end
 local function diagnostics(bufnr)
   bufnr = bufnr or vim.fn.winbufnr(vim.g.statusline_winid)
   if is_buffer_active(bufnr) then
-    if #vim.lsp.buf_get_clients(bufnr) == 0 then
+    if #vim.lsp.get_clients{buffer = bufnr} == 0 then
       return ""
     end
     local num = get_lsp_diagnostics(bufnr)

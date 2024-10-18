@@ -50,6 +50,10 @@
               {:sources [null-ls.builtins.hover.dictionary
                          null-ls.builtins.hover.printenv]})))
 
+(use "echasnovski/mini.nvim"
+  :config (fn []
+            (setup :mini.ai)))
+
 (use "mfussenegger/nvim-dap"
   :config #(require :plugins.dap))
 
@@ -278,6 +282,7 @@
 ; TODO: get rid of this
 (use "gelguy/wilder.nvim"
      ; In case of errors, disable with "call wilder#disable()"
+  :disable true
   :event    [:CmdlineEnter]
   :requires ["romgrk/fzy-lua-native"]
   :config   #(require :plugins.wilder))

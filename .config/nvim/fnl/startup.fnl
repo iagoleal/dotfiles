@@ -141,10 +141,13 @@
 (option :path append "**")
 
 ;; Completion
-(option :wildmode [:full :list :full])   ; first autocomplete the word, afterwards run across the list
+(option :wildmode [:longest:full :full])   ; complete till longest common prefix and open wildmenu; afterwards run across the list
 (option :wildignorecase)
+(option :wildoptions [:fuzzy :tagfile])
 
 (option :completeopt [:menuone :popup])
+(when (= 1 (vim.fn.has "nvim-0.11"))
+  (vim.opt.completeopt:append :fuzzy))
 
 ;; Vertical split to the right (default is left)
 (option :splitright)
