@@ -310,6 +310,12 @@
             (vim.keymap.set :i "<C-x><C-f>" (require-use :fzf-lua :complete_path))
             (vim.keymap.set :i "<C-x><C-l>" (require-use :fzf-lua :complete_line))))
 
+;; AI helpers
+(use "zbirenbaum/copilot.lua"
+  :cmd   :Copilot
+  :event :InsertEnter
+  :config #(setup :copilot
+             :suggestion {:auto_trigger false}))
 
 ;;;----------------------------------------------------------------------------
 ;;; Colors

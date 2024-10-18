@@ -22,7 +22,7 @@
     (when (capable? :referencesProvider)
       (bmap :n "<leader>re" vim.lsp.buf.references
         {:desc "LSP References"})
-      (bmap :n "gr"         vim.lsp.buf.references
+      (bmap :n "gre"        vim.lsp.buf.references
         {:desc "LSP References"}))
     (when (capable? :renameProvider)
       (bmap :n "<leader>rn" vim.lsp.buf.rename
@@ -58,7 +58,11 @@
     ;; Workspaces
     (bmap :n "<leader>wa" vim.lsp.buf.add_workspace_folder)
     (bmap :n "<leader>wr" vim.lsp.buf.remove_workspace_folder)
-    (bmap :n "<leader>wl" #(print (vim.inspect (vim.lsp.buf.list_workspace_folders))))))
+    (bmap :n "<leader>wl" #(print (vim.inspect (vim.lsp.buf.list_workspace_folders))))
+
+    (when (and vim.lsp.completion
+               (capable? :completionProvider))
+      (vim.lsp.completion.enable true data.client_id bufnr {:autotrigger false}))))
 
 
 (vim.api.nvim_create_autocmd :LspAttach
