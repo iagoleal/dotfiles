@@ -173,8 +173,16 @@
 ;; File explorer (netrw substitute)
 (use "stevearc/oil.nvim"
   :config #(do
+             (var detail true)
              (setup :oil
-               :columns [:icon :permission :size :mtime])
+               :columns [:icon :permission :size :mtime]
+               :keymaps
+                {"gi" {:desc "Toggle file information view"
+                       :callback (fn []
+                                    (set detail (not detail))
+                                    (if detail
+                                      ((require-use :oil :set_columns) [:icon :permission :size :mtime])
+                                      ((require-use :oil :set_columns) [:icon])))}})
              (vim.keymap.set :n "-" "<CMD>Oil<CR>"
                {:desc "Open parent directory"})))
 
@@ -317,6 +325,7 @@
 
 ;; AI helpers
 (use "zbirenbaum/copilot.lua"
+  :disable true
   :cmd   :Copilot
   :event :InsertEnter
   :config #(setup :copilot
@@ -351,6 +360,8 @@
   :disable true)
 
 (use "pbrisbin/vim-colors-off")
+
+(use "shaunsingh/nord.nvim")
 
 ;;;----------------------------------------------------------------------------
 ;;; Filetype specific

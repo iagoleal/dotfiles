@@ -95,7 +95,11 @@
 (when (has? :termguicolors)
   (option :termguicolors)
   (option :background :dark)
-  (vim.cmd.colorscheme :everforest))
+  (set vim.g.nord_italic false)
+  (set vim.g.nord_borders true)
+  (set vim.g.nord_contrast true)
+  ((require-use :nord :set))
+  (vim.cmd.colorscheme :nord))
 
 ;------------------------
 ; Theme Options
@@ -146,7 +150,7 @@
 (option :wildoptions [:fuzzy :tagfile])
 
 (option :completeopt [:menuone :popup])
-(when (= 1 (vim.fn.has "nvim-0.11"))
+(when (has? "nvim-0.11")
   (vim.opt.completeopt:append :fuzzy))
 
 ;; Vertical split to the right (default is left)
@@ -209,18 +213,16 @@
       handler vim.diagnostic.handlers.signs]   ; Original handler that we're extending
   (tset vim.diagnostic.handlers :signs
     {:show (fn [_ns bufnr diagnostics opts]
-             (let [max-severity-per-line {}]
-               (collect [_ d (pairs diagnostics)
-                         &into max-severity-per-line]
-                 (let [sev (?. max-severity-per-line d.lnum :severity)]
-                   (when (or (not sev)
-                             (< d.severity sev))
-                     (values d.lnum d))))
-               ;; Now that we've simplified the diagnostics, we can pass them to the original handler
-               (handler.show ns
-                             bufnr
-                             (vim.tbl_values max-severity-per-line)
-                             opts)))
+             (local max-severity-per-line {})
+             (collect [_ d (pairs diagnostics) &into max-severity-per-line]
+               (let [sev (?. max-severity-per-line d.lnum :severity)]
+                 (when (or (not sev) (< d.severity sev))
+                   (values d.lnum d))))
+             ;; Now that we've simplified the diagnostics, we can pass them to the original handler
+             (handler.show ns
+                           bufnr
+                           (vim.tbl_values max-severity-per-line)
+                           opts))
 
      :hide (fn [_ bufnr]
              (handler.hide ns bufnr))}))
