@@ -379,6 +379,9 @@
 ;;; Plugin related
 ;--------------------------
 
+;; Run a project
+(keymap :n "<F12>" #((require-use :executer :run)))
+
 ;; Building keymaps
 (keymap :n "<leader>m" "<CMD>write | Dispatch<CR>")
 (keymap :n "<leader>M" "<CMD>write | Dispatch!<CR>")
@@ -457,11 +460,7 @@
            #(vim.opt_local.iskeyword:append "$"))
   (autocmd :FileType
            [:lua :fennel]
-           #(do
-             (if (ed.directory? "src")
-                 (keymap :n "<F12>" ":wa<cr>:!love --fuseomod src &<cr>")
-                 (keymap :n "<F12>" ":wa<cr>:!love --fused . &<cr>"))
-             (vim.opt_local.iskeyword:remove "."))))
+           #(vim.opt_local.iskeyword:remove ".")))
 
 ;; Control built-in ftplugins
 (set vim.g.markdown_recommended_style 0)
