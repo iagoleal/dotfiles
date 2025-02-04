@@ -1,0 +1,50 @@
+#!/bin/sh
+
+SESSION_NAME=update
+SITE_PATH="$HOME"
+
+if ! tmux has-session -t "$SESSION_NAME" >/dev/null 2>&1 ; then
+  # Create session with initial window
+  tmux new-session   -s "$SESSION_NAME" -c "$SITE_PATH" -d -n pkg
+
+  # Run package manager
+  tmux send-keys     -t "$SESSION_NAME" "yay -Syu --noconfirm" Enter
+  # Run nix
+  tmux split-window  -t "$SESSION_NAME" -c "$SITE_PATH" -h
+  tmux send-keys     -t "$SESSION_NAME" "nix-channel --update ; nix-env -i 'my-packages' ; nix-env -u '*'" Enter
+
+  # Plugin managers
+  tmux new-window    -t "$SESSION_NAME" -c "$SITE_PATH" -n plugins
+  # zsh
+  tmux send-keys     -t "$SESSION_NAME" "plugin-update" Enter
+  # nvim
+  tmux split-window  -t "$SESSION_NAME" -c "$SITE_PATH" -h
+  PACKER_DUMP=$(mktemp --suffix='_PACKER')
+  tmux send-keys     -t "$SESSION_NAME" \
+    "nvim \
+      +'autocmd User PackerComplete UpdateRemotePlugins | sleep 1 | write! $PACKER_DUMP | TSUpdateSync' \
+      +PackerSync" \
+    Enter
+
+  # Programming languages
+  tmux new-window    -t "$SESSION_NAME" -c "$SITE_PATH" -n lang
+  # julia
+  tmux send-keys     -t "$SESSION_NAME" "juliaup update" Enter
+  # haskell
+  tmux split-window  -t "$SESSION_NAME" -c "$SITE_PATH"
+  tmux send-keys     -t "$SESSION_NAME" "ghcup upgrade ; cabal update" Enter
+
+  # # Watch and remake pages
+  # tmux split-window  -t "$SESSION_NAME" -c "$SITE_PATH"
+  # tmux send-keys     -t "$SESSION_NAME" "make watch" Enter
+  #
+  tmux select-window -t '^'
+  tmux select-pane   -t '{top}'
+fi
+
+# Tmux uses different commands to attach from within a client or not
+if [ -z "$TMUX" ]; then
+  tmux attach -t "$SESSION_NAME"
+else
+  tmux switch-client -t "$SESSION_NAME"
+fi

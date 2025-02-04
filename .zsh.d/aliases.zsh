@@ -22,53 +22,53 @@ function weather { curl wttr.in/"$*?m"; }
 function hascmd { (( $+commands[$1] )) }
 
 # Update everything
-function update {
-  if hascmd yay ;then
-    echo 'Updating pacman and AUR...'
-    yay -Syu --noconfirm
-  elif hascmd pacman ;then
-    echo 'Updating pacman... (No AUR helper found)'
-    sudo pacman -Syu --noconfirm
-  elif hascmd apt-get ;then
-    echo 'Updating apt...'
-    sudo apt-get update && sudo apt-get upgrade
-  else
-    echo "What distribution are you running?"
-    return
-  fi
-
-  if hascmd nix; then
-    echo '\n\nNix Nix Nix\n\n'
-    nix-channel --update
-    nix-env -i 'my-packages'
-    nix-env -u '*'
-  fi
-
-  # if hascmd guix; then
-  #   echo '\n\nGuix Guix Guix\n\n'
-  #   guix pull
-  #   guix upgrade
-  # fi
-
-  echo "Updating zsh..."
-  plugin-update
-
-  echo 'Updating NeoVim...'
-  local PACKER_DUMP=$(mktemp --suffix='_PACKER')
-  nvim \
-    +"autocmd User PackerComplete UpdateRemotePlugins | sleep 1 | write! $PACKER_DUMP | TSUpdateSync | quitall" \
-    +PackerSync
-  cat $PACKER_DUMP
-
-  echo "\nUpdating Haskell...\n"
-  ghcup upgrade
-  cabal update
-
-  echo "\nUpdating Julia...\n"
-  juliaup update
-
-  notify-send -u normal "Updated" "C'est fini"
-}
+# function update {
+#   if hascmd yay ;then
+#     echo 'Updating pacman and AUR...'
+#     yay -Syu --noconfirm
+#   elif hascmd pacman ;then
+#     echo 'Updating pacman... (No AUR helper found)'
+#     sudo pacman -Syu --noconfirm
+#   elif hascmd apt-get ;then
+#     echo 'Updating apt...'
+#     sudo apt-get update && sudo apt-get upgrade
+#   else
+#     echo "What distribution are you running?"
+#     return
+#   fi
+#
+#   if hascmd nix; then
+#     echo '\n\nNix Nix Nix\n\n'
+#     nix-channel --update
+#     nix-env -i 'my-packages'
+#     nix-env -u '*'
+#   fi
+#
+#   # if hascmd guix; then
+#   #   echo '\n\nGuix Guix Guix\n\n'
+#   #   guix pull
+#   #   guix upgrade
+#   # fi
+#
+#   echo "Updating zsh..."
+#   plugin-update
+#
+#   echo 'Updating NeoVim...'
+#   local PACKER_DUMP=$(mktemp --suffix='_PACKER')
+#   nvim \
+#     +"autocmd User PackerComplete UpdateRemotePlugins | sleep 1 | write! $PACKER_DUMP | TSUpdateSync | quitall" \
+#     +PackerSync
+#   cat $PACKER_DUMP
+#
+#   echo "\nUpdating Haskell...\n"
+#   ghcup upgrade
+#   cabal update
+#
+#   echo "\nUpdating Julia...\n"
+#   juliaup update
+#
+#   notify-send -u normal "Updated" "C'est fini"
+# }
 
 function trash { mv -i $@ ${XDG_DATA_HOME:-$HOME/.local/share}/Trash }
 
