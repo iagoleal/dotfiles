@@ -285,16 +285,6 @@
 ;;; To remove
 ;;;
 
-;; Highly improved wildmenu.
-;; Includes niceties such as fuzzy search.
-; TODO: get rid of this
-(use "gelguy/wilder.nvim"
-     ; In case of errors, disable with "call wilder#disable()"
-  :disable true
-  :event    [:CmdlineEnter]
-  :requires ["romgrk/fzy-lua-native"]
-  :config   #(require :plugins.wilder))
-
 ;; Manage REPLs
 ; TODO: Remove
 (use "hkupty/iron.nvim"
@@ -411,6 +401,9 @@
 (use "edwinb/idris2-vim")
 
 (use "ledger/vim-ledger") ; config on ftplugin/ledger.fnl
+
+(use "hat0uma/csvview.nvim"
+  :config #(setup :csvview))
 
 ;; Return packer itself to allow chaining commands
 packer
