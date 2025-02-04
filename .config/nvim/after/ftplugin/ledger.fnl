@@ -15,7 +15,8 @@
 ;;;----------------------------------------------------------------------------
 
 (local bu-limit 8.55)
-(local default-payment "assets:wise:usd")
+(local default-payment "card:nubank")
+(local currency "BRL")
 
 (local bus-prices
   {:110   13.10
@@ -35,11 +36,16 @@
    ; Rio de Janeiro
    :metro  5.00
    :vlt    4.30
-   :brt    4.30})
+   :brt    4.30
+   ; Niteroi
+   :33     4.45
+   :53     4.45
+   :47     4.45
+   :49     4.45})
 
 (local templates
-  {:expenses/bus "  expenses:transport:urban  R$% .2f ; linha:%s"
-   :riocard      "  assets:riocard  R$% .2f"})
+  {:expenses/bus "  expenses:transport:urban  % .2f %s ; linha:%s"
+   :riocard      "  assets:riocard  % .2f %s"})
 
 (local hl-accounts
   (let [stdout (. (: (vim.system ["hledger" "accounts"]) :wait) :stdout)]
@@ -62,7 +68,7 @@
         payed (math.min price
                         (- bu-limit total))]
     ; Formated posting and payed running total
-    (values (templates.expenses/bus:format payed line)
+    (values (templates.expenses/bus:format payed currency line)
             (+ total payed))))
 
 (fn build#bus-transaction [buses]
@@ -75,14 +81,14 @@
     (each [_ bus (ipairs buses)]
       (set (expense total) (bus->expense bus total))
       (tput expense))
-    (tput (templates.riocard:format (- total)))
+    (tput (templates.riocard:format (- total) currency))
     transaction))
 
 (fn build#simple-transaction [cat _amount payer name]
   (let [amount (tonumber _amount)]
     [(fmt "%s * %s"                  (today!) (or name "???"))
-     (fmt "  %s             % .2f USD" cat amount)
-     (fmt "  %s             % .2f USD" payer (- amount))]))
+     (fmt "  %s             % .2f %s" cat amount currency)
+     (fmt "  %s             % .2f %s" payer (- amount) currency)]))
 
 (fn build#split-transaction [who cat _amount payer name]
   (let [amount      (tonumber _amount)
@@ -93,11 +99,11 @@
         transaction []
         tput        #(table.insert transaction $...)]
     (tput (fmt "%s * %s %s"    (today!) (or name "???") (if (= tags "") tags (.. "; " tags))))
-    (tput (fmt "  %s             R$% .2f" cat per/capita))
+    (tput (fmt "  %s             % .2f %s" cat per/capita currency))
     (each [_ p (ipairs who)]
-      (tput (fmt "  person:%s   R$% .2f" p per/capita)))
+      (tput (fmt "  person:%s   % .2f %s" p per/capita currency)))
     (tput (fmt "  ; payer"))
-    (tput (fmt "  %s             R$% .2f" payer (- amount)))
+    (tput (fmt "  %s             % .2f %s" payer (- amount) currency))
     transaction))
 
 ;;;----------------------------------------------------------------------------
